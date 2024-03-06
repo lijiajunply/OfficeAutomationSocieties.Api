@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
@@ -5,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OA.Share.DataModels;
 using OfficeAutomationSocieties.Api;
 
@@ -15,7 +17,18 @@ var configuration = builder.Configuration; // 读取配置文件
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "OA系统",
+            Description = "办公自动化"
+        }
+    );
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 builder.Services.Configure<HubOptions>(option => option.MaximumReceiveMessageSize = null);
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 

@@ -3,13 +3,14 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace OA.Share.DataModels;
 
+#pragma warning disable CS1591
 public sealed class OaContext : DbContext
 {
-    public DbSet<UserModel> Users { get; set; }
-    public DbSet<FileModel> Files { get; set; }
-    public DbSet<ProjectModel> Projects { get; set; }
-    public DbSet<ResourceModel> Resources { get; set; }
-    public DbSet<AnnouncementModel> Announcements { get; set; }
+    public DbSet<UserModel> Users { get; init; }
+    public DbSet<FileModel> Files { get; init; }
+    public DbSet<ProjectModel> Projects { get; init; }
+    public DbSet<ResourceModel> Resources { get; init; }
+    public DbSet<AnnouncementModel> Announcements { get; init; }
 
     public OaContext(DbContextOptions<OaContext> options)
         : base(options)
@@ -25,10 +26,11 @@ public sealed class OaContext : DbContext
     {
         modelBuilder.Entity<UserModel>().HasMany(x => x.Projects).WithMany(x => x.Members);
         modelBuilder.Entity<ProjectModel>().HasMany(x => x.Files).WithOne(x => x.Owner).IsRequired(false);
-        
     }
 }
+#pragma warning restore CS1591
 
+// ReSharper disable once UnusedType.Global
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<OaContext>
 {
     public OaContext CreateDbContext(string[] args)

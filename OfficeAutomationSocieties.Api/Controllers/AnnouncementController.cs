@@ -5,26 +5,28 @@ using OA.Share.DataModels;
 
 namespace OfficeAutomationSocieties.Api.Controllers;
 
+/// <summary>
+/// 公告管理系统
+/// </summary>
+/// <param name="factory"></param>
+/// <param name="httpContextAccessor"></param>
 [Authorize(Roles = "President")]
 [TokenActionFilter]
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class AnnouncementController : ControllerBase
+public class AnnouncementController(IDbContextFactory<OaContext> factory, IHttpContextAccessor httpContextAccessor)
+    : ControllerBase
 {
-    private readonly IDbContextFactory<OaContext> _factory;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public AnnouncementController(IDbContextFactory<OaContext> factory,IHttpContextAccessor httpContextAccessor)
-    {
-        _factory = factory;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
+    /// <summary>
+    /// 添加公告
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult> AddAnnouncement([FromBody] AnnouncementModel model)
     {
-        await using var _context = await _factory.CreateDbContextAsync();
-        var member = _httpContextAccessor.HttpContext?.User.GetUser();
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
 
         _context.Announcements.Add(model);
@@ -32,11 +34,17 @@ public class AnnouncementController : ControllerBase
         return Ok();
     }
 
+
+    /// <summary>
+    /// 删除公告
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult> RemoveAnnouncement([FromBody] AnnouncementModel model)
     {
-        await using var _context = await _factory.CreateDbContextAsync();
-        var member = _httpContextAccessor.HttpContext?.User.GetUser();
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
 
         _context.Announcements.Remove(model);

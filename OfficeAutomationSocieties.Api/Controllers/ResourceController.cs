@@ -5,23 +5,23 @@ using OA.Share.DataModels;
 
 namespace OfficeAutomationSocieties.Api.Controllers;
 
+/// <summary>
+/// 资源系统
+/// </summary>
+/// <param name="factory"></param>
 [Authorize]
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class ResourceController : ControllerBase
+public class ResourceController(IDbContextFactory<OaContext> factory) : ControllerBase
 {
-    private readonly IDbContextFactory<OaContext> _factory;
-
-    public ResourceController(IDbContextFactory<OaContext> factory)
-    {
-        _factory = factory;
-    }
-
-    // GET: api/Resource
+    /// <summary>
+    /// 获取资源
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ResourceModel>>> GetResources()
     {
-        await using var _context = await _factory.CreateDbContextAsync();
+        await using var _context = await factory.CreateDbContextAsync();
         if (_context.Resources == null!)
         {
             return NotFound();
@@ -30,11 +30,15 @@ public class ResourceController : ControllerBase
         return await _context.Resources.ToListAsync();
     }
 
-    // GET: api/Resource/5
+    /// <summary>
+    /// 获取资源单例
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<ResourceModel>> GetResourceModel(string id)
     {
-        await using var _context = await _factory.CreateDbContextAsync();
+        await using var _context = await factory.CreateDbContextAsync();
         if (_context.Resources == null!)
         {
             return NotFound();
@@ -50,16 +54,15 @@ public class ResourceController : ControllerBase
         return resourceModel;
     }
 
-    // PUT: api/Resource/5
-    // To protect from over posting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutResourceModel(string id, ResourceModel resourceModel)
+    /// <summary>
+    /// 更新资源状态
+    /// </summary>
+    /// <param name="resourceModel"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public async Task<IActionResult> UpdateResource(ResourceModel resourceModel)
     {
-        await using var _context = await _factory.CreateDbContextAsync();
-        if (id != resourceModel.Id)
-        {
-            return BadRequest();
-        }
+        await using var _context = await factory.CreateDbContextAsync();
 
         _context.Entry(resourceModel).State = EntityState.Modified;
 
@@ -69,7 +72,7 @@ public class ResourceController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!(_context.Resources?.Any(e => e.Id == id)).GetValueOrDefault())
+            if (!_context.Resources.Any(e => e.Id == resourceModel.Id))
             {
                 return NotFound();
             }
@@ -80,12 +83,16 @@ public class ResourceController : ControllerBase
         return NoContent();
     }
 
-    // POST: api/Resource
-    // To protect from over posting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+    /// <summary>
+    /// 添加资源
+    /// </summary>
+    /// <param name="resourceModel"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<ResourceModel>> AddResource(ResourceModel resourceModel)
     {
-        await using var _context = await _factory.CreateDbContextAsync();
+        await using var _context = await factory.CreateDbContextAsync();
         if (_context.Resources == null!)
         {
             return Problem("Entity set 'OaContext.Resources'  is null.");
@@ -98,10 +105,8 @@ public class ResourceController : ControllerBase
         }
         catch (DbUpdateException)
         {
-            if ((_context.Resources?.Any(e => e.Id == resourceModel.Id)).GetValueOrDefault())
-            {
+            if (_context.Resources.Any(e => e.Id == resourceModel.Id))
                 return Conflict();
-            }
 
             throw;
         }
@@ -109,11 +114,15 @@ public class ResourceController : ControllerBase
         return CreatedAtAction("GetResourceModel", new { id = resourceModel.Id }, resourceModel);
     }
 
-    // DELETE: api/Resource/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteResourceModel(string id)
+    /// <summary>
+    /// 删除资源
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("{id}")]
+    public async Task<IActionResult> DeleteResource(string id)
     {
-        await using var _context = await _factory.CreateDbContextAsync();
+        await using var _context = await factory.CreateDbContextAsync();
         if (_context.Resources == null!)
         {
             return NotFound();
