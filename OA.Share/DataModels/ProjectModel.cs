@@ -27,25 +27,20 @@ public class ProjectModel
 
 public class GanttModel
 {
+    [Column(TypeName = "varchar(256)")]
     public string Id { get; set; }= "";
+    
+    [Column(TypeName = "varchar(256)")]
     public string User { get; set; }= "";
+    
+    [Column(TypeName = "varchar(256)")]
     public string StartTime { get; set; }= "";
+    
+    [Column(TypeName = "varchar(256)")]
     public string EndTime { get; set; }= "";
+    
+    [Column(TypeName = "varchar(256)")]
     public string ToDo { get; set; }= "";
-
-    public GanttModel(string s)
-    {
-        var gantt = s.Split(':');
-        if (gantt.Length != 3) return;
-        User = gantt[0];
-        ToDo = gantt[2];
-        Id = gantt[^1];
-        var time = gantt[1];
-        var times = time.Split('-');
-        if (times.Length != 2) return;
-        StartTime = times[0];
-        EndTime = times[0];
-    }
 
     public override string ToString() => $"{User}:{StartTime}-{EndTime}:{ToDo}:{Id}";
 }
