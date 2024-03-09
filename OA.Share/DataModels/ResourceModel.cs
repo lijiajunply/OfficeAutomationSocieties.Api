@@ -7,12 +7,17 @@ public class ResourceModel
 {
     [Key]
     [Column(TypeName = "varchar(256)")]
-    public string Id { get; set; }
+    public string Id { get; init; } = "";
 
-    public string Name { get; set; }
-    public UserModel User { get; set; }
-    public string StartTime { get; set; }
-    public string EndTime { get; set; }
+    [Column(TypeName = "varchar(256)")]
+    public string Name { get; init; } = "";
+    public UserModel User { get; init; } = new();
+    
+    [Column(TypeName = "varchar(256)")]
+    public string StartTime { get; init; } = "";
+    
+    [Column(TypeName = "varchar(256)")]
+    public string EndTime { get; init; } = "";
 
     public override string ToString() =>
         $"ResourceModel is {{Name={Name.Base64Encryption()},StartTime={StartTime.Base64Encryption()},EndTime={EndTime.Base64Encryption()}}} Other is Private;";

@@ -7,21 +7,25 @@ public class UserModel
 {
     [Key]
     [Column(TypeName = "varchar(256)")]
-    public string UserId { get; set; }
+    public string UserId { get; set; } = "";
 
-    public string Name { get; set; }
-    public string Password { get; set; }
+    [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
+
+    [Column(TypeName = "varchar(256)")] public string Password { get; set; } = "";
 
     /// <summary>
-    /// President : 社长,副社长,秘书长
-    /// Minister : 部长
-    /// Member : 普通成员
+    /// President
+    /// Minister
+    /// Member
     /// </summary>
-    public string Identity { get; set; } = "Member";
+    [Column(TypeName = "varchar(256)")]
+    public string Identity { get; init; } = "Member";
 
-    public List<ProjectModel> Projects { get; set; } = new();
+    public List<ProjectModel> Projects { get; init; } = [];
 
-    public UserModel() { }
+    public UserModel()
+    {
+    }
 
     public UserModel(LoginModel model, string identity = "Member")
     {
@@ -30,12 +34,12 @@ public class UserModel
         UserId = "";
         Identity = identity;
     }
-    
+
     public override string ToString() => $"UserModel is {{Name={Name.Base64Encryption()}}} Other is Private;";
 }
 
 public class LoginModel
 {
-    public string Password { get; set; }
-    public string Name { get; set; }
+    public string Password { get; set; } = "";
+    public string Name { get; set; } = "";
 }

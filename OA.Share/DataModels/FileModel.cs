@@ -8,30 +8,34 @@ public class FileModel : IFile
     /// <summary>
     /// 现实路径
     /// </summary>
-    public string Path { get; set; }
-    
+    [Column(TypeName = "varchar(256)")]
+    public string Path { get; set; } = "";
+
     /// <summary>
     /// 网盘虚拟路径
     /// </summary>
+    [Column(TypeName = "varchar(256)")]
     public string Url { get; set; } = "";
+
     public bool IsFolder { get; set; }
 
-    public ProjectModel? Owner { get; set; }
+    public ProjectModel? Owner { get; init; }
 
     [Key]
     [Column(TypeName = "varchar(256)")]
-    public string Id { get; set; }
+    public string Id { get; set; } = "";
 
     public FolderModel ToFolder() => new() { IsFolder = IsFolder, Path = Path, Url = Url, Id = Id };
-    
-    public override string ToString() => $"FileModel is {{Path={Path.Base64Encryption()},Url={Url.Base64Encryption()},IsFolder={new Random().Next(IsFolder.ToString().Length)}}} Other is Private;";
+
+    public override string ToString() =>
+        $"FileModel is {{Path={Path.Base64Encryption()},Url={Url.Base64Encryption()},IsFolder={new Random().Next(IsFolder.ToString().Length)}}} Other is Private;";
 }
 
 public class FolderModel : IFile
 {
-    public string Path { get; set; }
-    public string Url { get; set; }
-    public string Id { get; set; }
+    public string Path { get; set; } = "";
+    public string Url { get; set; }= "";
+    public string Id { get; set; }= "";
 
     public bool IsFolder { get; set; }
 }

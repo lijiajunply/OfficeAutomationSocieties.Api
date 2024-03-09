@@ -23,7 +23,6 @@ public class ProjectController(
     IWebHostEnvironment environment)
     : ControllerBase
 {
-    
     /// <summary>
     /// 获取所有项目
     /// </summary>
@@ -80,7 +79,7 @@ public class ProjectController(
         return Ok();
     }
 
-    
+
     /// <summary>
     /// 删除
     /// </summary>
@@ -150,20 +149,21 @@ public class ProjectController(
         var user = httpContextAccessor.HttpContext?.User.GetUser();
         if (user == null) return NotFound();
 
-        var project = await _context.Projects.Include(x => x.Members)
+        var project = await _context.Projects.Include(x => x.Members).Include(x => x.GanttsList)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
         if (project.Members.All(x => x.UserId != user.UserId)) return NotFound();
 
+        if (project.GanttsList.Any(x => x.Id == model.Id)) return NoContent();
         model.Id = $"GanttModel is {{{model.User}:{model.StartTime}-{model.EndTime}:{model.ToDo}}} Other is Private"
             .HashEncryption();
-        project.Gantt += $"{model}\n";
+        project.GanttsList.Add(model);
 
         await _context.SaveChangesAsync();
         return Ok();
     }
 
-    
+
     /// <summary>
     /// 删除计划
     /// </summary>
@@ -177,16 +177,15 @@ public class ProjectController(
         var user = httpContextAccessor.HttpContext?.User.GetUser();
         if (user == null) return NotFound();
 
-        var project = await _context.Projects.Include(x => x.Members)
+        var project = await _context.Projects.Include(x => x.Members).Include(projectModel => projectModel.GanttsList)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
         if (project.Members.All(x => x.UserId != user.UserId)) return NotFound();
 
-        var list = project.Gantt.Split('\n').Select(x => new GanttModel(x));
-        var gantt = list.FirstOrDefault(x => x.Id == ganttId);
+        var gantt = project.GanttsList.FirstOrDefault(x => x.Id == ganttId);
         if (gantt == null) return NoContent();
 
-        project.Gantt = project.Gantt.Replace($"{gantt}\n", "");
+        project.GanttsList.Remove(gantt);
         await _context.SaveChangesAsync();
         return Ok();
     }
