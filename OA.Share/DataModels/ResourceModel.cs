@@ -8,11 +8,11 @@ public class ResourceModel
     /// <summary>
     /// 所有者
     /// </summary>
-    public OrganizeModel Owner { get; set; } = new();
+    public OrganizeModel Owner { get; init; } = new();
 
     [Key]
     [Column(TypeName = "varchar(256)")]
-    public string Id { get; init; } = "";
+    public string Id { get; set; } = "";
 
     /// <summary>
     /// 资源名称

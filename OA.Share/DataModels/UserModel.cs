@@ -13,30 +13,21 @@ public class UserModel
 
     [Column(TypeName = "varchar(256)")] public string Password { get; set; } = "";
 
-    public List<OrganizeModel> Organizes { get; init; } = [];
+    public List<OrganizeModel> Organizes { get; } = [];
 
-    /// <summary>
-    /// President
-    /// Minister
-    /// Member
-    /// </summary>
-    [Column(TypeName = "varchar(256)")]
-    public string Identity { get; init; } = "Member";
+    public List<ProjectModel> Projects { get; } = [];
 
-    public List<ProjectModel> Projects { get; init; } = [];
-
-    public List<GanttModel> TaskNotes { get; set; } = [];
+    public List<GanttModel> TaskNotes { get; } = [];
 
     public UserModel()
     {
     }
 
-    public UserModel(LoginModel model, string identity = "Member")
+    public UserModel(LoginModel model)
     {
         Password = model.Password;
         Name = model.Name;
         UserId = "";
-        Identity = identity;
     }
 
     public override string ToString() => $"UserModel is {{Name={Name.Base64Encryption()}}} Other is Private;";

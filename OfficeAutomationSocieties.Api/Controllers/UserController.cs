@@ -34,10 +34,10 @@ public class UserController(
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
 
-        member = await _context.Users.Include(x => x.Projects).FirstOrDefaultAsync(x => x.UserId == member.UserId);
-        if (member == null) return NotFound();
-        member.Password = "";
-        return member;
+        var user = await _context.Users.Include(x => x.Projects).FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        if (user == null) return NotFound();
+        user.Password = "";
+        return user;
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public class UserController(
             return Conflict();
         }
 
-        return jwtHelper.GetMemberToken(user);
+        return jwtHelper.GetMemberToken(UserJwtModel.DataToJwt(user));
     }
 
 
@@ -91,7 +91,7 @@ public class UserController(
 
         if (model == null)
             return NotFound();
-        return jwtHelper.GetMemberToken(model);
+        return jwtHelper.GetMemberToken(UserJwtModel.DataToJwt(model));
     }
 
     #endregion

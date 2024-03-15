@@ -3,13 +3,12 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
-using OA.Share.DataModels;
 
 namespace OfficeAutomationSocieties.Api;
 
 public class JwtHelper(IConfiguration configuration)
 {
-    public string GetMemberToken(UserModel model)
+    public string GetMemberToken(UserJwtModel model)
     {
         var claims = new[]
         {
@@ -50,7 +49,7 @@ public class TokenActionFilter : ActionFilterAttribute
 
 public static class TokenHelper
 {
-    public static UserModel? GetUser(this ClaimsPrincipal? claimsPrincipal)
+    public static UserJwtModel? GetUser(this ClaimsPrincipal? claimsPrincipal)
     {
         if (claimsPrincipal == null) return null;
         var claimId = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
@@ -59,7 +58,7 @@ public static class TokenHelper
         if (claimId.IsNull() || claimName.IsNull() || claimRole.IsNull())
             return null;
 
-        return new UserModel()
+        return new UserJwtModel()
         {
             Name = claimName!.Value,
             UserId = claimId!.Value,

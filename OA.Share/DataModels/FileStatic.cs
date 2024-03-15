@@ -1,17 +1,9 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-// ReSharper disable StringLiteralTypo
+﻿// ReSharper disable StringLiteralTypo
 
 namespace OA.Share.DataModels;
 
 public static class FileStatic
 {
-    public static string HashEncryption(this string str)
-        => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(str + DateTime.Now.ToString("s")))).Replace("/", "-");
-
-    public static string Base64Encryption(this string str) =>
-        Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
-    
     public static Stream GetStream(this IFile file, string root)
         => new FileStream($@"{root}\UserFiles\{file.Path}", FileMode.Open);
 

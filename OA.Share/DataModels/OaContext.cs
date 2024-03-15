@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace OA.Share.DataModels;
@@ -33,16 +35,28 @@ public sealed class OaContext : DbContext
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Member)
             .WithMany(x => x.Organizes);
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Resources)
-            .WithOne(x => x.Owner);
+            .WithOne(x => x.Owner).IsRequired();
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Announcements)
-            .WithOne(x => x.Owner);
+            .WithOne(x => x.Owner).IsRequired();
         modelBuilder.Entity<ProjectModel>().HasMany(x => x.GanttList)
-            .WithOne(x => x.Project);
+            .WithOne(x => x.Project).IsRequired();
         modelBuilder.Entity<UserModel>().HasMany(x => x.TaskNotes)
-            .WithOne(x => x.User);
+            .WithOne(x => x.User).IsRequired();
+        modelBuilder.Entity<OrganizeModel>().HasMany(x => x.MemberIdentity)
+            .WithOne(x => x.Owner).IsRequired();
     }
 }
 #pragma warning restore CS1591
+
+public static class ContextStatic
+{
+    public static string HashEncryption(this string str)
+        => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(str + DateTime.Now.ToString("s"))))
+            .Replace("/", "-");
+
+    public static string Base64Encryption(this string str) =>
+        Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
+}
 
 // ReSharper disable once UnusedType.Global
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<OaContext>

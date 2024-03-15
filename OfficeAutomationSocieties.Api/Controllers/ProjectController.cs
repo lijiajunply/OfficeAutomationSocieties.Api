@@ -50,12 +50,14 @@ public class ProjectController(
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        if (user == null) return NotFound();
         var project = await _context.Projects.Include(projectModel => projectModel.Members)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
         if (project.Members.Any(x => x.UserId == member.UserId)) return Ok();
 
-        project.Members.Add(member);
+        project.Members.Add(user);
         await _context.SaveChangesAsync();
         return Ok();
     }
@@ -71,8 +73,11 @@ public class ProjectController(
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
 
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        if (user == null) return NotFound();
         var project = new ProjectModel();
-        project.Members.Add(member);
+        project.Id = project.ToString().HashEncryption();
+        project.Members.Add(user);
 
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
@@ -91,13 +96,14 @@ public class ProjectController(
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
-
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        if (user == null) return NotFound();
         var project = await _context.Projects.Include(projectModel => projectModel.Members)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
         if (project.Members.All(x => x.UserId != member.UserId)) return Ok();
 
-        project.Members.Remove(member);
+        project.Members.Remove(user);
         await _context.SaveChangesAsync();
         return Ok();
     }

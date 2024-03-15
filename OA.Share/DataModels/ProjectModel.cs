@@ -5,17 +5,17 @@ namespace OA.Share.DataModels;
 
 public class ProjectModel
 {
-    public List<UserModel> Members { get; init; } = [];
+    public List<UserModel> Members { get; } = [];
 
-    [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
+    [Column(TypeName = "varchar(256)")] public string Name { get; set; } = "";
 
     [Key]
     [Column(TypeName = "varchar(256)")]
-    public string Id { get; init; } = "";
+    public string Id { get; set; } = "";
 
     public List<FileModel> Files { get; init; } = [];
 
-    public List<GanttModel> GanttList { get; init; } = [];
+    public List<GanttModel> GanttList { get; } = [];
 
     public override string ToString() => $"ProjectModel is {{Name={Name.Base64Encryption()}}} Other is Private;";
 }
