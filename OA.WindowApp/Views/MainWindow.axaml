@@ -3,18 +3,45 @@
         xmlns:vm="using:OA.WindowApp.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="OA.WindowApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="OA.WindowApp">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+   <Grid Margin="5" RowDefinitions="Auto,*">
+        <WrapPanel Grid.Row="0" Name="TitleBarHost"
+                   Margin="0,0,0,5" Height="18" VerticalAlignment="Center">
+            <Button VerticalAlignment="Center" Height="38" Width="40" Theme="{DynamicResource TransparentButton}"
+                    Click="BackClick" IsVisible="{Binding #FrameView.CanGoBack}">
+                <controls:SymbolIcon FontSize="15" Symbol="Back" />
+            </Button>
+            <controls:ImageIcon VerticalAlignment="Center" Source="avares://OA.WindowApp/Assets/avalonia-logo.ico"
+                                Width="18" Margin="5,0" Height="18" />
+            <TextBlock Text="MusicFluent - 第三方网易云音乐"
+                       FontSize="12"
+                       VerticalAlignment="Center"
+                       Margin="5,0"
+                       IsHitTestVisible="False" />
+            <ProgressBar Margin="50,0,10,0" Width="450" IsIndeterminate="True" IsVisible="False" Name="TaskBar" />
+        </WrapPanel>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+        <controls:NavigationView PaneDisplayMode="LeftCompact"
+                                 Grid.Row="1"
+                                 Name="NavView" ItemInvoked="ItemInvoked"
+                                 IsBackEnabled="True"
+                                 IsSettingsVisible="False">
+            <controls:NavigationView.MenuItems>
+                <controls:NavigationViewItem Content="主页" Tag="Home" IconSource="HomeFilled" />
+            </controls:NavigationView.MenuItems>
+            <controls:NavigationView.FooterMenuItems>
+                <controls:NavigationViewItem Content="设置" Tag="Setting" IconSource="SettingsFilled" />
+                <controls:NavigationViewItem Content="帮助" Tag="Help" IconSource="Help" />
+            </controls:NavigationView.FooterMenuItems>
+            <ScrollViewer>
+                <controls:Frame Name="FrameView" Padding="10" />
+            </ScrollViewer>
+        </controls:NavigationView>
+    </Grid>
 </Window>

@@ -2,14 +2,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="OA.WindowApp.App"
              xmlns:local="using:OA.WindowApp"
+             xmlns:styling="clr-namespace:FluentAvalonia.Styling;assembly=FluentAvalonia"
+             xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <local:ViewLocator />
     </Application.DataTemplates>
-  
+
     <Application.Styles>
-        <FluentTheme />
+        <styling:FluentAvaloniaTheme />
+        <Style Selector="controls|FontIcon">
+            <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}" />
+        </Style>
+        <Style Selector="Border.Card">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+        </Style>
+        <Style Selector="Border.CardHover">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Border.CardHover:pointerover">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />
+        </Style>
+        <Style Selector="Button.TransparentButton">
+            <Setter Property="Theme" Value="{DynamicResource TransparentButton}" />
+        </Style>
+        <Style Selector="TextBlock.h3">
+            <Setter Property="Theme" Value="{DynamicResource BodyTextBlockStyle}" />
+        </Style>
+        <Style Selector="TextBlock.h3Bold">
+            <Setter Property="Theme" Value="{DynamicResource BodyStrongTextBlockStyle}" />
+        </Style>
+        <Style Selector="TextBlock.h2">
+            <Setter Property="Theme" Value="{DynamicResource SubtitleTextBlockStyle}" />
+        </Style>
+        <Style Selector="TextBlock.h1">
+            <Setter Property="Theme" Value="{DynamicResource TitleTextBlockStyle}" />
+        </Style>
     </Application.Styles>
 </Application>

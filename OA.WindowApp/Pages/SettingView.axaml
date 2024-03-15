@@ -1,0 +1,44 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:pages="clr-namespace:OA.WindowApp.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OA.WindowApp.Pages.SettingView"
+             x:DataType="pages:SettingViewModel">
+    <ScrollViewer>
+        <StackPanel Spacing="8">
+            <controls:SettingsExpander Header="用户"
+                                       IconSource="People"
+                                       IsExpanded="True"
+                                       Description="设置当前用户信息">
+                <controls:SettingsExpanderItem Content="登出"
+                                               ActionIconSource="Redo"
+                                               IsClickEnabled="True"
+                                               Click="LogoutClick" />
+            </controls:SettingsExpander>
+
+            <controls:SettingsExpander Header="应用主题"
+                                       IconSource="DarkTheme"
+                                       Description="更改当前应用主题">
+
+                <controls:SettingsExpander.Footer>
+                    <ComboBox SelectedItem="{Binding CurrentAppTheme}"
+                              ItemsSource="{Binding AppThemes}"
+                              MinWidth="150" />
+                </controls:SettingsExpander.Footer>
+
+            </controls:SettingsExpander>
+            <controls:SettingsExpander Header="流向"
+                                       IconSource="AlignRight"
+                                       Description="更改当前应用流方向">
+                <controls:SettingsExpander.Footer>
+                    <ComboBox SelectedItem="{Binding CurrentFlowDirection}"
+                              ItemsSource="{Binding AppFlowDirections}"
+                              MinWidth="150" />
+                </controls:SettingsExpander.Footer>
+            </controls:SettingsExpander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
