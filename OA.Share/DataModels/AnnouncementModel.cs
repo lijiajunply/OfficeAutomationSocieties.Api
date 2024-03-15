@@ -10,7 +10,7 @@ public class AnnouncementModel
     /// </summary>
     public string Context { get; set; } = "";
 
-    public UserModel User { get; set; } = new();
+    public OrganizeModel Owner { get; set; } = new();
     [Column(TypeName = "varchar(256)")] public string Time { get; set; } = "";
 
     [Key]

@@ -8,7 +8,7 @@ namespace OfficeAutomationSocieties.Api.Controllers;
 /// <summary>
 /// 资源系统
 /// </summary>
-/// <param name="factory"></param>
+/// <param name="factory">数据库</param>
 [Authorize]
 [Route("api/[controller]/[action]")]
 [ApiController]

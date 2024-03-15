@@ -13,6 +13,8 @@ public class UserModel
 
     [Column(TypeName = "varchar(256)")] public string Password { get; set; } = "";
 
+    public List<OrganizeModel> Organizes { get; init; } = [];
+
     /// <summary>
     /// President
     /// Minister
@@ -22,6 +24,8 @@ public class UserModel
     public string Identity { get; init; } = "Member";
 
     public List<ProjectModel> Projects { get; init; } = [];
+
+    public List<GanttModel> TaskNotes { get; set; } = [];
 
     public UserModel()
     {

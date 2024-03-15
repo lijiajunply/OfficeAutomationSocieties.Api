@@ -149,15 +149,15 @@ public class ProjectController(
         var user = httpContextAccessor.HttpContext?.User.GetUser();
         if (user == null) return NotFound();
 
-        var project = await _context.Projects.Include(x => x.Members).Include(x => x.GanttsList)
+        var project = await _context.Projects.Include(x => x.Members).Include(x => x.GanttList)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
         if (project.Members.All(x => x.UserId != user.UserId)) return NotFound();
 
-        if (project.GanttsList.Any(x => x.Id == model.Id)) return NoContent();
+        if (project.GanttList.Any(x => x.Id == model.Id)) return NoContent();
         model.Id = $"GanttModel is {{{model.User}:{model.StartTime}-{model.EndTime}:{model.ToDo}}} Other is Private"
             .HashEncryption();
-        project.GanttsList.Add(model);
+        project.GanttList.Add(model);
 
         await _context.SaveChangesAsync();
         return Ok();
@@ -177,15 +177,15 @@ public class ProjectController(
         var user = httpContextAccessor.HttpContext?.User.GetUser();
         if (user == null) return NotFound();
 
-        var project = await _context.Projects.Include(x => x.Members).Include(projectModel => projectModel.GanttsList)
+        var project = await _context.Projects.Include(x => x.Members).Include(projectModel => projectModel.GanttList)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
         if (project.Members.All(x => x.UserId != user.UserId)) return NotFound();
 
-        var gantt = project.GanttsList.FirstOrDefault(x => x.Id == ganttId);
+        var gantt = project.GanttList.FirstOrDefault(x => x.Id == ganttId);
         if (gantt == null) return NoContent();
 
-        project.GanttsList.Remove(gantt);
+        project.GanttList.Remove(gantt);
         await _context.SaveChangesAsync();
         return Ok();
     }
