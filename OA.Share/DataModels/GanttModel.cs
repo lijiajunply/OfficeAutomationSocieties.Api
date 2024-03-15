@@ -6,8 +6,8 @@ public class GanttModel
 {
     [Column(TypeName = "varchar(256)")] public string Id { get; set; } = "";
 
-    public UserModel User { get; set; } = new();
-    public ProjectModel Project { get; set; } = new();
+    public UserModel User { get; } = new();
+    public ProjectModel Project { get; } = new();
 
     [Column(TypeName = "varchar(256)")] public string StartTime { get; set; } = "";
 

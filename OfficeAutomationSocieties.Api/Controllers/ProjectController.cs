@@ -143,7 +143,7 @@ public class ProjectController(
     }
 
     /// <summary>
-    /// 甘特图管理
+    /// 添加任务
     /// </summary>
     /// <param name="id"></param>
     /// <param name="model"></param>

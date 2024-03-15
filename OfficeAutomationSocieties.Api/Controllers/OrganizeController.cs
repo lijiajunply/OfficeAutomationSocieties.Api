@@ -33,7 +33,7 @@ public class OrganizeController(
         if (member == null) return NotFound();
         var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
         if (user == null) return NotFound();
-        model.Id = $"{model} , User is {member.UserId}".HashEncryption();
+        model.Id = $"{model} , Creator is {member.UserId.Base64Encryption()}".HashEncryption();
         model.MemberIdentity.Add(new IdentityModel() { Identity = "President", UserId = user.UserId });
         user.Organizes.Add(model);
         await _context.SaveChangesAsync();
@@ -100,8 +100,12 @@ public class OrganizeController(
 
     #region 公告系统
 
+    /// <summary>
+    /// 查看最新公告
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<AnnouncementModel>> LookAnnouncement()
+    public async Task<ActionResult<AnnouncementModel?>> LookAnnouncement()
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
@@ -109,9 +113,13 @@ public class OrganizeController(
         var org = await _context.Organizes.Include(organizeModel => organizeModel.Announcements)
             .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
         if (org == null) return NotFound();
-        return org.Announcements.Last();
+        return org.Announcements.LastOrDefault();
     }
 
+    /// <summary>
+    /// 查看所有公告
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<List<AnnouncementModel>>> LookAnnouncements()
     {
@@ -136,6 +144,11 @@ public class OrganizeController(
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
+        var org = await _context.Organizes.Include(organizeModel => organizeModel.Announcements)
+            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+        if (org == null) return NotFound();
+
+        model.Id = model.ToString().HashEncryption();
 
         _context.Announcements.Add(model);
         await _context.SaveChangesAsync();

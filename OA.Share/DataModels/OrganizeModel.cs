@@ -8,22 +8,20 @@ public class OrganizeModel
     public List<UserModel> Member { get; } = [];
 
     public List<IdentityModel> MemberIdentity { get; } = [];
-    [Column(TypeName = "varchar(256)")] public string Name { get; set; } = "";
+    [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
 
     [Key]
     [Column(TypeName = "varchar(256)")]
     public string Id { get; set; } = "";
 
-    [Column(TypeName = "varchar(256)")] public string Introduce { get; set; } = "";
+    [Column(TypeName = "varchar(256)")] public string Introduce { get; init; } = "";
 
     public List<AnnouncementModel> Announcements { get; } = [];
     public List<ProjectModel> Projects { get; } = [];
     public List<ResourceModel> Resources { get; } = [];
 
     public override string ToString()
-    {
-        return $"Organize : Name is {Name} , Intro is {Introduce} ";
-    }
+        => $"Organize : Name is {Name.Base64Encryption()} , Intro is {Introduce.Base64Encryption()} ";
 }
 
 public class IdentityModel
@@ -34,11 +32,11 @@ public class IdentityModel
     /// Member
     /// </summary>
     [Column(TypeName = "varchar(10)")]
-    public string Identity { get; set; } = "Member";
+    public string Identity { get; init; } = "Member";
 
     [Key]
     [Column(TypeName = "varchar(256)")]
-    public string UserId { get; set; } = "";
+    public string UserId { get; init; } = "";
 
-    public OrganizeModel Owner { get; set; } = new();
+    public OrganizeModel Owner { get; } = new();
 }

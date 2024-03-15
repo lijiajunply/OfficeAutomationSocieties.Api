@@ -26,8 +26,8 @@ builder.Services.AddSwaggerGen(options =>
             Description = "办公自动化"
         }
     );
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    var filename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, filename));
 });
 builder.Services.Configure<HubOptions>(option => option.MaximumReceiveMessageSize = null);
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

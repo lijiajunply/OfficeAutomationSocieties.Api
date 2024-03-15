@@ -55,7 +55,11 @@ public class UserController(
             return Problem("Entity set 'MemberContext.Students'  is null.");
         }
 
-        var user = new UserModel(model);
+        var user = new UserModel()
+        {
+            Password = model.Password,
+            Name = model.Name
+        };
         user.UserId = user.ToString().HashEncryption();
 
         _context.Users.Add(user);

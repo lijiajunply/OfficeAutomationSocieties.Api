@@ -19,22 +19,11 @@ public class UserModel
 
     public List<GanttModel> TaskNotes { get; } = [];
 
-    public UserModel()
-    {
-    }
-
-    public UserModel(LoginModel model)
-    {
-        Password = model.Password;
-        Name = model.Name;
-        UserId = "";
-    }
-
     public override string ToString() => $"UserModel is {{Name={Name.Base64Encryption()}}} Other is Private;";
 }
 
 public class LoginModel
 {
-    public string Password { get; set; } = "";
-    public string Name { get; set; } = "";
+    public string Password => "";
+    public string Name => "";
 }

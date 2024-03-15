@@ -9,13 +9,22 @@ public abstract class DataBasic : IDisposable
     {
         SharedClient = new HttpClient()
             { BaseAddress = new Uri("https://api.luckyfishes.com/api") };
-        SharedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Jwt);
         Jwt = jwt;
     }
 
     private HttpClient SharedClient { get; }
-    private string Jwt { get; }
+    private string _jwt = "";
+    public static string SwaggerUrl = "https://api.luckyfishes.com/swagger/index.html";
 
+    public string Jwt
+    {
+        get => _jwt;
+        set
+        {
+            _jwt = value;
+            SharedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Jwt);
+        }
+    }
 
     protected async Task<JObject?> GetFormString(string url)
     {

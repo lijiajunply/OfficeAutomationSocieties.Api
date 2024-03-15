@@ -3,15 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OA.Share.DataModels;
 
+/// <summary>
+/// 公告
+/// </summary>
 public class AnnouncementModel
 {
     /// <summary>
-    /// Markdown
+    /// 公告内容，使用Markdown
     /// </summary>
-    public string Context { get; set; } = "";
+    [Column(TypeName = "varchar(500)")]
+    public string Context { get; init; } = "";
 
-    public OrganizeModel Owner { get; set; } = new();
-    [Column(TypeName = "varchar(256)")] public string Time { get; set; } = "";
+    public OrganizeModel Owner { get; init; } = new();
+
+    [Column(TypeName = "varchar(256)")] public string Time { get; init; } = "";
 
     [Key]
     [Column(TypeName = "varchar(256)")]
