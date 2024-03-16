@@ -16,6 +16,7 @@ public class OrganizeModel
     public List<ResourceModel> Resources { get; } = [];
 }
 
+[Serializable]
 public class IdentityModel
 {
     /// <summary>

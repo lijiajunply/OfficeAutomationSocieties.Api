@@ -19,8 +19,8 @@ public partial class MainWindow : AppWindow
     private Dictionary<string, PageModelBase> Stack { get; }
     private WindowNotificationManager? _manager;
     private LoginModel Setting { get; set; }
-    public string Jwt { get; set; } = "";
-    public UserModel User { get; set; } = new();
+    private string Jwt { get; set; } = "";
+    public UserModel User { get; private set; } = new();
 
     public MainWindow()
     {
@@ -84,14 +84,20 @@ public partial class MainWindow : AppWindow
         {
             using var userApp = new User();
             var jwt = await userApp.Login(Setting);
-            b = string.IsNullOrEmpty(jwt);
+            b = !string.IsNullOrEmpty(jwt);
             Jwt = jwt;
         }
 
         if (b)
+        {
+            using var user = new User(Jwt);
+            User = await user.GetUserData();
             Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(Stack["Home"]));
+        }
         else
+        {
             Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(new LoginView()));
+        }
     }
 
     public async Task Login(LoginModel model)
@@ -101,6 +107,8 @@ public partial class MainWindow : AppWindow
         if (string.IsNullOrEmpty(Jwt)) return;
         Setting = model;
         Setting.Save();
+        user.Jwt = Jwt;
+        User = await user.GetUserData();
         Navigate("Home");
     }
 

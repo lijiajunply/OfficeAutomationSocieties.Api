@@ -7,7 +7,7 @@ public class ProjectModel
 {
     public List<UserModel> Members { get; } = [];
 
-    [Column(TypeName = "varchar(256)")] public string Name { get; set; } = "";
+    [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
 
     [Key]
     [Column(TypeName = "varchar(256)")]

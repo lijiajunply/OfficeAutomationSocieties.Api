@@ -67,7 +67,7 @@ public class ProjectController(
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult> CreateProject()
+    public async Task<ActionResult> CreateProject(ProjectModel project)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
@@ -75,7 +75,6 @@ public class ProjectController(
 
         var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
         if (user == null) return NotFound();
-        var project = new ProjectModel();
         project.Id = project.ToString().HashEncryption();
         project.Members.Add(user);
 

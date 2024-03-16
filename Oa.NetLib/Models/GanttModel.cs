@@ -1,5 +1,6 @@
 ﻿namespace Oa.NetLib.Models;
 
+[Serializable]
 public class GanttModel
 {
     public string Id { get; set; } = "";

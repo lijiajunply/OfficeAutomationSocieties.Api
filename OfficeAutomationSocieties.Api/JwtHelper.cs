@@ -52,10 +52,8 @@ public static class TokenHelper
     {
         if (claimsPrincipal == null) return null;
         var claimId = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
-        var claimName = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
         var claimRole = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-        if (claimId.IsNull() || claimName.IsNull() || claimRole.IsNull())
-            return null;
+        if (claimId.IsNull() || claimRole.IsNull()) return null;
 
         return new UserJwtModel()
         {
@@ -65,5 +63,5 @@ public static class TokenHelper
     }
 
     private static bool IsNull(this Claim? claim)
-        => claim == null || !string.IsNullOrEmpty(claim.Value);
+        => claim == null || string.IsNullOrEmpty(claim.Value);
 }
