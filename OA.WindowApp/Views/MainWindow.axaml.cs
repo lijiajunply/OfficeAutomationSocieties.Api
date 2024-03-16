@@ -1,11 +1,15 @@
-using System;
 using System.Collections.Generic;
-using Avalonia.Controls;
+using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
+using Oa.NetLib.Data;
+using Oa.NetLib.Models;
+using OA.WindowApp.Models;
+using OA.WindowApp.Pages;
 using OA.WindowApp.ViewModels.Pages;
 
 namespace OA.WindowApp.Views;
@@ -14,6 +18,9 @@ public partial class MainWindow : AppWindow
 {
     private Dictionary<string, PageModelBase> Stack { get; }
     private WindowNotificationManager? _manager;
+    private LoginModel Setting { get; set; }
+    public string Jwt { get; set; } = "";
+    public UserModel User { get; set; } = new();
 
     public MainWindow()
     {
@@ -24,9 +31,10 @@ public partial class MainWindow : AppWindow
             { "Help", new HelpViewModel() }
         };
 
+        Setting = SettingStatic.Read();
         InitializeComponent();
-        
-        SplashScreen = new MainAppSplashScreen("OA", null);
+
+        SplashScreen = new MainAppSplashScreen("OA", Init);
         TitleBar.ExtendsContentIntoTitleBar = true;
         TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 
@@ -36,6 +44,7 @@ public partial class MainWindow : AppWindow
 
     private void BackClick(object? sender, RoutedEventArgs e)
     {
+        FrameView.GoBack();
     }
 
     private void ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
@@ -61,17 +70,49 @@ public partial class MainWindow : AppWindow
         base.OnApplyTemplate(e);
         _manager = new WindowNotificationManager(this) { MaxItems = 3, Position = NotificationPosition.BottomRight };
     }
-}
 
-public class NavigationFactory : INavigationPageFactory
-{
-    public Control GetPage(Type srcType)
+    public void NotificationShow(string title, string message)
     {
-        throw new NotImplementedException();
+        _manager?.Show(new Notification(title, message));
     }
 
-    public Control GetPageFromObject(object target)
+    private async void Init()
     {
-        throw new NotImplementedException();
+        bool b;
+        if (Setting.IsNull()) b = false;
+        else
+        {
+            using var userApp = new User();
+            var jwt = await userApp.Login(Setting);
+            b = string.IsNullOrEmpty(jwt);
+            Jwt = jwt;
+        }
+
+        if (b)
+            Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(Stack["Home"]));
+        else
+            Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(new LoginView()));
+    }
+
+    public async Task Login(LoginModel model)
+    {
+        using var user = new User();
+        Jwt = await user.Login(model);
+        if (string.IsNullOrEmpty(Jwt)) return;
+        Setting = model;
+        Setting.Save();
+        Navigate("Home");
+    }
+
+    public async Task Signup(SignModel model)
+    {
+        using var userApp = new User();
+        Jwt = await userApp.Signup(model);
+        if (string.IsNullOrEmpty(Jwt)) return;
+        Setting = new LoginModel() { PhoneNum = model.PhoneNum, Password = model.Password };
+        Setting.Save();
+        userApp.Jwt = Jwt;
+        User = await userApp.GetUserData();
+        Navigate("Home");
     }
 }

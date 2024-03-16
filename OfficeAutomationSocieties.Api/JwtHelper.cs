@@ -12,7 +12,6 @@ public class JwtHelper(IConfiguration configuration)
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, model.Name),
             new Claim(ClaimTypes.Role, model.Identity),
             new Claim(ClaimTypes.PrimarySid, model.UserId)
         };
@@ -60,7 +59,6 @@ public static class TokenHelper
 
         return new UserJwtModel()
         {
-            Name = claimName!.Value,
             UserId = claimId!.Value,
             Identity = claimRole!.Value
         };

@@ -8,7 +8,7 @@
         x:Class="OA.WindowApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="OA.WindowApp">
+        Title="办公自动化">
 
    <Grid Margin="5" RowDefinitions="Auto,*">
         <WrapPanel Grid.Row="0" Name="TitleBarHost"
@@ -19,12 +19,11 @@
             </Button>
             <controls:ImageIcon VerticalAlignment="Center" Source="avares://OA.WindowApp/Assets/avalonia-logo.ico"
                                 Width="18" Margin="5,0" Height="18" />
-            <TextBlock Text="MusicFluent - 第三方网易云音乐"
+            <TextBlock Text="{Binding $parent[Window].Title}"
                        FontSize="12"
                        VerticalAlignment="Center"
                        Margin="5,0"
                        IsHitTestVisible="False" />
-            <ProgressBar Margin="50,0,10,0" Width="450" IsIndeterminate="True" IsVisible="False" Name="TaskBar" />
         </WrapPanel>
 
         <controls:NavigationView PaneDisplayMode="LeftCompact"

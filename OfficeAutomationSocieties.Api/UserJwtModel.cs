@@ -4,10 +4,10 @@ namespace OfficeAutomationSocieties.Api;
 
 public class UserJwtModel
 {
-    public string UserId { get; set; } = "";
-    public string Name { get; set; } = "";
-    
+    public string UserId { get; init; } = "";
+
     public string NowOrgId { get; set; } = "Public";
+
     /// <summary>
     /// President
     /// Minister
@@ -19,8 +19,7 @@ public class UserJwtModel
     {
         return new UserJwtModel()
         {
-            UserId = model.UserId,
-            Name = model.Name
+            UserId = model.UserId
         };
     }
 }

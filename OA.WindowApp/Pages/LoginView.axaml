@@ -1,0 +1,66 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OA.WindowApp.Pages.LoginView">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Border Name="LoginBorder" IsVisible="{Binding !#SignBorder.IsVisible}">
+            <StackPanel Width="300" Spacing="10">
+                <StackPanel.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </StackPanel.Styles>
+                <TextBlock Text="登录" Classes="h1" />
+                <Grid ColumnDefinitions="*,2*">
+                    <TextBlock Grid.Column="0" Text="手机号" />
+                    <TextBox Grid.Column="1" Name="PhoneBox" />
+                </Grid>
+                <Grid ColumnDefinitions="*,2*">
+                    <TextBlock Grid.Column="0" Text="密码" />
+                    <TextBox Grid.Column="1" Name="PasswordBox" />
+                </Grid>
+                <Button Click="PhoneLoginClick" Classes="accent" HorizontalAlignment="Stretch">
+                    <controls:SymbolIcon Symbol="Accept" />
+                </Button>
+                <WrapPanel HorizontalAlignment="Center">
+                    <TextBlock Text="或者去" />
+                    <Button Classes="TransparentButton" Click="ConvertClick" Content="注册?" />
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Name="SignBorder" IsVisible="False">
+            <StackPanel Width="300" Spacing="10">
+                <StackPanel.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </StackPanel.Styles>
+                <WrapPanel>
+                    <Button Classes="TransparentButton" Click="ConvertClick">
+                        <controls:SymbolIcon Symbol="Back" />
+                    </Button>
+                    <TextBlock Text="注册" Classes="h1" />
+                </WrapPanel>
+                <Grid ColumnDefinitions="*,2*">
+                    <TextBlock Grid.Column="0" Text="名称" />
+                    <TextBox Grid.Column="1" Name="NameSignBox" />
+                </Grid>
+                <Grid ColumnDefinitions="*,2*">
+                    <TextBlock Grid.Column="0" Text="手机号" />
+                    <TextBox Grid.Column="1" Name="PhoneSignBox" />
+                </Grid>
+                <Grid ColumnDefinitions="*,2*">
+                    <TextBlock Grid.Column="0" Text="密码" />
+                    <TextBox Grid.Column="1" Name="PasswordSignBox" />
+                </Grid>
+                <Button Classes="accent" Click="SignClick" HorizontalAlignment="Stretch">
+                    <controls:SymbolIcon Symbol="Accept" />
+                </Button>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

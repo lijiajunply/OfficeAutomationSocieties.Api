@@ -34,7 +34,8 @@ public class UserController(
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
 
-        var user = await _context.Users.Include(x => x.Projects).FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        var user = await _context.Users.Include(x => x.Projects).Include(x => x.Organizes).Include(x => x.TaskNotes)
+            .FirstOrDefaultAsync(x => x.UserId == member.UserId);
         if (user == null) return NotFound();
         user.Password = "";
         return user;
@@ -46,7 +47,7 @@ public class UserController(
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult<string>> SignUp(LoginModel model)
+    public async Task<ActionResult<string>> SignUp(SignModel model)
     {
         await using var _context = await factory.CreateDbContextAsync();
 
@@ -58,6 +59,7 @@ public class UserController(
         var user = new UserModel()
         {
             Password = model.Password,
+            PhoneNum = model.PhoneNum,
             Name = model.Name
         };
         user.UserId = user.ToString().HashEncryption();
@@ -91,7 +93,7 @@ public class UserController(
 
         var model =
             await _context.Users.FirstOrDefaultAsync(x =>
-                x.Name == loginModel.Name && x.Password == loginModel.Password);
+                x.PhoneNum == loginModel.PhoneNum && x.Password == loginModel.Password);
 
         if (model == null)
             return NotFound();
@@ -114,10 +116,7 @@ public class UserController(
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member?.UserId != memberModel.UserId)
-        {
-            return BadRequest();
-        }
+        if (member?.UserId != memberModel.UserId) return BadRequest();
 
         _context.Entry(memberModel).State = EntityState.Modified;
 
