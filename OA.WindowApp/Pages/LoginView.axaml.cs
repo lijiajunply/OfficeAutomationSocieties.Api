@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Oa.NetLib.Data;
 using Oa.NetLib.Models;
 using OA.WindowApp.Models;
 using OA.WindowApp.Views;

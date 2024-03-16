@@ -118,18 +118,17 @@ public class UserController(
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member?.UserId != memberModel.UserId) return BadRequest();
 
-        _context.Entry(memberModel).State = EntityState.Modified;
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        if (user == null) return NotFound();
+        user.Update(memberModel);
 
         try
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateConcurrencyException)
+        catch
         {
-            if (!await _context.Users.AnyAsync(e => e.UserId == member.UserId))
-                return NotFound();
-
-            throw;
+            return BadRequest();
         }
 
         return NoContent();

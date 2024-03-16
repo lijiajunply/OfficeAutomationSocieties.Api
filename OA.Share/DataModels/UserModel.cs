@@ -9,8 +9,8 @@ public class UserModel
     [Column(TypeName = "varchar(256)")]
     public string UserId { get; set; } = "";
 
-    [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
-    [Column(TypeName = "varchar(13)")] public string PhoneNum { get; init; } = "";
+    [Column(TypeName = "varchar(256)")] public string Name { get; set; } = "";
+    [Column(TypeName = "varchar(13)")] public string PhoneNum { get; set; } = "";
 
     [Column(TypeName = "varchar(256)")] public string Password { get; set; } = "";
 
@@ -19,6 +19,13 @@ public class UserModel
     public List<ProjectModel> Projects { get; } = [];
 
     public List<GanttModel> TaskNotes { get; } = [];
+
+    public void Update(UserModel model)
+    {
+        if (!string.IsNullOrEmpty(model.Name)) Name = model.Name;
+        if (!string.IsNullOrEmpty(model.PhoneNum)) PhoneNum = model.PhoneNum;
+        if (!string.IsNullOrEmpty(model.Password)) Password = model.Password;
+    }
 
     public override string ToString() =>
         $"UserModel is {{Name={Name.Base64Encryption()};PhoneNum={PhoneNum.Base64Encryption()};Password={Password.Base64Encryption()}}} Other is Private;";

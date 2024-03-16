@@ -6,6 +6,12 @@ namespace Oa.NetLib.Data;
 
 public class User(string jwt = "") : DataBasic(jwt)
 {
+    
+    /// <summary>
+    /// 登录
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     public async Task<string> Login(LoginModel model)
     {
         try
@@ -20,6 +26,11 @@ public class User(string jwt = "") : DataBasic(jwt)
         }
     }
 
+    /// <summary>
+    /// 注册
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     public async Task<string> Signup(SignModel model)
     {
         try
@@ -34,6 +45,10 @@ public class User(string jwt = "") : DataBasic(jwt)
         }
     }
 
+    /// <summary>
+    /// 获取数据
+    /// </summary>
+    /// <returns></returns>
     public async Task<UserModel> GetUserData()
     {
         try
@@ -46,6 +61,24 @@ public class User(string jwt = "") : DataBasic(jwt)
         catch
         {
             return new UserModel();
+        }
+    }
+
+    /// <summary>
+    /// 更新用户数据
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    public async Task<bool> Update(UserModel model)
+    {
+        try
+        {
+            var response = await SharedClient.PostAsJsonAsync("/api/User/Update",model);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

@@ -33,10 +33,13 @@ public class ProjectController(
     {
         await using var _context = await factory.CreateDbContextAsync();
 
-        if (_context.Projects == null!)
-            return NotFound();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
 
-        return await _context.Projects.ToListAsync();
+        var org = await _context.Organizes.Include(x => x.Projects).FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+        if (org == null) return NotFound();
+
+        return org.Projects;
     }
 
     /// <summary>
@@ -44,8 +47,8 @@ public class ProjectController(
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpPost]
-    public async Task<ActionResult> JoinProject([FromBody] string id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProjectModel>> JoinProject(string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
@@ -59,7 +62,7 @@ public class ProjectController(
 
         project.Members.Add(user);
         await _context.SaveChangesAsync();
-        return Ok();
+        return project;
     }
 
     /// <summary>
@@ -67,7 +70,7 @@ public class ProjectController(
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    public async Task<ActionResult> CreateProject(ProjectModel project)
+    public async Task<ActionResult<ProjectModel>> CreateProject([FromBody] ProjectModel project)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
@@ -80,7 +83,7 @@ public class ProjectController(
 
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
-        return Ok();
+        return project;
     }
 
 
@@ -148,7 +151,7 @@ public class ProjectController(
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult> AddGantt(string id, GanttModel model)
+    public async Task<ActionResult<GanttModel>> AddGantt(string id, GanttModel model)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var user = httpContextAccessor.HttpContext?.User.GetUser();
@@ -165,7 +168,7 @@ public class ProjectController(
         project.GanttList.Add(model);
 
         await _context.SaveChangesAsync();
-        return Ok();
+        return model;
     }
 
 

@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="OA.WindowApp/App.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
+        <entry key="OA.WindowApp/Dialogs/AddOrCreathProject.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HelpView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HomeView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/LoginView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
