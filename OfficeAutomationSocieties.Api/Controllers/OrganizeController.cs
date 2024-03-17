@@ -34,8 +34,9 @@ public class OrganizeController(
         var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
         if (user == null) return NotFound();
         model.Id = $"{model} , Creator is {member.UserId.Base64Encryption()}".HashEncryption();
-        model.MemberIdentity.Add(new IdentityModel() { Identity = "President", UserId = user.UserId });
-        user.Organizes.Add(model);
+        var identity = new IdentityModel() { Identity = "President", UserId = user.UserId ,Organize = model};
+        model.MemberIdentity.Add(identity);
+        user.Organizes.Add(identity);
         await _context.SaveChangesAsync();
         var jwt = UserJwtModel.DataToJwt(user);
         jwt.Identity = "President";
@@ -60,8 +61,9 @@ public class OrganizeController(
         var org = await _context.Organizes.FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
 
-        org.MemberIdentity.Add(new IdentityModel() { UserId = user.UserId });
-        user.Organizes.Add(org);
+        var identity = new IdentityModel() { User = user, Organize = org };
+        org.MemberIdentity.Add(identity);
+        user.Organizes.Add(identity);
 
         await _context.SaveChangesAsync();
         var jwt = UserJwtModel.DataToJwt(user);

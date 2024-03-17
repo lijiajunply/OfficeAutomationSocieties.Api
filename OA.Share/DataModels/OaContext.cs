@@ -32,18 +32,18 @@ public sealed class OaContext : DbContext
             .WithMany(x => x.Members);
         modelBuilder.Entity<ProjectModel>().HasMany(x => x.Files)
             .WithOne(x => x.Owner).IsRequired(false);
-        modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Member)
-            .WithMany(x => x.Organizes);
+        modelBuilder.Entity<UserModel>().HasMany(x => x.Organizes).WithOne(x => x.User).HasForeignKey(x => x.UserId);
+        modelBuilder.Entity<OrganizeModel>().HasMany(x => x.MemberIdentity).WithOne(x => x.Organize).HasForeignKey(x => x.OrganizeId);
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Resources)
             .WithOne(x => x.Owner).IsRequired();
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Announcements)
             .WithOne(x => x.Owner).IsRequired();
         modelBuilder.Entity<ProjectModel>().HasMany(x => x.GanttList)
-            .WithOne(x => x.Project).IsRequired();
+            .WithOne(x => x.Project).IsRequired().HasForeignKey(x => x.ProjectId);
         modelBuilder.Entity<UserModel>().HasMany(x => x.TaskNotes)
-            .WithOne(x => x.User).IsRequired();
+            .WithOne(x => x.User).IsRequired().HasForeignKey(x => x.UserId);
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.MemberIdentity)
-            .WithOne(x => x.Owner).IsRequired();
+            .WithOne(x => x.Organize).IsRequired();
     }
 }
 #pragma warning restore CS1591

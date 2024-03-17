@@ -10,8 +10,8 @@ using OA.Share.DataModels;
 namespace OA.Share.Migrations
 {
     [DbContext(typeof(OaContext))]
-    [Migration("20240315161504_AddPhoneNum")]
-    partial class AddPhoneNum
+    [Migration("20240317143717_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,13 +112,13 @@ namespace OA.Share.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(10)");
 
-                    b.Property<string>("OwnerId")
+                    b.Property<string>("OrganizeId")
                         .IsRequired()
                         .HasColumnType("varchar(256)");
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("OrganizeId");
 
                     b.ToTable("IdentityModel");
                 });
@@ -210,21 +210,6 @@ namespace OA.Share.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OrganizeModelUserModel", b =>
-                {
-                    b.Property<string>("MemberUserId")
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("OrganizesId")
-                        .HasColumnType("varchar(256)");
-
-                    b.HasKey("MemberUserId", "OrganizesId");
-
-                    b.HasIndex("OrganizesId");
-
-                    b.ToTable("OrganizeModelUserModel");
-                });
-
             modelBuilder.Entity("ProjectModelUserModel", b =>
                 {
                     b.Property<string>("MembersUserId")
@@ -281,13 +266,21 @@ namespace OA.Share.Migrations
 
             modelBuilder.Entity("OA.Share.DataModels.IdentityModel", b =>
                 {
-                    b.HasOne("OA.Share.DataModels.OrganizeModel", "Owner")
+                    b.HasOne("OA.Share.DataModels.OrganizeModel", "Organize")
                         .WithMany("MemberIdentity")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("OrganizeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.HasOne("OA.Share.DataModels.UserModel", "User")
+                        .WithMany("Organizes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organize");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OA.Share.DataModels.ProjectModel", b =>
@@ -306,21 +299,6 @@ namespace OA.Share.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("OrganizeModelUserModel", b =>
-                {
-                    b.HasOne("OA.Share.DataModels.UserModel", null)
-                        .WithMany()
-                        .HasForeignKey("MemberUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OA.Share.DataModels.OrganizeModel", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProjectModelUserModel", b =>
@@ -358,6 +336,8 @@ namespace OA.Share.Migrations
 
             modelBuilder.Entity("OA.Share.DataModels.UserModel", b =>
                 {
+                    b.Navigation("Organizes");
+
                     b.Navigation("TaskNotes");
                 });
 #pragma warning restore 612, 618

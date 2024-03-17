@@ -40,7 +40,7 @@
                 <StackPanel>
                     <Panel>
                         <TextBlock Name="ProjectItemBlock" Classes="h1" HorizontalAlignment="Left" />
-                        <Button Classes="TransparentButton" HorizontalAlignment="Right">
+                        <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="JoinOrCreateProjectClick">
                             <controls:SymbolIcon Symbol="Add" />
                         </Button>
                     </Panel>

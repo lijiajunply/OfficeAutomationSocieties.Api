@@ -7,13 +7,13 @@ public abstract class DataBasic : IDisposable
     protected DataBasic(string jwt = "")
     {
         SharedClient = new HttpClient()
-            { BaseAddress = new Uri("https://api.luckyfishes.com") };
+            { BaseAddress = new Uri("https://localhost:7060/") };
         Jwt = jwt;
     }
 
     protected HttpClient SharedClient { get; }
     private string _jwt = "";
-    public static string SwaggerUrl => "https://api.luckyfishes.com/swagger/index.html";
+    // public static string SwaggerUrl => "https://api.luckyfishes.com/swagger/index.html";
 
     public string Jwt
     {

@@ -19,7 +19,7 @@ public partial class MainWindow : AppWindow
     private Dictionary<string, PageModelBase> Stack { get; }
     private WindowNotificationManager? _manager;
     private LoginModel Setting { get; set; }
-    private string Jwt { get; set; } = "";
+    public string Jwt { get; set; } = "";
     public UserModel User { get; private set; } = new();
 
     public MainWindow()

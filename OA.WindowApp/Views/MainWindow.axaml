@@ -8,9 +8,9 @@
         x:Class="OA.WindowApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="办公自动化">
+        Title="{Binding AppName}">
 
-   <Grid Margin="5" RowDefinitions="Auto,*">
+    <Grid Margin="5" RowDefinitions="Auto,*">
         <WrapPanel Grid.Row="0" Name="TitleBarHost"
                    Margin="0,0,0,5" Height="18" VerticalAlignment="Center">
             <Button VerticalAlignment="Center" Height="38" Width="40" Theme="{DynamicResource TransparentButton}"
@@ -19,7 +19,7 @@
             </Button>
             <controls:ImageIcon VerticalAlignment="Center" Source="avares://OA.WindowApp/Assets/avalonia-logo.ico"
                                 Width="18" Margin="5,0" Height="18" />
-            <TextBlock Text="{Binding $parent[Window].Title}"
+            <TextBlock Text="{Binding AppName}"
                        FontSize="12"
                        VerticalAlignment="Center"
                        Margin="5,0"

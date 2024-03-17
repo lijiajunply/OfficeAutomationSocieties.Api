@@ -5,8 +5,6 @@ namespace OA.Share.DataModels;
 
 public class OrganizeModel
 {
-    public List<UserModel> Member { get; } = [];
-
     public List<IdentityModel> MemberIdentity { get; } = [];
     [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
 
@@ -38,5 +36,8 @@ public class IdentityModel
     [Column(TypeName = "varchar(256)")]
     public string UserId { get; init; } = "";
 
-    public OrganizeModel Owner { get; } = new();
+    public UserModel User { get; set; } = new();
+
+    public OrganizeModel Organize { get; set; } = new();
+    [Column(TypeName = "varchar(256)")] public string OrganizeId { get; set; } = "";
 }

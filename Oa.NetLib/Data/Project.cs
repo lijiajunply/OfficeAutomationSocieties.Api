@@ -6,11 +6,11 @@ namespace Oa.NetLib.Data;
 
 public class Project(string jwt = "") : DataBasic(jwt)
 {
-    public async Task<List<ProjectModel>> GetProjects(LoginModel model)
+    public async Task<List<ProjectModel>> GetProjects()
     {
         try
         {
-            var response = await SharedClient.PostAsJsonAsync("/api/Project/GetProjects", model);
+            var response = await SharedClient.GetAsync("/api/Project/GetProjects");
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<ProjectModel>>(result) ?? [];
         }
