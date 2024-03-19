@@ -1,18 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace OA.Share.DataModels;
 
 public class OrganizeModel
 {
     public List<IdentityModel> MemberIdentity { get; } = [];
-    [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
+    [Column(TypeName = "varchar(32)")] public string Name { get; init; } = "";
 
     [Key]
-    [Column(TypeName = "varchar(256)")]
+    [Column(TypeName = "varchar(64)")]
     public string Id { get; set; } = "";
 
-    [Column(TypeName = "varchar(256)")] public string Introduce { get; init; } = "";
+    [Column(TypeName = "varchar(64)")] public string Introduce { get; init; } = "";
 
     public List<AnnouncementModel> Announcements { get; } = [];
     public List<ProjectModel> Projects { get; } = [];
@@ -33,11 +34,10 @@ public class IdentityModel
     public string Identity { get; init; } = "Member";
 
     [Key]
-    [Column(TypeName = "varchar(256)")]
+    [Column(TypeName = "varchar(64)")]
     public string UserId { get; init; } = "";
 
-    public UserModel User { get; set; } = new();
-
-    public OrganizeModel Organize { get; set; } = new();
-    [Column(TypeName = "varchar(256)")] public string OrganizeId { get; set; } = "";
+    [JsonIgnore] public UserModel User { get; set; } = new();
+    [JsonIgnore] public OrganizeModel Organize { get; set; } = new();
+    [Column(TypeName = "varchar(64)")] public string OrganizeId { get; set; } = "";
 }

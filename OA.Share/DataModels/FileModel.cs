@@ -22,7 +22,7 @@ public class FileModel
     public ProjectModel? Owner { get; init; }
 
     [Key]
-    [Column(TypeName = "varchar(256)")]
+    [Column(TypeName = "varchar(64)")]
     public string Id { get; set; } = "";
     
     public override string ToString() =>

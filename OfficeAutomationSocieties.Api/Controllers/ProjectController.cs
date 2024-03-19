@@ -43,6 +43,25 @@ public class ProjectController(
     }
 
     /// <summary>
+    /// 由id获取项目内容
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProjectModel>> GetProject(string id)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+
+        var proj = await _context.Projects.Include(x => x.GanttList).Include(x => x.Files).Include(x => x.Members)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        return proj ?? new ProjectModel();
+    }
+
+    /// <summary>
     /// 加入项目组
     /// </summary>
     /// <param name="id"></param>
@@ -60,7 +79,7 @@ public class ProjectController(
         if (project == null) return NoContent();
         if (project.Members.Any(x => x.UserId == member.UserId)) return Ok();
 
-        project.Members.Add(user);
+        project.Members.Add(new ProjectIdentity() { User = user });
         await _context.SaveChangesAsync();
         return project;
     }
@@ -79,7 +98,8 @@ public class ProjectController(
         var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
         if (user == null) return NotFound();
         project.Id = project.ToString().HashEncryption();
-        project.Members.Add(user);
+
+        project.Members.Add(new ProjectIdentity() { User = user });
 
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
@@ -104,8 +124,6 @@ public class ProjectController(
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
         if (project.Members.All(x => x.UserId != member.UserId)) return Ok();
-
-        project.Members.Remove(user);
         await _context.SaveChangesAsync();
         return Ok();
     }

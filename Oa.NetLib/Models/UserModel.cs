@@ -11,7 +11,7 @@ public class UserModel
 
     public List<OrganizeModel> Organizes { get; } = [];
 
-    public List<ProjectModel> Projects { get; } = [];
+    public List<ProjectIdentity> Projects { get; } = [];
 
     public List<GanttModel> TaskNotes { get; } = [];
 }

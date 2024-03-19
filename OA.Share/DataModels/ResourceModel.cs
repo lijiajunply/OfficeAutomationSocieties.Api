@@ -11,24 +11,24 @@ public class ResourceModel
     public OrganizeModel Owner { get; init; } = new();
 
     [Key]
-    [Column(TypeName = "varchar(256)")]
+    [Column(TypeName = "varchar(64)")]
     public string Id { get; set; } = "";
 
     /// <summary>
     /// 资源名称
     /// </summary>
-    [Column(TypeName = "varchar(256)")] public string Name { get; init; } = "";
+    [Column(TypeName = "varchar(32)")] public string Name { get; init; } = "";
 
     
     /// <summary>
     /// 借出时间，如果为空则为未借出
     /// </summary>
-    [Column(TypeName = "varchar(256)")] public string StartTime { get; init; } = "";
+    [Column(TypeName = "varchar(64)")] public string StartTime { get; init; } = "";
 
     /// <summary>
     /// 归还时间，不能为空
     /// </summary>
-    [Column(TypeName = "varchar(256)")] public string EndTime { get; init; } = "";
+    [Column(TypeName = "varchar(64)")] public string EndTime { get; init; } = "";
 
     public override string ToString() =>
         $"ResourceModel is {{Name={Name.Base64Encryption()},StartTime={StartTime.Base64Encryption()},EndTime={EndTime.Base64Encryption()}}} Other is Private;";

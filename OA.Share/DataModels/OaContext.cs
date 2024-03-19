@@ -28,12 +28,17 @@ public sealed class OaContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ProjectIdentity>(
+                eb => eb.HasNoKey());
         modelBuilder.Entity<UserModel>().HasMany(x => x.Projects)
-            .WithMany(x => x.Members);
+            .WithOne(x => x.User).HasForeignKey(x => x.UserId);
+        modelBuilder.Entity<ProjectModel>().HasMany(x => x.Members).WithOne(x => x.Project)
+            .HasForeignKey(x => x.ProjectId);
         modelBuilder.Entity<ProjectModel>().HasMany(x => x.Files)
             .WithOne(x => x.Owner).IsRequired(false);
         modelBuilder.Entity<UserModel>().HasMany(x => x.Organizes).WithOne(x => x.User).HasForeignKey(x => x.UserId);
-        modelBuilder.Entity<OrganizeModel>().HasMany(x => x.MemberIdentity).WithOne(x => x.Organize).HasForeignKey(x => x.OrganizeId);
+        modelBuilder.Entity<OrganizeModel>().HasMany(x => x.MemberIdentity).WithOne(x => x.Organize)
+            .HasForeignKey(x => x.OrganizeId);
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Resources)
             .WithOne(x => x.Owner).IsRequired();
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.Announcements)

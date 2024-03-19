@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
@@ -17,13 +18,20 @@ public partial class HomeView : UserControl
         InitializeComponent();
     }
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
+        var proj = new Project(view.Jwt);
         NameBlock.Text = view.User.Name;
         TaskItems.ItemsSource = view.User.TaskNotes;
-        ProjectItems.ItemsSource = view.User.Projects;
+        var projects = new List<ProjectModel>();
+        foreach (var projectIdentity in view.User.Projects)
+        {
+            projects.Add(await proj.GetProject(projectIdentity.ProjectId));
+        }
+
+        ProjectItems.ItemsSource = projects;
         OrgItems.ItemsSource = view.User.Organizes;
         TaskItemBlock.Text = view.User.TaskNotes.Count == 0 ? "当前没有任务，可以去放松一下了" : "当前任务";
         ProjectItemBlock.Text = view.User.Projects.Count == 0 ? "当前没有项目，点击添加或创建" : "您的项目";
@@ -57,13 +65,13 @@ public partial class HomeView : UserControl
             {
                 var p = await proj.CreateProject(new ProjectModel() { Name = result.context });
                 if (string.IsNullOrEmpty(p.Id)) return;
-                view.User.Projects.Add(p);
+                //view.User.Projects.Add(p);
             }
             else
             {
                 var p = await proj.JoinProject(result.context);
                 if (string.IsNullOrEmpty(p.Id)) return;
-                view.User.Projects.Add(p);
+                // view.User.Projects.Add(p);
             }
         };
         await td.ShowAsync();

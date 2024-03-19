@@ -19,7 +19,7 @@ public class AnnouncementModel
     [Column(TypeName = "varchar(256)")] public string Time { get; init; } = "";
 
     [Key]
-    [Column(TypeName = "varchar(256)")]
+    [Column(TypeName = "varchar(64)")]
     public string Id { get; set; } = "";
 
     public override string ToString() =>

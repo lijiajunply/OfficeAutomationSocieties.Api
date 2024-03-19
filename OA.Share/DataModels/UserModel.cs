@@ -6,17 +6,17 @@ namespace OA.Share.DataModels;
 public class UserModel
 {
     [Key]
-    [Column(TypeName = "varchar(256)")]
+    [Column(TypeName = "varchar(64)")]
     public string UserId { get; set; } = "";
 
-    [Column(TypeName = "varchar(256)")] public string Name { get; set; } = "";
+    [Column(TypeName = "varchar(32)")] public string Name { get; set; } = "";
     [Column(TypeName = "varchar(13)")] public string PhoneNum { get; set; } = "";
 
-    [Column(TypeName = "varchar(256)")] public string Password { get; set; } = "";
+    [Column(TypeName = "varchar(16)")] public string Password { get; set; } = "";
 
     public List<IdentityModel> Organizes { get; } = [];
 
-    public List<ProjectModel> Projects { get; } = [];
+    public List<ProjectIdentity> Projects { get; } = [];
 
     public List<GanttModel> TaskNotes { get; } = [];
 

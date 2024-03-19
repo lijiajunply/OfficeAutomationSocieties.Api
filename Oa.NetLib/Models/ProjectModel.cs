@@ -2,7 +2,7 @@
 
 public class ProjectModel
 {
-    public List<UserModel> Members { get; } = [];
+    public List<ProjectIdentity> Members { get; } = [];
 
     public string Name { get; set; } = "";
 
@@ -11,4 +11,11 @@ public class ProjectModel
     public List<FileModel> Files { get; init; } = [];
 
     public List<GanttModel> GanttList { get; } = [];
+}
+
+[Serializable]
+public class ProjectIdentity
+{
+    public string UserId { get; set; } = "";
+    public string ProjectId { get; set; } = "";
 }
