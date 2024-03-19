@@ -33,6 +33,7 @@
                                  IsSettingsVisible="False">
             <controls:NavigationView.MenuItems>
                 <controls:NavigationViewItem Content="主页" Tag="Home" IconSource="HomeFilled" />
+                <controls:NavigationViewItem Content="项目" Tag="Project" IconSource="CalendarMonthFilled"/>
             </controls:NavigationView.MenuItems>
             <controls:NavigationView.FooterMenuItems>
                 <controls:NavigationViewItem Content="设置" Tag="Setting" IconSource="SettingsFilled" />

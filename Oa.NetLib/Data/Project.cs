@@ -6,19 +6,6 @@ namespace Oa.NetLib.Data;
 
 public class Project(string jwt = "") : DataBasic(jwt)
 {
-    public async Task<List<ProjectModel>> GetProjects()
-    {
-        try
-        {
-            var response = await SharedClient.GetAsync("/api/Project/GetProjects");
-            var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<ProjectModel>>(result) ?? [];
-        }
-        catch
-        {
-            return [];
-        }
-    }
 
     public async Task<ProjectModel> GetProject(string id)
     {

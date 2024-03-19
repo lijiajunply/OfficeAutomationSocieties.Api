@@ -28,8 +28,6 @@ public sealed class OaContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ProjectIdentity>(
-                eb => eb.HasNoKey());
         modelBuilder.Entity<UserModel>().HasMany(x => x.Projects)
             .WithOne(x => x.User).HasForeignKey(x => x.UserId);
         modelBuilder.Entity<ProjectModel>().HasMany(x => x.Members).WithOne(x => x.Project)

@@ -23,24 +23,6 @@ public class ProjectController(
     IWebHostEnvironment environment)
     : ControllerBase
 {
-    /// <summary>
-    /// 获取所有项目
-    /// </summary>
-    /// <returns></returns>
-    [Authorize(Roles = "President")]
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects()
-    {
-        await using var _context = await factory.CreateDbContextAsync();
-
-        var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member == null) return NotFound();
-
-        var org = await _context.Organizes.Include(x => x.Projects).FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
-        if (org == null) return NotFound();
-
-        return org.Projects;
-    }
 
     /// <summary>
     /// 由id获取项目内容

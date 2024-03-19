@@ -1,5 +1,6 @@
 ﻿namespace Oa.NetLib.Models;
 
+[Serializable]
 public class UserModel
 {
     public string UserId { get; set; } = "";
@@ -9,7 +10,7 @@ public class UserModel
 
     public string Password { get; set; } = "";
 
-    public List<OrganizeModel> Organizes { get; } = [];
+    public List<IdentityModel> Organizes { get; } = [];
 
     public List<ProjectIdentity> Projects { get; } = [];
 

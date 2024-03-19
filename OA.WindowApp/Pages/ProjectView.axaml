@@ -1,0 +1,42 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:OA.WindowApp.ViewModels.Pages"
+             xmlns:models="clr-namespace:Oa.NetLib.Models;assembly=Oa.NetLib"
+             xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OA.WindowApp.Pages.ProjectView"
+             x:DataType="pages:ProjectViewModel">
+    <Grid ColumnDefinitions="Auto,*">
+        <ListBox Grid.Column="0" SelectedItem="{Binding Project}"
+                 ItemsSource="{Binding Projects}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" Classes="h2" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ScrollViewer Grid.Column="1">
+            <ContentControl Content="{Binding Project}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate DataType="models:ProjectModel">
+                        <StackPanel>
+                            <Panel>
+                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" />
+                                <TextBlock Text="{Binding Members.Count}" HorizontalAlignment="Right" />
+                            </Panel>
+                            <Panel>
+                                <TextBlock Text="项目任务表" Classes="h1" HorizontalAlignment="Left" />
+                                <Button Classes="TransparentButton">
+                                    <controls:SymbolIcon Symbol="Add" />
+                                </Button>
+                            </Panel>
+                            <ListBox ItemsSource="{Binding  GanttList}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

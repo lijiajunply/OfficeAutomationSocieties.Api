@@ -8,6 +8,7 @@
         <entry key="OA.WindowApp/Pages/HelpView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HomeView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/LoginView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
+        <entry key="OA.WindowApp/Pages/ProjectView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/SettingView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Views/MainWindow.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
       </map>

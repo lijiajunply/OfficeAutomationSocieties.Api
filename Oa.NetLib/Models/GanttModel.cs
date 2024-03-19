@@ -5,9 +5,8 @@ public class GanttModel
 {
     public string Id { get; set; } = "";
 
-    public UserModel User { get; } = new();
-    public ProjectModel Project { get; } = new();
-
+    public string UserId { get; set; } = "";
+    public string ProjectId { get; set; } = "";
     public string StartTime { get; set; } = "";
 
     public string EndTime { get; set; } = "";

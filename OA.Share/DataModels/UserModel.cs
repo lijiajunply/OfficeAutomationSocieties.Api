@@ -14,7 +14,7 @@ public class UserModel
 
     [Column(TypeName = "varchar(16)")] public string Password { get; set; } = "";
 
-    public List<IdentityModel> Organizes { get; } = [];
+    public List<OrganizeIdentity> Organizes { get; } = [];
 
     public List<ProjectIdentity> Projects { get; } = [];
 

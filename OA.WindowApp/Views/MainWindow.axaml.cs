@@ -4,6 +4,7 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using DynamicData;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Oa.NetLib.Data;
@@ -19,14 +20,15 @@ public partial class MainWindow : AppWindow
     private Dictionary<string, PageModelBase> Stack { get; }
     private WindowNotificationManager? _manager;
     private LoginModel Setting { get; set; }
-    public string Jwt { get; set; } = "";
-    public UserModel User { get; private set; } = new();
+    public string Jwt { get; private set; } = "";
+    private UserModel User { get; set; } = new();
 
     public MainWindow()
     {
         Stack = new Dictionary<string, PageModelBase>()
         {
             { "Home", new HomeViewModel() },
+            { "Project", new ProjectViewModel() },
             { "Setting", new SettingViewModel() },
             { "Help", new HelpViewModel() }
         };
@@ -92,7 +94,29 @@ public partial class MainWindow : AppWindow
         {
             using var user = new User(Jwt);
             User = await user.GetUserData();
-            Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(Stack["Home"]));
+            using var proj = new Project(Jwt);
+            using var org = new Organize(Jwt);
+            var projects = new List<ProjectModel>();
+            foreach (var projectIdentity in User.Projects)
+            {
+                projects.Add(await proj.GetProject(projectIdentity.ProjectId));
+            }
+
+            var organize = new List<OrganizeModel>();
+            foreach (var identityModel in User.Organizes)
+            {
+            }
+
+            var home = Stack["Home"] as HomeViewModel;
+            home!.Projects.Add(projects);
+            home.Organizes.Add(organize);
+            home.TaskNotes.Add(User.TaskNotes);
+            home.Name = User.Name;
+
+            var project = Stack["Project"] as ProjectViewModel;
+            project!.Projects.Add(projects);
+
+            Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(home));
         }
         else
         {

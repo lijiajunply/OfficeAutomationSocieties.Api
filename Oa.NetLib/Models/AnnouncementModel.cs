@@ -3,6 +3,7 @@
 /// <summary>
 /// 公告
 /// </summary>
+[Serializable]
 public class AnnouncementModel
 {
     public string Context { get; init; } = "";

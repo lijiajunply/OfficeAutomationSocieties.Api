@@ -6,7 +6,7 @@ namespace OA.Share.DataModels;
 
 public class OrganizeModel
 {
-    public List<IdentityModel> MemberIdentity { get; } = [];
+    public List<OrganizeIdentity> MemberIdentity { get; } = [];
     [Column(TypeName = "varchar(32)")] public string Name { get; init; } = "";
 
     [Key]
@@ -23,7 +23,7 @@ public class OrganizeModel
         => $"Organize : Name is {Name.Base64Encryption()} , Intro is {Introduce.Base64Encryption()} ";
 }
 
-public class IdentityModel
+public class OrganizeIdentity
 {
     /// <summary>
     /// President
@@ -33,11 +33,10 @@ public class IdentityModel
     [Column(TypeName = "varchar(10)")]
     public string Identity { get; init; } = "Member";
 
-    [Key]
-    [Column(TypeName = "varchar(64)")]
-    public string UserId { get; init; } = "";
+    [Key] [JsonIgnore] public int Key { get; set; }
+    [Column(TypeName = "varchar(64)")] public string UserId { get; init; } = "";
 
-    [JsonIgnore] public UserModel User { get; set; } = new();
-    [JsonIgnore] public OrganizeModel Organize { get; set; } = new();
+    [JsonIgnore] public UserModel User { get; init; } = new();
+    [JsonIgnore] public OrganizeModel Organize { get; init; } = new();
     [Column(TypeName = "varchar(64)")] public string OrganizeId { get; set; } = "";
 }

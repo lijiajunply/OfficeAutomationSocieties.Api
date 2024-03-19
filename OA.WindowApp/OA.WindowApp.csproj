@@ -28,4 +28,11 @@
     <ItemGroup>
       <ProjectReference Include="..\Oa.NetLib\Oa.NetLib.csproj" />
     </ItemGroup>
+
+
+    <ItemGroup>
+      <Compile Update="Pages\ProjectView.axaml.cs">
+        <DependentUpon>ProjectView.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>

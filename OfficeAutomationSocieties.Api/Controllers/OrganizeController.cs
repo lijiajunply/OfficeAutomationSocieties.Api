@@ -34,7 +34,7 @@ public class OrganizeController(
         var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
         if (user == null) return NotFound();
         model.Id = $"{model} , Creator is {member.UserId.Base64Encryption()}".HashEncryption();
-        var identity = new IdentityModel() { Identity = "President", UserId = user.UserId ,Organize = model};
+        var identity = new OrganizeIdentity() { Identity = "President", UserId = user.UserId ,Organize = model};
         model.MemberIdentity.Add(identity);
         user.Organizes.Add(identity);
         await _context.SaveChangesAsync();
@@ -61,7 +61,7 @@ public class OrganizeController(
         var org = await _context.Organizes.FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
 
-        var identity = new IdentityModel() { User = user, Organize = org };
+        var identity = new OrganizeIdentity() { User = user, Organize = org };
         org.MemberIdentity.Add(identity);
         user.Organizes.Add(identity);
 
@@ -88,7 +88,7 @@ public class OrganizeController(
         var org = await _context.Organizes.Include(x => x.MemberIdentity).FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
 
-        org.MemberIdentity.Add(new IdentityModel() { UserId = user.UserId });
+        org.MemberIdentity.Add(new OrganizeIdentity() { UserId = user.UserId });
         var identity = org.MemberIdentity.FirstOrDefault(x => x.UserId == member.UserId);
         if (string.IsNullOrEmpty(identity?.Identity)) return NotFound();
 
@@ -323,4 +323,23 @@ public class OrganizeController(
     }
 
     #endregion
+    
+    /// <summary>
+    /// 获取所有项目
+    /// </summary>
+    /// <returns></returns>
+    [Authorize(Roles = "President")]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects()
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+
+        var org = await _context.Organizes.Include(x => x.Projects).FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+        if (org == null) return NotFound();
+
+        return org.Projects;
+    }
 }
