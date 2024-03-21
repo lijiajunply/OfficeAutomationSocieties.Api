@@ -23,6 +23,24 @@ public class ProjectController(
     IWebHostEnvironment environment)
     : ControllerBase
 {
+    /// <summary>
+    /// 获取用户全部项目内容
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<ActionResult<ProjectModel[]>> GetUserProjects()
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+
+        var userModel = await _context.Users.Include(x => x.Projects)
+            .ThenInclude(projectIdentity => projectIdentity.Project).ThenInclude(x => x.GanttList)
+            .FirstOrDefaultAsync(x => x.UserId == member.UserId);
+
+        return userModel?.Projects.Select(x => x.Project).ToArray() ?? [];
+    }
 
     /// <summary>
     /// 由id获取项目内容
@@ -154,46 +172,56 @@ public class ProjectController(
     public async Task<ActionResult<GanttModel>> AddGantt(string id, GanttModel model)
     {
         await using var _context = await factory.CreateDbContextAsync();
-        var user = httpContextAccessor.HttpContext?.User.GetUser();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
         if (user == null) return NotFound();
 
         var project = await _context.Projects.Include(x => x.Members).Include(x => x.GanttList)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NoContent();
-        if (project.Members.All(x => x.UserId != user.UserId)) return NotFound();
+        if (project.Members.All(x => x.UserId != member.UserId)) return NotFound();
 
-        if (project.GanttList.Any(x => x.Id == model.Id)) return NoContent();
-        model.Id = $"GanttModel is {{{model.User}:{model.StartTime}-{model.EndTime}:{model.ToDo}}} Other is Private"
-            .HashEncryption();
+        model.User = user;
+        model.Id = model.ToString().HashEncryption();
+
         project.GanttList.Add(model);
 
         await _context.SaveChangesAsync();
         return model;
     }
 
-
-    /// <summary>
-    /// 删除计划
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ganttId"></param>
-    /// <returns></returns>
-    [HttpGet("{id}")]
-    public async Task<ActionResult> RemoveGantt(string id, string ganttId)
+    [HttpPost]
+    public async Task<ActionResult> UpdateGantt([FromBody] GanttModel model)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var user = httpContextAccessor.HttpContext?.User.GetUser();
         if (user == null) return NotFound();
 
-        var project = await _context.Projects.Include(x => x.Members).Include(projectModel => projectModel.GanttList)
-            .FirstOrDefaultAsync(x => x.Id == id);
-        if (project == null) return NoContent();
-        if (project.Members.All(x => x.UserId != user.UserId)) return NotFound();
+        var gantt = await _context.GanttList.FirstOrDefaultAsync(x => x.Id == model.Id);
+        if (gantt == null) return NotFound();
+        gantt.Update(model);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 
-        var gantt = project.GanttList.FirstOrDefault(x => x.Id == ganttId);
+    /// <summary>
+    /// 删除计划
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("{id}")]
+    public async Task<ActionResult> RemoveGantt(string id)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var user = httpContextAccessor.HttpContext?.User.GetUser();
+        if (user == null) return NotFound();
+
+        var gantt = await _context.GanttList.FirstOrDefaultAsync(x => x.Id == id);
         if (gantt == null) return NoContent();
 
-        project.GanttList.Remove(gantt);
+        _context.GanttList.Remove(gantt);
         await _context.SaveChangesAsync();
         return Ok();
     }

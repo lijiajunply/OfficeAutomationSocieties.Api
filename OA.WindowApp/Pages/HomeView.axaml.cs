@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using DynamicData;
@@ -32,7 +33,6 @@ public partial class HomeView : UserControl
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
-        if (DataContext is not HomeViewModel model) return;
         var td = new TaskDialog
         {
             Title = "添加或创建项目",
@@ -56,14 +56,14 @@ public partial class HomeView : UserControl
             {
                 var p = await proj.CreateProject(new ProjectModel() { Name = result.context });
                 if (string.IsNullOrEmpty(p.Id)) return;
-                model.Projects.Add(p);
+                view.Add(p);
                 view.NotificationShow("创建项目", "创建成功");
             }
             else
             {
                 var p = await proj.JoinProject(result.context);
                 if (string.IsNullOrEmpty(p.Id)) return;
-                model.Projects.Add(p);
+                view.Add(p);
                 view.NotificationShow("加入项目", "加入成功");
             }
         };
@@ -82,5 +82,52 @@ public partial class HomeView : UserControl
         var projView = new ProjectView() { DataContext = projModel };
         projView.ProjectViewFromId(project.Id);
         view.Navigate(projView);
+    }
+
+    private async void TaskChangeClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (sender is not Control control) return;
+        if (control.DataContext is not GanttModel gantt) return;
+        var td = new TaskDialog
+        {
+            Title = "更改任务",
+            Content = new AddOrChangeGantt(gantt),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                TaskDialogButton.OKButton,
+                TaskDialogButton.CloseButton
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        td.Closing += async (dialog, args) =>
+        {
+            if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
+            if (dialog.Content is not AddOrChangeGantt project) return;
+            var result = project.Done();
+            gantt.Update(result);
+            using var proj = new Project(view.Jwt);
+            if (await proj.UpdateGantt(gantt))
+                view.NotificationShow("更改任务", "更改成功");
+            else
+                view.NotificationShow("更改任务", "更改失败", NotificationType.Error);
+        };
+        await td.ShowAsync();
+    }
+
+    private async void RemoveGanttClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (sender is not Control control) return;
+        if (control.DataContext is not GanttModel gantt) return;
+        using var proj = new Project(view.Jwt);
+        if (await proj.RemoveGantt(gantt.Id))
+            view.NotificationShow("删除任务", "删除成功");
+        else
+            view.NotificationShow("删除任务", "删除失败", NotificationType.Error);
     }
 }

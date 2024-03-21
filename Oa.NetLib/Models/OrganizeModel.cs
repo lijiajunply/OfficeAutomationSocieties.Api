@@ -4,7 +4,7 @@ public class OrganizeModel
 {
     public List<UserModel> Member { get; } = [];
 
-    public List<IdentityModel> MemberIdentity { get; } = [];
+    public List<OrganizeIdentity> MemberIdentity { get; } = [];
     public string Name { get; init; } = "";
 
     public string Id { get; set; } = "";
@@ -17,7 +17,7 @@ public class OrganizeModel
 }
 
 [Serializable]
-public class IdentityModel
+public class OrganizeIdentity
 {
     /// <summary>
     /// President

@@ -21,7 +21,7 @@ public partial class MainWindow : AppWindow
     private WindowNotificationManager? _manager;
     private LoginModel Setting { get; set; }
     public string Jwt { get; private set; } = "";
-    private UserModel User { get; set; } = new();
+    public UserModel User { get; private set; } = new();
 
     public MainWindow()
     {
@@ -73,9 +73,9 @@ public partial class MainWindow : AppWindow
         _manager = new WindowNotificationManager(this) { MaxItems = 3, Position = NotificationPosition.BottomRight };
     }
 
-    public void NotificationShow(string title, string message)
+    public void NotificationShow(string title, string message, NotificationType type = NotificationType.Information)
     {
-        _manager?.Show(new Notification(title, message));
+        _manager?.Show(new Notification(title, message, type));
     }
 
     private async void Init()
@@ -96,16 +96,8 @@ public partial class MainWindow : AppWindow
             User = await user.GetUserData();
             using var proj = new Project(Jwt);
             using var org = new Organize(Jwt);
-            var projects = new List<ProjectModel>();
-            foreach (var projectIdentity in User.Projects)
-            {
-                projects.Add(await proj.GetProject(projectIdentity.ProjectId));
-            }
-
-            var organize = new List<OrganizeModel>();
-            foreach (var identityModel in User.Organizes)
-            {
-            }
+            var projects = await proj.GetUserProjects();
+            var organize = await org.GetUserOrganizes();
 
             var home = Stack["Home"] as HomeViewModel;
             home!.Projects.Add(projects);
@@ -146,5 +138,13 @@ public partial class MainWindow : AppWindow
         userApp.Jwt = Jwt;
         User = await userApp.GetUserData();
         Navigate("Home");
+    }
+
+    public void Add(ProjectModel p)
+    {
+        var home = Stack["Home"] as HomeViewModel;
+        home?.Projects.Add(p);
+        var project = Stack["Project"] as ProjectViewModel;
+        project?.Projects.Add(p);
     }
 }

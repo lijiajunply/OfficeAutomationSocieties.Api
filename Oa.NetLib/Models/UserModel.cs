@@ -10,7 +10,7 @@ public class UserModel
 
     public string Password { get; set; } = "";
 
-    public List<IdentityModel> Organizes { get; } = [];
+    public List<OrganizeIdentity> Organizes { get; } = [];
 
     public List<ProjectIdentity> Projects { get; } = [];
 

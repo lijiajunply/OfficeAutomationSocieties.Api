@@ -6,18 +6,17 @@ namespace Oa.NetLib.Data;
 
 public class Project(string jwt = "") : DataBasic(jwt)
 {
-
-    public async Task<ProjectModel> GetProject(string id)
+    public async Task<ProjectModel[]> GetUserProjects()
     {
         try
         {
-            var response = await SharedClient.GetAsync($"/api/Project/GetProject/{id}");
+            var response = await SharedClient.GetAsync("/api/Project/GetUserProjects");
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ProjectModel>(result) ?? new ProjectModel();
+            return JsonConvert.DeserializeObject<ProjectModel[]>(result) ?? [];
         }
         catch
         {
-            return new ProjectModel();
+            return [];
         }
     }
 
@@ -62,11 +61,11 @@ public class Project(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<GanttModel> AddGantt(string id, GanttModel model)
+    public async Task<GanttModel> AddGantt(string projectId, GanttModel model)
     {
         try
         {
-            var response = await SharedClient.PutAsJsonAsync($"/api/Project/AddGantt/{id}", model);
+            var response = await SharedClient.PutAsJsonAsync($"/api/Project/AddGantt/{projectId}", model);
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<GanttModel>(result) ?? new GanttModel();
         }
@@ -76,11 +75,24 @@ public class Project(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<bool> RemoveGantt(string id, string ganttId)
+    public async Task<bool> UpdateGantt(GanttModel model)
     {
         try
         {
-            var response = await SharedClient.GetAsync($"/api/Project/RemoveGantt/{id}?ganttId={ganttId}");
+            var response = await SharedClient.PostAsJsonAsync("/api/Project/UpdateGantt", model);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> RemoveGantt(string id)
+    {
+        try
+        {
+            var response = await SharedClient.GetAsync($"/api/Project/RemoveGantt/{id}");
             return response.IsSuccessStatusCode;
         }
         catch

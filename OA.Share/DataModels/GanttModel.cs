@@ -1,17 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace OA.Share.DataModels;
 
 public class GanttModel
 {
-    [Column(TypeName = "varchar(64)")] public string Id { get; set; } = "";
+    [Key]
+    [Column(TypeName = "varchar(64)")]
+    public string Id { get; set; } = "";
 
-    public UserModel User { get; } = new();
-    [Column(TypeName = "varchar(64)")]
-    public string UserId { get; set; } = "";
-    [Column(TypeName = "varchar(64)")]
-    public string ProjectId { get; set; } = "";
-    public ProjectModel Project { get; } = new();
+    [JsonIgnore] public UserModel User { get; set; } = new();
+    [Column(TypeName = "varchar(64)")] public string UserId { get; set; } = "";
+    [Column(TypeName = "varchar(64)")] public string ProjectId { get; set; } = "";
+    [JsonIgnore] public ProjectModel Project { get; } = new();
 
     [Column(TypeName = "varchar(64)")] public string StartTime { get; set; } = "";
 
@@ -19,5 +23,12 @@ public class GanttModel
 
     [Column(TypeName = "varchar(64)")] public string ToDo { get; set; } = "";
 
-    public override string ToString() => $"{User}:{StartTime}-{EndTime}:{ToDo}:{Id}";
+    public override string ToString() => $"{User}:{StartTime}-{EndTime}:{ToDo}";
+    
+    public void Update(GanttModel model)
+    {
+        if (!string.IsNullOrEmpty(model.StartTime)) StartTime = model.StartTime;
+        if (!string.IsNullOrEmpty(model.EndTime)) EndTime = model.EndTime;
+        if (!string.IsNullOrEmpty(model.ToDo)) ToDo = model.ToDo;
+    }
 }

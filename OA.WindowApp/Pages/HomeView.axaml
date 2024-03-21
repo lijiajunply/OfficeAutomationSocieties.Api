@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:Oa.NetLib.Models;assembly=Oa.NetLib"
-             xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              xmlns:pages="clr-namespace:OA.WindowApp.ViewModels.Pages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OA.WindowApp.Pages.HomeView"
@@ -24,16 +24,33 @@
             <Border Classes="Card">
                 <StackPanel>
                     <TextBlock Name="TaskItemBlock" Classes="h1" />
-                    <ListBox Name="TaskItems">
+                    <ListBox ItemsSource="{Binding TaskNotes}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="models:GanttModel">
                                 <Grid ColumnDefinitions="*,*,*">
+                                    <Grid.Styles>
+                                        <Style Selector="TextBlock">
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="HorizontalAlignment" Value="Center" />
+                                        </Style>
+                                    </Grid.Styles>
                                     <TextBlock Text="{Binding StartTime}" Grid.Column="0" />
                                     <TextBlock Text="{Binding ToDo}" Grid.Column="1" />
                                     <TextBlock Text="{Binding EndTime}" Grid.Column="2" />
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="ContextFlyout">
+                                    <ui:FAMenuFlyout Placement="Bottom">
+                                        <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick"/>
+                                        <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick"/>
+                                        <ui:MenuFlyoutSeparator />
+                                    </ui:FAMenuFlyout>
+                                </Setter>
+                            </Style>
+                        </ListBox.Styles>
                     </ListBox>
                 </StackPanel>
             </Border>
@@ -44,7 +61,7 @@
                         <TextBlock Name="ProjectItemBlock" Classes="h1" HorizontalAlignment="Left" />
                         <Button Classes="TransparentButton" HorizontalAlignment="Right"
                                 Click="JoinOrCreateProjectClick">
-                            <controls:SymbolIcon Symbol="Add" />
+                            <ui:SymbolIcon Symbol="Add" />
                         </Button>
                     </Panel>
                     <ItemsControl ItemsSource="{Binding Projects}">
@@ -55,7 +72,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="models:ProjectModel">
-                                <Border Classes="CardHover" Padding="10" Height="120" Width="120" Tapped="ProjectTapped">
+                                <Border Classes="CardHover" Padding="10" Height="120" Width="120"
+                                        Tapped="ProjectTapped">
                                     <TextBlock Text="{Binding Name}" Classes="h2" />
                                 </Border>
                             </DataTemplate>
@@ -68,7 +86,7 @@
                     <Panel>
                         <TextBlock Name="OrgItemBlock" Classes="h1" HorizontalAlignment="Left" />
                         <Button Classes="TransparentButton" HorizontalAlignment="Right">
-                            <controls:SymbolIcon Symbol="Add" />
+                            <ui:SymbolIcon Symbol="Add" />
                         </Button>
                     </Panel>
                     <ItemsControl ItemsSource="{Binding Organizes}">

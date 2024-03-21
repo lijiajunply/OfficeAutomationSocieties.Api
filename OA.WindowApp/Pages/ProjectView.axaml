@@ -28,11 +28,39 @@
                             </Panel>
                             <Panel>
                                 <TextBlock Text="项目任务表" Classes="h1" HorizontalAlignment="Left" />
-                                <Button Classes="TransparentButton">
+                                <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="AddTaskClick">
                                     <controls:SymbolIcon Symbol="Add" />
                                 </Button>
                             </Panel>
-                            <ListBox ItemsSource="{Binding  GanttList}" />
+                            <ListBox ItemsSource="{Binding  GanttList}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="models:GanttModel">
+                                        <Grid ColumnDefinitions="*,*,*">
+                                            <Grid.Styles>
+                                                <Style Selector="TextBlock">
+                                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                                    <Setter Property="HorizontalAlignment" Value="Center" />
+                                                </Style>
+                                            </Grid.Styles>
+                                            <TextBlock Text="{Binding StartTime}" Grid.Column="0" />
+                                            <TextBlock Text="{Binding ToDo}" Grid.Column="1" />
+                                            <TextBlock Text="{Binding EndTime}" Grid.Column="2" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.Styles>
+                                    <Style Selector="ListBoxItem">
+                                        <Setter Property="ContextFlyout">
+                                            <controls:FAMenuFlyout Placement="Bottom">
+                                                <controls:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick"/>
+                                                <controls:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick"/>
+                                                <controls:MenuFlyoutSeparator />
+                                            </controls:FAMenuFlyout>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.Styles>
+                                
+                            </ListBox>
                         </StackPanel>
                     </DataTemplate>
                 </ContentControl.ContentTemplate>

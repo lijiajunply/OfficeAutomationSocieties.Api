@@ -34,7 +34,10 @@ public class UserController(
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
 
-        var user = await _context.Users.Include(x => x.Projects).Include(x => x.Organizes).Include(x => x.TaskNotes)
+        var user = await _context.Users.Include(x => x.Projects)
+            .Include(x => x.Organizes)
+            .Include(x => x.TaskNotes)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.UserId == member.UserId);
         if (user == null) return NotFound();
         user.Password = "";

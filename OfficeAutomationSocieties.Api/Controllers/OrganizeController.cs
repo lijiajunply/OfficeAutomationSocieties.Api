@@ -20,6 +20,33 @@ public class OrganizeController(
 {
     #region 组织系统
 
+    [HttpGet]
+    public async Task<ActionResult<OrganizeModel[]>> GetUserOrganizes()
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null || string.IsNullOrEmpty(member.NowOrgId)) return NotFound();
+
+        var user = await _context.Users.Include(x => x.Organizes).ThenInclude(x => x.Organize)
+            .FirstOrDefaultAsync(x => x.UserId == member.UserId);
+
+        return user?.Organizes.Select(x => x.Organize).ToArray() ?? [];
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<OrganizeModel>> GetOrgData()
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null || string.IsNullOrEmpty(member.NowOrgId)) return NotFound();
+
+        var org = await _context.Organizes.Include(x => x.Projects).Include(x => x.Resources)
+            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+
+        if (org == null) return NotFound();
+        return org;
+    }
+
     /// <summary>
     /// 创建组织
     /// </summary>
@@ -34,7 +61,7 @@ public class OrganizeController(
         var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
         if (user == null) return NotFound();
         model.Id = $"{model} , Creator is {member.UserId.Base64Encryption()}".HashEncryption();
-        var identity = new OrganizeIdentity() { Identity = "President", UserId = user.UserId ,Organize = model};
+        var identity = new OrganizeIdentity() { Identity = "President", UserId = user.UserId, Organize = model };
         model.MemberIdentity.Add(identity);
         user.Organizes.Add(identity);
         await _context.SaveChangesAsync();
@@ -107,7 +134,7 @@ public class OrganizeController(
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<AnnouncementModel?>> LookAnnouncement()
+    public async Task<ActionResult<AnnouncementModel>> LookAnnouncement()
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
@@ -115,7 +142,7 @@ public class OrganizeController(
         var org = await _context.Organizes.Include(organizeModel => organizeModel.Announcements)
             .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
         if (org == null) return NotFound();
-        return org.Announcements.LastOrDefault();
+        return org.Announcements.LastOrDefault() ?? new AnnouncementModel();
     }
 
     /// <summary>
@@ -323,23 +350,4 @@ public class OrganizeController(
     }
 
     #endregion
-    
-    /// <summary>
-    /// 获取所有项目
-    /// </summary>
-    /// <returns></returns>
-    [Authorize(Roles = "President")]
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects()
-    {
-        await using var _context = await factory.CreateDbContextAsync();
-
-        var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member == null) return NotFound();
-
-        var org = await _context.Organizes.Include(x => x.Projects).FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
-        if (org == null) return NotFound();
-
-        return org.Projects;
-    }
 }

@@ -30,6 +30,6 @@ public class ProjectIdentity
     [Column(TypeName = "varchar(64)")] public string ProjectId { get; set; } = "";
     [JsonIgnore] public UserModel User { get; init; } = new();
 
-    [JsonIgnore] public ProjectModel Project { get; set; } = new();
+    [JsonIgnore] public ProjectModel Project { get; } = new();
     //[Column(TypeName = "varchar(10)")] public string ProjIdentity { get; set; } = "";
 }
