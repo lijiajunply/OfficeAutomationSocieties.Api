@@ -8,9 +8,6 @@ namespace OfficeAutomationSocieties.Api.Controllers;
 /// <summary>
 /// 项目管理系统
 /// </summary>
-/// <param name="factory"></param>
-/// <param name="httpContextAccessor"></param>
-/// <param name="environment"></param>
 [Authorize]
 [TokenActionFilter]
 [Route("api/[controller]/[action]")]
@@ -26,7 +23,7 @@ public class ProjectController(
     /// <summary>
     /// 获取用户全部项目内容
     /// </summary>
-    /// <returns></returns>
+    /// <returns>用户全部项目</returns>
     [HttpGet]
     public async Task<ActionResult<ProjectModel[]>> GetUserProjects()
     {
@@ -40,6 +37,20 @@ public class ProjectController(
             .FirstOrDefaultAsync(x => x.UserId == member.UserId);
 
         return userModel?.Projects.Select(x => x.Project).ToArray() ?? [];
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UserModel[]>> GetProjectMember(string id)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+
+        var proj = await _context.Projects.Include(x => x.Members).ThenInclude(x => x.User)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        return proj?.Members.Select(x => new UserModel() { Name = x.User.Name, UserId = x.UserId }).ToArray() ?? [];
     }
 
     /// <summary>

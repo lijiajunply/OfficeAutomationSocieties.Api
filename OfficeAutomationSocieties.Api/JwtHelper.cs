@@ -23,7 +23,7 @@ public class JwtHelper(IConfiguration configuration)
         var securityToken = new JwtSecurityToken(
             claims: claims,
             notBefore: DateTime.Now, //notBefore
-            expires: DateTime.Now.AddSeconds(30), //expires
+            expires: DateTime.Now.AddDays(1), //expires
             signingCredentials: signingCredentials
         );
         var token = new JwtSecurityTokenHandler().WriteToken(securityToken);

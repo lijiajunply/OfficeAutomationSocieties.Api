@@ -7,6 +7,7 @@
         <entry key="OA.WindowApp/Dialogs/AddGantt.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/AddOrCreathProject.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/JoinOrCreateProject.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
+        <entry key="OA.WindowApp/Dialogs/ShowUsers.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HelpView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HomeView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/LoginView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />

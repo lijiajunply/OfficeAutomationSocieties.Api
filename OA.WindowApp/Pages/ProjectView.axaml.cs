@@ -64,14 +64,14 @@ public partial class ProjectView : UserControl
         };
         await td.ShowAsync();
     }
-    
+
     private async void TaskChangeClick(object? sender, RoutedEventArgs e)
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
         if (sender is not Control control) return;
         if (control.DataContext is not GanttModel gantt) return;
-        if(gantt.UserId != view.User.UserId)return;
+        if (gantt.UserId != view.User.UserId) return;
         var td = new TaskDialog
         {
             Title = "更改任务",
@@ -106,11 +106,31 @@ public partial class ProjectView : UserControl
         if (view == null) return;
         if (sender is not Control control) return;
         if (control.DataContext is not GanttModel gantt) return;
-        if(gantt.UserId != view.User.UserId)return;
+        if (gantt.UserId != view.User.UserId) return;
         using var proj = new Project(view.Jwt);
         if (await proj.RemoveGantt(gantt.Id))
             view.NotificationShow("删除任务", "删除成功");
         else
             view.NotificationShow("删除任务", "删除失败", NotificationType.Error);
+    }
+
+    private async void ShowUserClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (DataContext is not ProjectViewModel model) return;
+        using var proj = new Project(view.Jwt);
+        var td = new TaskDialog
+        {
+            Title = "查看成员",
+            Content = new ShowUsers(await proj.GetProjectMember(model.Project.Id)),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                TaskDialogButton.OKButton
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+        await td.ShowAsync();
     }
 }

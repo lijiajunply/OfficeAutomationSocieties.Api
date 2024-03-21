@@ -64,7 +64,7 @@ builder.Services.AddAuthentication(options => { options.DefaultScheme = JwtBeare
             IssuerSigningKey =
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]!)), //SecurityKey
             ValidateLifetime = true, //是否验证失效时间
-            ClockSkew = TimeSpan.FromSeconds(30), //过期时间容错值，解决服务器端时间不同步问题（秒）
+            ClockSkew = TimeSpan.FromSeconds(5), //过期时间容错值，解决服务器端时间不同步问题（秒）
             RequireExpirationTime = true,
         };
     });

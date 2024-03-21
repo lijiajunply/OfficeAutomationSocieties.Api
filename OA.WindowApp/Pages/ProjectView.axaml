@@ -21,11 +21,20 @@
             <ContentControl Content="{Binding Project}">
                 <ContentControl.ContentTemplate>
                     <DataTemplate DataType="models:ProjectModel">
-                        <StackPanel>
+                        <StackPanel Spacing="8">
                             <Panel>
-                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" />
-                                <TextBlock Text="{Binding Members.Count}" HorizontalAlignment="Right" />
+                                <Button Classes="TransparentButton" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding Name}" Margin="10" Classes="h1" />
+                                </Button>
+                                <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="ShowUserClick">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <controls:SymbolIcon Symbol="PeopleFilled" FontSize="24" />
+                                        <TextBlock Text="{Binding Members.Count}" Classes="h3Bold" />
+                                    </StackPanel>
+                                </Button>
                             </Panel>
+                            <TextBlock Text="{Binding Introduce}" Classes="h3Bold" MaxLines="3"
+                                       TextWrapping="WrapWithOverflow" />
                             <Panel>
                                 <TextBlock Text="项目任务表" Classes="h1" HorizontalAlignment="Left" />
                                 <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="AddTaskClick">
@@ -52,14 +61,15 @@
                                     <Style Selector="ListBoxItem">
                                         <Setter Property="ContextFlyout">
                                             <controls:FAMenuFlyout Placement="Bottom">
-                                                <controls:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick"/>
-                                                <controls:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick"/>
+                                                <controls:MenuFlyoutItem Text="更改" IconSource="Open"
+                                                                         Click="TaskChangeClick" />
+                                                <controls:MenuFlyoutItem Text="删除" IconSource="Remove"
+                                                                         Click="RemoveGanttClick" />
                                                 <controls:MenuFlyoutSeparator />
                                             </controls:FAMenuFlyout>
                                         </Setter>
                                     </Style>
                                 </ListBox.Styles>
-                                
                             </ListBox>
                         </StackPanel>
                     </DataTemplate>

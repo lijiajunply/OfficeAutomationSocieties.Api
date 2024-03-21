@@ -11,6 +11,7 @@ public class ProjectModel
     public List<FileModel> Files { get; init; } = [];
 
     public List<GanttModel> GanttList { get; } = [];
+    public string Introduce { get; init; } = "";
 }
 
 [Serializable]

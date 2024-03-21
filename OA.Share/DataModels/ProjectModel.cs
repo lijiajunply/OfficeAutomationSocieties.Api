@@ -10,6 +10,8 @@ public class ProjectModel
 
     [Column(TypeName = "varchar(32)")] public string Name { get; init; } = "";
 
+    [Column(TypeName = "varchar(512)")] public string Introduce { get; init; } = "";
+
     [Key]
     [Column(TypeName = "varchar(64)")]
     public string Id { get; set; } = "";
@@ -24,12 +26,11 @@ public class ProjectModel
 public class ProjectIdentity
 {
     [JsonIgnore] [Key] public int Key { get; set; }
-    
+
     [Column(TypeName = "varchar(64)")] public string UserId { get; set; } = "";
 
     [Column(TypeName = "varchar(64)")] public string ProjectId { get; set; } = "";
     [JsonIgnore] public UserModel User { get; init; } = new();
 
     [JsonIgnore] public ProjectModel Project { get; } = new();
-    //[Column(TypeName = "varchar(10)")] public string ProjIdentity { get; set; } = "";
 }

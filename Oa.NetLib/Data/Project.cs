@@ -20,6 +20,20 @@ public class Project(string jwt = "") : DataBasic(jwt)
         }
     }
 
+    public async Task<UserModel[]> GetProjectMember(string id)
+    {
+        try
+        {
+            var response = await SharedClient.GetAsync($"/api/Project/GetProjectMember/{id}");
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<UserModel[]>(result) ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
     public async Task<ProjectModel> JoinProject(string id)
     {
         try

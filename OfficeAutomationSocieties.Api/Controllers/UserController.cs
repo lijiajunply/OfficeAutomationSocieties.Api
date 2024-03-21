@@ -91,15 +91,12 @@ public class UserController(
     public async Task<ActionResult<string>> Login(LoginModel loginModel)
     {
         await using var _context = await factory.CreateDbContextAsync();
-        if (_context.Users == null!)
-            return NotFound();
 
         var model =
             await _context.Users.FirstOrDefaultAsync(x =>
                 x.PhoneNum == loginModel.PhoneNum && x.Password == loginModel.Password);
 
-        if (model == null)
-            return NotFound();
+        if (model == null) return NotFound();
         return jwtHelper.GetMemberToken(UserJwtModel.DataToJwt(model));
     }
 

@@ -13,7 +13,7 @@ public class OrganizeModel
     [Column(TypeName = "varchar(64)")]
     public string Id { get; set; } = "";
 
-    [Column(TypeName = "varchar(64)")] public string Introduce { get; init; } = "";
+    [Column(TypeName = "varchar(512)")] public string Introduce { get; init; } = "";
 
     public List<AnnouncementModel> Announcements { get; } = [];
     public List<ProjectModel> Projects { get; } = [];
