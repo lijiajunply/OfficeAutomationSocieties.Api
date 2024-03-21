@@ -9,15 +9,15 @@
              x:Class="OA.WindowApp.Pages.OrganizeView"
              x:DataType="pages:OrganizeViewModel">
     <Grid ColumnDefinitions="Auto,*">
-        <ListBox Grid.Column="0" SelectedItem="{Binding Organizes}"
-                 ItemsSource="{Binding Organize}">
+        <ListBox Grid.Column="0" SelectedItem="{Binding Organize}"
+                 ItemsSource="{Binding Organizes}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="models:OrganizeModel">
                     <TextBlock Text="{Binding Name}" Classes="h2" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ScrollViewer Grid.Column="1">
+        <ScrollViewer Grid.Column="1" Name="Viewer">
             <ContentControl Content="{Binding Organize}">
                 <ContentControl.ContentTemplate>
                     <DataTemplate DataType="models:OrganizeModel">
@@ -36,12 +36,11 @@
                             <TextBlock Text="{Binding Introduce}" Classes="h3Bold" MaxLines="3"
                                        TextWrapping="WrapWithOverflow" />
                             <Panel>
-                                <TextBlock Name="ProjectItemBlock" Classes="h1" HorizontalAlignment="Left" />
-                                <Button Classes="TransparentButton" HorizontalAlignment="Right">
+                                <TextBlock Text="组织项目" Classes="h1" HorizontalAlignment="Left" />
+                                <Button Classes="TransparentButton" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <controls:SymbolIcon Symbol="Add" />
                                 </Button>
                             </Panel>
-                            <TextBlock Text="组织项目" Classes="h1" />
                             <ItemsControl ItemsSource="{Binding Projects}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>

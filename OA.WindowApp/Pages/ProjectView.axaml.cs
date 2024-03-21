@@ -23,7 +23,11 @@ public partial class ProjectView : UserControl
     protected override void OnInitialized()
     {
         if (DataContext is not ProjectViewModel model) return;
-        if (model.Projects.Count == 0) return;
+        if (model.Projects.Count == 0)
+        {
+            Viewer.IsVisible = false;
+            return;
+        }
         model.Project = model.Projects[0];
     }
 

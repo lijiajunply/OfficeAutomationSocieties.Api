@@ -5,7 +5,9 @@
       <map>
         <entry key="OA.WindowApp/App.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/AddGantt.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
+        <entry key="OA.WindowApp/Dialogs/AddOrChangeGantt.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/AddOrCreathProject.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
+        <entry key="OA.WindowApp/Dialogs/JoinOrCreateOrganize.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/JoinOrCreateProject.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/ShowUsers.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HelpView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />

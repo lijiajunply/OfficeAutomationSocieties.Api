@@ -98,16 +98,19 @@ public partial class MainWindow : AppWindow
             using var proj = new Project(Jwt);
             using var org = new Organize(Jwt);
             var projects = await proj.GetUserProjects();
-            var organize = await org.GetUserOrganizes();
+            var organizes = await org.GetUserOrganizes();
 
             var home = Stack["Home"] as HomeViewModel;
             home!.Projects.Add(projects);
-            home.Organizes.Add(organize);
+            home.Organizes.Add(organizes);
             home.TaskNotes.Add(User.TaskNotes);
             home.Name = User.Name;
 
             var project = Stack["Project"] as ProjectViewModel;
             project!.Projects.Add(projects);
+
+            var organize = Stack["Organize"] as OrganizeViewModel;
+            organize!.Organizes.Add(organizes);
 
             Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(home));
         }

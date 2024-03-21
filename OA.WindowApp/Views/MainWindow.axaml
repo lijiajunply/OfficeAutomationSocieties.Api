@@ -36,11 +36,19 @@
                 <controls:NavigationViewItem Content="项目" Tag="Project" IconSource="CalendarMonthFilled" />
                 <controls:NavigationViewItem Content="组织" Tag="Organize">
                     <controls:NavigationViewItem.IconSource>
-                        <controls:FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEBDA;" />
+                        <controls:FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xECA5;" />
+                    </controls:NavigationViewItem.IconSource>
+                </controls:NavigationViewItem>
+                <controls:NavigationViewItem Content="搜索">
+                    <controls:NavigationViewItem.IconSource>
+                        <controls:FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE721;" />
                     </controls:NavigationViewItem.IconSource>
                 </controls:NavigationViewItem>
             </controls:NavigationView.MenuItems>
             <controls:NavigationView.FooterMenuItems>
+                <!-- <controls:NavigationViewItem Content="市场"> -->
+                <!--      -->
+                <!-- </controls:NavigationViewItem> -->
                 <controls:NavigationViewItem Content="设置" Tag="Setting" IconSource="SettingsFilled" />
                 <controls:NavigationViewItem Content="帮助" Tag="Help" IconSource="Help" />
             </controls:NavigationView.FooterMenuItems>

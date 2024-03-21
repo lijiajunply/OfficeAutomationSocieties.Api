@@ -130,4 +130,58 @@ public partial class HomeView : UserControl
         else
             view.NotificationShow("删除任务", "删除失败", NotificationType.Error);
     }
+
+    private async void JoinOrCreateOrganizeClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        var td = new TaskDialog
+        {
+            Title = "添加或创建组织",
+            Content = new JoinOrCreateOrganize(),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                TaskDialogButton.OKButton,
+                TaskDialogButton.CloseButton
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        td.Closing += async (dialog, args) =>
+        {
+            if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
+            if (dialog.Content is not JoinOrCreateOrganize organize) return;
+            var result = organize.Done();
+            using var org = new Organize(view.Jwt);
+            if (result.isCreate)
+            {
+                var p = await org.CreateOrganize(result.organize);
+                if (string.IsNullOrEmpty(p.Id)) return;
+                view.NotificationShow("创建组织", "创建成功");
+            }
+            else
+            {
+                var p = await org.AddOrganize(result.organize.Id);
+                if (string.IsNullOrEmpty(p.Id)) return;
+                //view.Add(p);
+                view.NotificationShow("加入组织", "加入成功");
+            }
+        };
+        await td.ShowAsync();
+    }
+
+    private void OrgTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is not Control control) return;
+        if (control.DataContext is not OrganizeModel organize) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (DataContext is not HomeViewModel model) return;
+        var organizeViewModel = new OrganizeViewModel();
+        organizeViewModel.Organizes.Add(model.Organizes);
+        var organizeView = new OrganizeView() { DataContext = organizeViewModel };
+        organizeView.OrganizeViewFromId(organize.Id);
+        view.Navigate(organizeView);
+    }
 }

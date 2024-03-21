@@ -44,8 +44,8 @@
                             <Style Selector="ListBoxItem">
                                 <Setter Property="ContextFlyout">
                                     <ui:FAMenuFlyout Placement="Bottom">
-                                        <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick"/>
-                                        <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick"/>
+                                        <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick" />
+                                        <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick" />
                                         <ui:MenuFlyoutSeparator />
                                     </ui:FAMenuFlyout>
                                 </Setter>
@@ -74,7 +74,8 @@
                             <DataTemplate DataType="models:ProjectModel">
                                 <Border Classes="CardHover" Padding="10" Height="120" Width="120"
                                         Tapped="ProjectTapped">
-                                    <TextBlock Text="{Binding Name}" Classes="h2" />
+                                    <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -85,7 +86,8 @@
                 <StackPanel>
                     <Panel>
                         <TextBlock Name="OrgItemBlock" Classes="h1" HorizontalAlignment="Left" />
-                        <Button Classes="TransparentButton" HorizontalAlignment="Right">
+                        <Button Classes="TransparentButton" HorizontalAlignment="Right"
+                                Click="JoinOrCreateOrganizeClick">
                             <ui:SymbolIcon Symbol="Add" />
                         </Button>
                     </Panel>
@@ -97,8 +99,9 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="models:OrganizeModel">
-                                <Border Classes="CardHover">
-                                    <StackPanel>
+                                <Border Classes="CardHover" Padding="10" Height="120" Width="120" Tapped="OrgTapped">
+                                    <StackPanel HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
                                         <TextBlock Text="{Binding Name}" />
                                         <TextBlock Text="{Binding Introduce}" />
                                     </StackPanel>

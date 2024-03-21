@@ -32,20 +32,6 @@ public class OrganizeController(
 
         return user?.Organizes.Select(x => x.Organize).ToArray() ?? [];
     }
-    
-    [HttpGet]
-    public async Task<ActionResult<OrganizeModel>> GetOrgData()
-    {
-        await using var _context = await factory.CreateDbContextAsync();
-        var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member == null || string.IsNullOrEmpty(member.NowOrgId)) return NotFound();
-
-        var org = await _context.Organizes.Include(x => x.Projects).Include(x => x.Resources)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
-
-        if (org == null) return NotFound();
-        return org;
-    }
 
     /// <summary>
     /// 创建组织
@@ -53,22 +39,20 @@ public class OrganizeController(
     /// <param name="model"></param>
     /// <returns>新的Jwt</returns>
     [HttpPost]
-    public async Task<ActionResult<string>> CreateOrganize([FromBody] OrganizeModel model)
+    public async Task<ActionResult<OrganizeModel>> CreateOrganize([FromBody] OrganizeModel model)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
         var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
         if (user == null) return NotFound();
-        model.Id = $"{model} , Creator is {member.UserId.Base64Encryption()}".HashEncryption();
-        var identity = new OrganizeIdentity() { Identity = "President", UserId = user.UserId, Organize = model };
-        model.MemberIdentity.Add(identity);
-        user.Organizes.Add(identity);
+        model.Id = model.ToString().HashEncryption();
+
+        model.MemberIdentity.Add(new OrganizeIdentity() { Identity = "President", User = user });
+
+        await _context.Organizes.AddAsync(model);
         await _context.SaveChangesAsync();
-        var jwt = UserJwtModel.DataToJwt(user);
-        jwt.Identity = "President";
-        jwt.NowOrgId = model.Id;
-        return jwtHelper.GetMemberToken(jwt);
+        return model;
     }
 
     /// <summary>
@@ -77,7 +61,7 @@ public class OrganizeController(
     /// <param name="id">组织代号</param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<string>> AddOrganize(string id)
+    public async Task<ActionResult<OrganizeModel>> AddOrganize(string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
@@ -93,9 +77,7 @@ public class OrganizeController(
         user.Organizes.Add(identity);
 
         await _context.SaveChangesAsync();
-        var jwt = UserJwtModel.DataToJwt(user);
-        jwt.NowOrgId = id;
-        return jwtHelper.GetMemberToken(jwt);
+        return org;
     }
 
     /// <summary>

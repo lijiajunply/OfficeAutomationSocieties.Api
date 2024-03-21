@@ -10,7 +10,7 @@ public class Organize(string jwt = "") : DataBasic(jwt)
     {
         try
         {
-            var response = await SharedClient.GetAsync("/api/Organize/GetOrgData");
+            var response = await SharedClient.GetAsync("/api/Organize/GetUserOrganizes");
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<OrganizeModel[]>(result) ?? [];
         }
@@ -19,12 +19,12 @@ public class Organize(string jwt = "") : DataBasic(jwt)
             return [];
         }
     }
-    
-    public async Task<OrganizeModel> GetOrgData()
+
+    public async Task<OrganizeModel> CreateOrganize(OrganizeModel model)
     {
         try
         {
-            var response = await SharedClient.GetAsync("/api/Organize/GetOrgData");
+            var response = await SharedClient.PostAsJsonAsync("/api/Organize/CreateOrganize", model);
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<OrganizeModel>(result) ?? new OrganizeModel();
         }
@@ -34,29 +34,17 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<string> CreateOrganize(OrganizeModel model)
-    {
-        try
-        {
-            var response = await SharedClient.PostAsJsonAsync("/api/Organize/CreateOrganize", model);
-            return await response.Content.ReadAsStringAsync();
-        }
-        catch
-        {
-            return "";
-        }
-    }
-
-    public async Task<string> AddOrganize(string id)
+    public async Task<OrganizeModel> AddOrganize(string id)
     {
         try
         {
             var response = await SharedClient.GetAsync($"/api/Organize/AddOrganize/{id}");
-            return await response.Content.ReadAsStringAsync();
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<OrganizeModel>(result) ?? new OrganizeModel();
         }
         catch
         {
-            return "";
+            return new OrganizeModel();
         }
     }
 
