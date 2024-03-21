@@ -2,8 +2,6 @@
 
 public class OrganizeModel
 {
-    public List<UserModel> Member { get; } = [];
-
     public List<OrganizeIdentity> MemberIdentity { get; } = [];
     public string Name { get; init; } = "";
 

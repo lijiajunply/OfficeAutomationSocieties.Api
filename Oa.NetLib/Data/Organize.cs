@@ -6,7 +6,6 @@ namespace Oa.NetLib.Data;
 
 public class Organize(string jwt = "") : DataBasic(jwt)
 {
-
     public async Task<OrganizeModel[]> GetUserOrganizes()
     {
         try

@@ -29,6 +29,7 @@ public partial class MainWindow : AppWindow
         {
             { "Home", new HomeViewModel() },
             { "Project", new ProjectViewModel() },
+            { "Organize", new OrganizeViewModel() },
             { "Setting", new SettingViewModel() },
             { "Help", new HelpViewModel() }
         };

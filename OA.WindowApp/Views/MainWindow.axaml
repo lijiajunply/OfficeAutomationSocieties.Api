@@ -33,15 +33,18 @@
                                  IsSettingsVisible="False">
             <controls:NavigationView.MenuItems>
                 <controls:NavigationViewItem Content="主页" Tag="Home" IconSource="HomeFilled" />
-                <controls:NavigationViewItem Content="项目" Tag="Project" IconSource="CalendarMonthFilled"/>
+                <controls:NavigationViewItem Content="项目" Tag="Project" IconSource="CalendarMonthFilled" />
+                <controls:NavigationViewItem Content="组织" Tag="Organize">
+                    <controls:NavigationViewItem.IconSource>
+                        <controls:FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEBDA;" />
+                    </controls:NavigationViewItem.IconSource>
+                </controls:NavigationViewItem>
             </controls:NavigationView.MenuItems>
             <controls:NavigationView.FooterMenuItems>
                 <controls:NavigationViewItem Content="设置" Tag="Setting" IconSource="SettingsFilled" />
                 <controls:NavigationViewItem Content="帮助" Tag="Help" IconSource="Help" />
             </controls:NavigationView.FooterMenuItems>
-            <ScrollViewer>
-                <controls:Frame Name="FrameView" Padding="10" />
-            </ScrollViewer>
+            <controls:Frame Name="FrameView" Padding="10" />
         </controls:NavigationView>
     </Grid>
 </Window>
