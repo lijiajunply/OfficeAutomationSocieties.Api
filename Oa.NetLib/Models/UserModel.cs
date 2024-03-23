@@ -7,13 +7,10 @@ public class UserModel
 
     public string Name { get; init; } = "";
     public string PhoneNum { get; set; } = "";
-
+    
+    public string RegistrationTime { get; set; } = "";
+    
     public string Password { get; set; } = "";
-
-    public List<OrganizeIdentity> Organizes { get; } = [];
-
-    public List<ProjectIdentity> Projects { get; } = [];
-
     public List<GanttModel> TaskNotes { get; } = [];
 }
 

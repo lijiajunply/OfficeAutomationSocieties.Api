@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using Oa.NetLib.Data;
 using Oa.NetLib.Models;
+using OA.WindowApp.Dialogs;
 using OA.WindowApp.Models;
 using OA.WindowApp.ViewModels.Pages;
 using OA.WindowApp.Views;
@@ -46,7 +47,7 @@ public partial class OrganizeView : UserControl
         var td = new TaskDialog
         {
             Title = "添加项目",
-            Content = new TextBox(),
+            Content = new OrganizeAddProject(),
             FooterVisibility = TaskDialogFooterVisibility.Never,
             Buttons =
             {
@@ -59,11 +60,17 @@ public partial class OrganizeView : UserControl
         td.Closing += async (dialog, args) =>
         {
             if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
-            if (dialog.Content is not TextBox box) return;
-            if (string.IsNullOrEmpty(box.Text)) return;
-            using var org = new Organize(string.IsNullOrEmpty(Jwt) ? view.Jwt : Jwt);
+            if (dialog.Content is not OrganizeAddProject organizeAddProject) return;
+            var project = organizeAddProject.Done();
+            if (string.IsNullOrEmpty(project.Name)) return;
             if (DataContext is not OrganizeViewModel model) return;
-            var proj = await org.CreateOrgProject(new ProjectModel() { Name = box.Text });
+            using var org = new Organize(Jwt);
+            if (string.IsNullOrEmpty(Jwt))
+            {
+                Jwt = await org.LoginOrganize(model.Organize.Id);
+                org.Jwt = Jwt;
+            }
+            var proj = await org.CreateOrgProject(project);
             if (string.IsNullOrEmpty(proj.Id)) return;
             model.Organize.Projects.Add(proj);
         };
@@ -77,5 +84,10 @@ public partial class OrganizeView : UserControl
         if (DataContext is not OrganizeViewModel model) return;
         using var org = new Organize(string.IsNullOrEmpty(Jwt) ? view.Jwt : Jwt);
         Jwt = await org.LoginOrganize(model.Organize.Id);
+        org.Jwt = Jwt;
+        ResourceItems.ItemsSource = await org.GetResources();
+        var a = await org.LookAnnouncement();
+        if (string.IsNullOrEmpty(a.Id)) return;
+        view.NotificationShow("公告", a.Context);
     }
 }

@@ -33,7 +33,7 @@ public class ProjectController(
         if (member == null) return NotFound();
 
         var userModel = await _context.Users.Include(x => x.Projects)
-            .ThenInclude(projectIdentity => projectIdentity.Project).ThenInclude(x => x.GanttList)
+            .ThenInclude(projectIdentity => projectIdentity.Project).ThenInclude(x => x.GanttList).AsSplitQuery()
             .FirstOrDefaultAsync(x => x.UserId == member.UserId);
 
         return userModel?.Projects.Select(x => x.Project).ToArray() ?? [];

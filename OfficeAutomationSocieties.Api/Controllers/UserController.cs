@@ -36,6 +36,7 @@ public class UserController(
 
         var user = await _context.Users.Include(x => x.Projects)
             .Include(x => x.Organizes)
+            .AsSplitQuery()
             .Include(x => x.TaskNotes)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.UserId == member.UserId);
@@ -63,7 +64,8 @@ public class UserController(
         {
             Password = model.Password,
             PhoneNum = model.PhoneNum,
-            Name = model.Name
+            Name = model.Name,
+            RegistrationTime = DateTime.Today.ToString("d")
         };
         user.UserId = user.ToString().HashEncryption();
 
@@ -116,7 +118,6 @@ public class UserController(
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member?.UserId != memberModel.UserId) return BadRequest();
 
         var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
         if (user == null) return NotFound();
@@ -131,7 +132,7 @@ public class UserController(
             return BadRequest();
         }
 
-        return NoContent();
+        return Ok();
     }
 
     #endregion

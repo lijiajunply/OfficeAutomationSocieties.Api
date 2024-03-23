@@ -17,6 +17,8 @@ public partial class JoinOrCreateOrganize : UserControl
     }
 
     public (OrganizeModel organize, bool isCreate) Done()
-        => (new OrganizeModel() { Name = (CreateBorder.IsVisible ? NameBox.Text : IdBox.Text) ?? "" },
+        => ( CreateBorder.IsVisible
+                ? new OrganizeModel() { Name = NameBox.Text ?? "", Introduce = IntroduceBox.Text ?? "" }
+                : new OrganizeModel() { Id = IdBox.Text ?? "" },
             CreateBorder.IsVisible);
 }

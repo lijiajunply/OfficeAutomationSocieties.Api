@@ -13,7 +13,10 @@
                  ItemsSource="{Binding Projects}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}" Classes="h2" />
+                    <StackPanel Orientation="Horizontal" Width="200" Spacing="10" ToolTip.Tip="{Binding Name}">
+                        <!-- <Image Source="/Assets/avalonia-logo.ico" Height="50" Width="50" /> -->
+                        <TextBlock Text="{Binding Name}" Classes="h2" TextWrapping="WrapWithOverflow" MaxLines="1" />
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -33,15 +36,16 @@
                                     </StackPanel>
                                 </Button>
                             </Panel>
-                            <TextBlock Text="{Binding Introduce}" Classes="h3Bold" MaxLines="3"
+                            <TextBlock Margin="10" Text="{Binding Introduce}" Classes="h3Bold" MaxLines="3"
                                        TextWrapping="WrapWithOverflow" />
                             <Panel>
                                 <TextBlock Text="项目任务表" Classes="h1" HorizontalAlignment="Left" />
-                                <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="AddTaskClick" VerticalAlignment="Center">
+                                <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="AddTaskClick"
+                                        VerticalAlignment="Center">
                                     <controls:SymbolIcon Symbol="Add" />
                                 </Button>
                             </Panel>
-                            <ListBox ItemsSource="{Binding  GanttList}">
+                            <ListBox ItemsSource="{Binding GanttList}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="models:GanttModel">
                                         <Grid ColumnDefinitions="*,*,*">

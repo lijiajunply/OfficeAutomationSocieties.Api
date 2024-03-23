@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Oa.NetLib.Models;
 
 namespace OA.WindowApp.Dialogs;
 
@@ -15,6 +16,9 @@ public partial class JoinOrCreateProject : UserControl
         CreateBorder.IsVisible = !CreateBorder.IsVisible;
     }
 
-    public (string context, bool isCreate) Done()
-        => ((CreateBorder.IsVisible ? NameBox.Text : IdBox.Text) ?? "", CreateBorder.IsVisible);
+    public (ProjectModel context, bool isCreate) Done()
+        => (
+            CreateBorder.IsVisible
+                ? new ProjectModel() { Name = NameBox.Text ?? "", Introduce = IntroduceBox.Text ?? "" }
+                : new ProjectModel() { Id = IdBox.Text ?? "" }, CreateBorder.IsVisible);
 }

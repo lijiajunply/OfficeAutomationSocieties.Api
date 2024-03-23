@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Input;
@@ -27,6 +28,9 @@ public partial class HomeView : UserControl
         TaskItemBlock.Text = model.TaskNotes.Count == 0 ? "当前没有任务，可以去放松一下了" : "当前任务";
         ProjectItemBlock.Text = model.Projects.Count == 0 ? "当前没有项目，点击添加或创建" : "您的项目";
         OrgItemBlock.Text = model.Organizes.Count == 0 ? "当前没有组织，点击添加或创建" : "您的组织";
+        if (!DateTime.TryParse(model.User.RegistrationTime, out var date)) return;
+        var day = (DateTime.Today - date).Days;
+        DateBlock.Text = $"这是您努力的第{day + 1}天";
     }
 
     private async void JoinOrCreateProjectClick(object? sender, RoutedEventArgs e)
@@ -54,15 +58,25 @@ public partial class HomeView : UserControl
             using var proj = new Project(view.Jwt);
             if (result.isCreate)
             {
-                var p = await proj.CreateProject(new ProjectModel() { Name = result.context });
-                if (string.IsNullOrEmpty(p.Id)) return;
+                if (string.IsNullOrEmpty(result.context.Name)) return;
+                var p = await proj.CreateProject(result.context);
+                if (string.IsNullOrEmpty(p.Id))
+                {
+                    view.NotificationShow("创建项目", "创建失败",NotificationType.Error);
+                    return;
+                }
                 view.Add(p);
-                view.NotificationShow("创建项目", "创建成功");
+                view.NotificationShow("创建项目", "创建失败",NotificationType.Error);
             }
             else
             {
-                var p = await proj.JoinProject(result.context);
-                if (string.IsNullOrEmpty(p.Id)) return;
+                if (string.IsNullOrEmpty(result.context.Id)) return;
+                var p = await proj.JoinProject(result.context.Id);
+                if (string.IsNullOrEmpty(p.Id))
+                {
+                    view.NotificationShow("加入项目", "加入成功");
+                    return;
+                }
                 view.Add(p);
                 view.NotificationShow("加入项目", "加入成功");
             }
@@ -157,14 +171,23 @@ public partial class HomeView : UserControl
             if (result.isCreate)
             {
                 var p = await org.CreateOrganize(result.organize);
-                if (string.IsNullOrEmpty(p.Id)) return;
+                if (string.IsNullOrEmpty(p.Id))
+                {
+                    view.NotificationShow("创建组织", "创建失败",NotificationType.Error);
+                    return;
+                }
+                view.Add(p);
                 view.NotificationShow("创建组织", "创建成功");
             }
             else
             {
                 var p = await org.AddOrganize(result.organize.Id);
-                if (string.IsNullOrEmpty(p.Id)) return;
-                //view.Add(p);
+                if (string.IsNullOrEmpty(p.Id))
+                {
+                    view.NotificationShow("加入组织", "加入失败",NotificationType.Error);
+                    return;
+                }
+                view.Add(p);
                 view.NotificationShow("加入组织", "加入成功");
             }
         };
@@ -183,5 +206,42 @@ public partial class HomeView : UserControl
         var organizeView = new OrganizeView() { DataContext = organizeViewModel };
         organizeView.OrganizeViewFromId(organize.Id);
         view.Navigate(organizeView);
+    }
+
+    private async void UpdateUserClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (DataContext is not HomeViewModel model) return;
+        var td = new TaskDialog
+        {
+            Title = "更改用户信息",
+            Content = new UpdateUser(model.User),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                TaskDialogButton.OKButton,
+                TaskDialogButton.CloseButton
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        td.Closing += async (dialog, args) =>
+        {
+            if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
+            if (dialog.Content is not UpdateUser updateUser) return;
+            var userModel = updateUser.Done();
+            if (userModel == null) return;
+            userModel.RegistrationTime = DateTime.Today.ToString("d");
+            using var user = new User(view.Jwt);
+            if (await user.Update(userModel))
+            {
+                model.User = userModel;
+            }
+            else
+            {
+            }
+        };
+        await td.ShowAsync();
     }
 }

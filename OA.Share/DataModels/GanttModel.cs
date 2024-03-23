@@ -13,8 +13,8 @@ public class GanttModel
     public string Id { get; set; } = "";
 
     [JsonIgnore] public UserModel User { get; set; } = new();
-    [Column(TypeName = "varchar(64)")] public string UserId { get; set; } = "";
-    [Column(TypeName = "varchar(64)")] public string ProjectId { get; set; } = "";
+    [Column(TypeName = "varchar(64)")] public string UserId { get; init; } = "";
+    [Column(TypeName = "varchar(64)")] public string ProjectId { get; init; } = "";
     [JsonIgnore] public ProjectModel Project { get; } = new();
 
     [Column(TypeName = "varchar(64)")] public string StartTime { get; set; } = "";

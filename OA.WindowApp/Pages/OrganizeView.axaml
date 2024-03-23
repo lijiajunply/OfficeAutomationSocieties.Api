@@ -13,52 +13,67 @@
                  ItemsSource="{Binding Organizes}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="models:OrganizeModel">
-                    <TextBlock Text="{Binding Name}" Classes="h2" />
+                    <StackPanel Margin="10" Width="200" Orientation="Horizontal" Spacing="10"
+                                ToolTip.Tip="{Binding Name}">
+                        <!-- <Image Source="/Assets/avalonia-logo.ico" Height="50" Width="50" /> -->
+                        <TextBlock Text="{Binding Name}" Classes="h2" TextWrapping="WrapWithOverflow" MaxLines="1" />
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <ScrollViewer Grid.Column="1" Name="Viewer">
-            <ContentControl Content="{Binding Organize}">
-                <ContentControl.ContentTemplate>
-                    <DataTemplate DataType="models:OrganizeModel">
-                        <StackPanel Spacing="4">
-                            <Panel>
-                                <Button Classes="TransparentButton" HorizontalAlignment="Left">
-                                    <TextBlock Text="{Binding Name}" Margin="10" Classes="h1" />
-                                </Button>
-                                <Button Classes="TransparentButton" HorizontalAlignment="Right">
-                                    <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <controls:SymbolIcon Symbol="PeopleFilled" FontSize="24" />
-                                        <TextBlock Text="{Binding MemberIdentity.Count}" Classes="h3Bold" />
-                                    </StackPanel>
-                                </Button>
-                            </Panel>
-                            <TextBlock Text="{Binding Introduce}" Classes="h3Bold" MaxLines="3"
-                                       TextWrapping="WrapWithOverflow" />
-                            <Panel>
-                                <TextBlock Text="组织项目" Classes="h1" HorizontalAlignment="Left" />
-                                <Button Classes="TransparentButton" HorizontalAlignment="Right" VerticalAlignment="Center" Click="AddProjectClick">
-                                    <controls:SymbolIcon Symbol="Add" />
-                                </Button>
-                            </Panel>
-                            <ItemsControl ItemsSource="{Binding Projects}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="models:ProjectModel">
-                                        <Border Classes="CardHover" Padding="10" Height="120" Width="120">
-                                            <TextBlock Text="{Binding Name}" Classes="h2" />
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
+            <StackPanel Spacing="4">
+                <ContentControl Content="{Binding Organize}" Name="Control">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate DataType="models:OrganizeModel">
+                            <StackPanel Spacing="4" Name="Panel">
+                                <Panel>
+                                    <Button Classes="TransparentButton" HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Name}" Margin="10" Classes="h1" />
+                                    </Button>
+                                    <Button Classes="TransparentButton" HorizontalAlignment="Right">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <controls:SymbolIcon Symbol="PeopleFilled" FontSize="24" />
+                                            <TextBlock Text="{Binding MemberIdentity.Count}" Classes="h3Bold" />
+                                        </StackPanel>
+                                    </Button>
+                                </Panel>
+                                <TextBlock Margin="10" Text="{Binding Introduce}" Classes="h3Bold" MaxLines="3"
+                                           TextWrapping="WrapWithOverflow" />
+                                <Panel>
+                                    <TextBlock Text="组织项目" Classes="h1" HorizontalAlignment="Left" />
+                                    <Button Classes="TransparentButton" HorizontalAlignment="Right"
+                                            VerticalAlignment="Center" Click="AddProjectClick">
+                                        <controls:SymbolIcon Symbol="Add" />
+                                    </Button>
+                                </Panel>
+                                <ItemsControl ItemsSource="{Binding Projects}" MinHeight="130">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="models:ProjectModel">
+                                            <Border Classes="CardHover" Padding="10" Height="120" Width="120">
+                                                <TextBlock Text="{Binding Name}" Classes="h2" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
+                <Separator />
+                <ListBox Name="ResourceItems">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="models:ResourceModel">
+                            <TextBox Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
         </ScrollViewer>
     </Grid>
 </UserControl>

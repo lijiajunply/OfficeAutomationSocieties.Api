@@ -104,7 +104,7 @@ public partial class MainWindow : AppWindow
             home!.Projects.Add(projects);
             home.Organizes.Add(organizes);
             home.TaskNotes.Add(User.TaskNotes);
-            home.Name = User.Name;
+            home.User = User;
 
             var project = Stack["Project"] as ProjectViewModel;
             project!.Projects.Add(projects);
@@ -150,5 +150,13 @@ public partial class MainWindow : AppWindow
         home?.Projects.Add(p);
         var project = Stack["Project"] as ProjectViewModel;
         project?.Projects.Add(p);
+    }
+
+    public void Add(OrganizeModel p)
+    {
+        var home = Stack["Home"] as HomeViewModel;
+        home?.Organizes.Add(p);
+        var project = Stack["Organize"] as OrganizeViewModel;
+        project?.Organizes.Add(p);
     }
 }

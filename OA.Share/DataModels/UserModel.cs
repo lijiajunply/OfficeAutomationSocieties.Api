@@ -9,6 +9,8 @@ public class UserModel
     [Column(TypeName = "varchar(64)")]
     public string UserId { get; set; } = "";
 
+    [Column(TypeName = "varchar(32)")]
+    public string RegistrationTime { get; set; } = "";
     [Column(TypeName = "varchar(32)")] public string Name { get; set; } = "";
     [Column(TypeName = "varchar(13)")] public string PhoneNum { get; set; } = "";
 
@@ -25,6 +27,7 @@ public class UserModel
         if (!string.IsNullOrEmpty(model.Name)) Name = model.Name;
         if (!string.IsNullOrEmpty(model.PhoneNum)) PhoneNum = model.PhoneNum;
         if (!string.IsNullOrEmpty(model.Password)) Password = model.Password;
+        if (!string.IsNullOrEmpty(model.RegistrationTime)) RegistrationTime = model.RegistrationTime;
     }
 
     public override string ToString() =>

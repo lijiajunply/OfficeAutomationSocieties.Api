@@ -5,13 +5,10 @@ public class OrganizeModel
     public List<OrganizeIdentity> MemberIdentity { get; } = [];
     public string Name { get; init; } = "";
 
-    public string Id { get; set; } = "";
+    public string Id { get; init; } = "";
 
     public string Introduce { get; init; } = "";
-
-    public List<AnnouncementModel> Announcements { get; } = [];
     public List<ProjectModel> Projects { get; } = [];
-    public List<ResourceModel> Resources { get; } = [];
 }
 
 [Serializable]

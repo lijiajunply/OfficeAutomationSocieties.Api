@@ -19,7 +19,23 @@
                 </Style>
             </StackPanel.Styles>
             <Border Classes="Card">
-                <TextBlock Classes="h1" Text="{Binding Name}" />
+                <Panel>
+                    <Button HorizontalAlignment="Left" Classes="TransparentButton">
+                        <Button.Flyout>
+                            <ui:FAMenuFlyout Placement="Right">
+                                <ui:MenuFlyoutItem Text="更改用户信息" IconSource="People" Click="UpdateUserClick"/>
+                                <ui:MenuFlyoutItem Text="登出" IconSource="Redo" />
+                            </ui:FAMenuFlyout>
+                        </Button.Flyout>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Image Source="/Assets/avalonia-logo.ico" Height="80" Width="80" />
+                            <StackPanel>
+                                <TextBlock Classes="h1" Text="{Binding User.Name}" />
+                                <TextBlock Name="DateBlock" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                </Panel>
             </Border>
             <Border Classes="Card">
                 <StackPanel>
@@ -44,9 +60,9 @@
                             <Style Selector="ListBoxItem">
                                 <Setter Property="ContextFlyout">
                                     <ui:FAMenuFlyout Placement="Bottom">
+                                        <ui:MenuFlyoutItem Text="完成" IconSource="Accept"/>
                                         <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick" />
                                         <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick" />
-                                        <ui:MenuFlyoutSeparator />
                                     </ui:FAMenuFlyout>
                                 </Setter>
                             </Style>
@@ -100,11 +116,8 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="models:OrganizeModel">
                                 <Border Classes="CardHover" Padding="10" Height="120" Width="120" Tapped="OrgTapped">
-                                    <StackPanel HorizontalAlignment="Center"
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" />
-                                        <TextBlock Text="{Binding Introduce}" />
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
