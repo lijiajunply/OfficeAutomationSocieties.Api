@@ -27,7 +27,9 @@ public class OrganizeController(
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null || string.IsNullOrEmpty(member.NowOrgId)) return NotFound();
 
-        var user = await _context.Users.Include(x => x.Organizes).ThenInclude(x => x.Organize)
+        var user = await _context.Users.Include(x => x.Organizes)
+            .ThenInclude(x => x.Organize)
+            .ThenInclude(x => x.Projects)
             .FirstOrDefaultAsync(x => x.UserId == member.UserId);
 
         return user?.Organizes.Select(x => x.Organize).ToArray() ?? [];
@@ -97,7 +99,6 @@ public class OrganizeController(
         var org = await _context.Organizes.Include(x => x.MemberIdentity).FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
 
-        org.MemberIdentity.Add(new OrganizeIdentity() { UserId = user.UserId });
         var identity = org.MemberIdentity.FirstOrDefault(x => x.UserId == member.UserId);
         if (string.IsNullOrEmpty(identity?.Identity)) return NotFound();
 
@@ -105,6 +106,31 @@ public class OrganizeController(
         jwt.Identity = identity.Identity;
         jwt.NowOrgId = id;
         return jwtHelper.GetMemberToken(jwt);
+    }
+
+    #endregion
+
+    #region 组织项目管理
+
+    [HttpPost]
+    public async Task<ActionResult<ProjectModel>> CreateOrgProject([FromBody] ProjectModel model)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+        var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
+        if (user == null) return NotFound();
+        var org = await _context.Organizes.Include(x => x.MemberIdentity)
+            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+        if (org == null) return NotFound();
+
+        model.Id = model.ToString().HashEncryption();
+        model.Members.Add(new ProjectIdentity() { User = user });
+
+        org.Projects.Add(model);
+        await _context.SaveChangesAsync();
+
+        return model;
     }
 
     #endregion
@@ -137,7 +163,7 @@ public class OrganizeController(
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
-        var org = await _context.Organizes.Include(organizeModel => organizeModel.Announcements)
+        var org = await _context.Organizes.Include(x => x.Announcements)
             .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
         if (org == null) return NotFound();
         return org.Announcements;
@@ -213,7 +239,7 @@ public class OrganizeController(
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<ResourceModel>> GetResourceModel(string id)
+    public async Task<ActionResult<ResourceModel>> GetResource(string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         if (_context.Resources == null!)
@@ -242,7 +268,7 @@ public class OrganizeController(
     /// <param name="resourceModel"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> UpdateResource(ResourceModel resourceModel)
+    public async Task<ActionResult> UpdateResource(ResourceModel resourceModel)
     {
         await using var _context = await factory.CreateDbContextAsync();
 
@@ -311,7 +337,7 @@ public class OrganizeController(
     /// <returns></returns>
     [HttpGet("{id}")]
     [Authorize(Roles = "President")]
-    public async Task<IActionResult> DeleteResource(string id)
+    public async Task<ActionResult> DeleteResource(string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         if (_context.Resources == null!)

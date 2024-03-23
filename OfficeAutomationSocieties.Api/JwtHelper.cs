@@ -13,7 +13,8 @@ public class JwtHelper(IConfiguration configuration)
         var claims = new[]
         {
             new Claim(ClaimTypes.Role, model.Identity),
-            new Claim(ClaimTypes.PrimarySid, model.UserId)
+            new Claim(ClaimTypes.PrimarySid, model.UserId),
+            new Claim(ClaimTypes.Uri,model.NowOrgId)
         };
 
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]!));
@@ -53,12 +54,14 @@ public static class TokenHelper
         if (claimsPrincipal == null) return null;
         var claimId = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
         var claimRole = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-        if (claimId.IsNull() || claimRole.IsNull()) return null;
+        var claimNowOrgId = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Uri);
+        if (claimId.IsNull() || claimRole.IsNull() || claimNowOrgId.IsNull()) return null;
 
         return new UserJwtModel()
         {
             UserId = claimId!.Value,
-            Identity = claimRole!.Value
+            Identity = claimRole!.Value,
+            NowOrgId = claimNowOrgId!.Value
         };
     }
 

@@ -9,7 +9,7 @@
              x:Class="OA.WindowApp.Pages.OrganizeView"
              x:DataType="pages:OrganizeViewModel">
     <Grid ColumnDefinitions="Auto,*">
-        <ListBox Grid.Column="0" SelectedItem="{Binding Organize}"
+        <ListBox Grid.Column="0" SelectedItem="{Binding Organize}" SelectionChanged="OrgSelectionChanged"
                  ItemsSource="{Binding Organizes}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="models:OrganizeModel">
@@ -37,7 +37,7 @@
                                        TextWrapping="WrapWithOverflow" />
                             <Panel>
                                 <TextBlock Text="组织项目" Classes="h1" HorizontalAlignment="Left" />
-                                <Button Classes="TransparentButton" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Button Classes="TransparentButton" HorizontalAlignment="Right" VerticalAlignment="Center" Click="AddProjectClick">
                                     <controls:SymbolIcon Symbol="Add" />
                                 </Button>
                             </Panel>
