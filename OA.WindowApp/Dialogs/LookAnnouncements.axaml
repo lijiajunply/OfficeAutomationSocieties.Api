@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Oa.NetLib.Models;assembly=Oa.NetLib"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OA.WindowApp.Dialogs.LookAnnouncements">
+    <StackPanel>
+        <Panel>
+            <TextBlock Text="公告" Classes="h2"/>
+            <Button Classes="TransparentButton" HorizontalAlignment="Right">
+                <ui:SymbolIcon Symbol="Add" />
+            </Button>
+        </Panel>
+        <ListBox Name="Items">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="models:AnnouncementModel">
+                    <Expander IsExpanded="False">
+                        <Expander.Header>
+                            <TextBlock Text="{Binding Title}" Classes="h2" />
+                        </Expander.Header>
+                        <TextBlock Text="{Binding Context}" Classes="h3" />
+                    </Expander>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="ContextFlyout">
+                        <ui:FAMenuFlyout Placement="Bottom">
+                            <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveClick" />
+                        </ui:FAMenuFlyout>
+                    </Setter>
+                </Style>
+            </ListBox.Styles>
+        </ListBox>
+    </StackPanel>
+</UserControl>

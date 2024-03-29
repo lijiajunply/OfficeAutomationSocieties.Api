@@ -26,7 +26,7 @@
                     <DataTemplate DataType="models:ProjectModel">
                         <StackPanel Spacing="8">
                             <Panel>
-                                <Button Classes="TransparentButton" HorizontalAlignment="Left">
+                                <Button Classes="TransparentButton" HorizontalAlignment="Left" Click="UpdateProjectClick">
                                     <TextBlock Text="{Binding Name}" Margin="10" Classes="h1" />
                                 </Button>
                                 <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="ShowUserClick">

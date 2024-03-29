@@ -14,6 +14,12 @@ public class AnnouncementModel
     [Column(TypeName = "varchar(500)")]
     public string Context { get; init; } = "";
 
+    /// <summary>
+    /// 公告标题
+    /// </summary>
+    [Column(TypeName = "varchar(25)")]
+    public string Title { get; init; } = "";
+    
     public OrganizeModel Owner { get; init; } = new();
 
     [Column(TypeName = "varchar(256)")] public string Time { get; init; } = "";

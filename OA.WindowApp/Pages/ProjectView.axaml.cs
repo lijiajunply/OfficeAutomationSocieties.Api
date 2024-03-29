@@ -137,4 +137,37 @@ public partial class ProjectView : UserControl
         };
         await td.ShowAsync();
     }
+
+    private async void UpdateProjectClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (sender is not Control control) return;
+        if (control.DataContext is not ProjectModel model) return;
+        var td = new TaskDialog
+        {
+            Title = "更改项目",
+            Content = new UpdateProject(model),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                TaskDialogButton.OKButton,
+                TaskDialogButton.CloseButton
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        td.Closing += async (dialog, args) =>
+        {
+            if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
+            if (dialog.Content is not UpdateProject project) return;
+            var result = project.Done();
+            using var proj = new Project(view.Jwt);
+            if (await proj.UpdateProject(result))
+                view.NotificationShow("更改项目", "更改成功");
+            else
+                view.NotificationShow("更改项目", "更改失败", NotificationType.Error);
+        };
+        await td.ShowAsync();
+    }
 }

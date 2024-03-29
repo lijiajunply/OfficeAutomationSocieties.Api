@@ -75,6 +75,32 @@ public class Project(string jwt = "") : DataBasic(jwt)
         }
     }
 
+    public async Task<bool> QuitProject(string id)
+    {
+        try
+        {
+            var response = await SharedClient.GetAsync($"/api/Project/QuitProject/{id}");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> UpdateProject(ProjectModel model)
+    {
+        try
+        {
+            var response = await SharedClient.PostAsJsonAsync($"/api/Project/UpdateProject",model);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        } 
+    } 
+    
     public async Task<GanttModel> AddGantt(string projectId, GanttModel model)
     {
         try

@@ -8,9 +8,9 @@ public class ProjectModel
 {
     public List<ProjectIdentity> Members { get; } = [];
 
-    [Column(TypeName = "varchar(32)")] public string Name { get; init; } = "";
+    [Column(TypeName = "varchar(32)")] public string Name { get; set; } = "";
 
-    [Column(TypeName = "varchar(512)")] public string Introduce { get; init; } = "";
+    [Column(TypeName = "varchar(512)")] public string Introduce { get; set; } = "";
 
     [Key]
     [Column(TypeName = "varchar(64)")]
@@ -20,6 +20,12 @@ public class ProjectModel
 
     public List<GanttModel> GanttList { get; } = [];
 
+    public void Update(ProjectModel model)
+    {
+        if (!string.IsNullOrEmpty(model.Name)) Name = model.Name;
+        if (!string.IsNullOrEmpty(model.Introduce)) Introduce = model.Introduce;
+    }
+    
     public override string ToString() => $"ProjectModel is {{Name={Name.Base64Encryption()}}} Other is Private;";
 }
 

@@ -7,18 +7,24 @@ namespace OA.Share.DataModels;
 public class OrganizeModel
 {
     public List<OrganizeIdentity> MemberIdentity { get; } = [];
-    [Column(TypeName = "varchar(32)")] public string Name { get; init; } = "";
+    [Column(TypeName = "varchar(32)")] public string Name { get; set; } = "";
 
     [Key]
     [Column(TypeName = "varchar(64)")]
     public string Id { get; set; } = "";
 
-    [Column(TypeName = "varchar(512)")] public string Introduce { get; init; } = "";
+    [Column(TypeName = "varchar(512)")] public string Introduce { get; set; } = "";
 
     public List<AnnouncementModel> Announcements { get; } = [];
     public List<ProjectModel> Projects { get; } = [];
     public List<ResourceModel> Resources { get; } = [];
 
+    public void Update(OrganizeModel model)
+    {
+        if (!string.IsNullOrEmpty(model.Name)) Name = model.Name;
+        if (!string.IsNullOrEmpty(model.Introduce)) Introduce = model.Introduce;
+    }
+    
     public override string ToString()
         => $"Organize : Name is {Name.Base64Encryption()} , Intro is {Introduce.Base64Encryption()} ";
 }

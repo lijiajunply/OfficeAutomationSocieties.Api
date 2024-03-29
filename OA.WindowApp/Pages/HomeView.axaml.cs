@@ -62,11 +62,12 @@ public partial class HomeView : UserControl
                 var p = await proj.CreateProject(result.context);
                 if (string.IsNullOrEmpty(p.Id))
                 {
-                    view.NotificationShow("创建项目", "创建失败",NotificationType.Error);
+                    view.NotificationShow("创建项目", "创建失败", NotificationType.Error);
                     return;
                 }
+
                 view.Add(p);
-                view.NotificationShow("创建项目", "创建失败",NotificationType.Error);
+                view.NotificationShow("创建项目", "创建失败", NotificationType.Error);
             }
             else
             {
@@ -77,6 +78,7 @@ public partial class HomeView : UserControl
                     view.NotificationShow("加入项目", "加入成功");
                     return;
                 }
+
                 view.Add(p);
                 view.NotificationShow("加入项目", "加入成功");
             }
@@ -173,9 +175,10 @@ public partial class HomeView : UserControl
                 var p = await org.CreateOrganize(result.organize);
                 if (string.IsNullOrEmpty(p.Id))
                 {
-                    view.NotificationShow("创建组织", "创建失败",NotificationType.Error);
+                    view.NotificationShow("创建组织", "创建失败", NotificationType.Error);
                     return;
                 }
+
                 view.Add(p);
                 view.NotificationShow("创建组织", "创建成功");
             }
@@ -184,9 +187,10 @@ public partial class HomeView : UserControl
                 var p = await org.AddOrganize(result.organize.Id);
                 if (string.IsNullOrEmpty(p.Id))
                 {
-                    view.NotificationShow("加入组织", "加入失败",NotificationType.Error);
+                    view.NotificationShow("加入组织", "加入失败", NotificationType.Error);
                     return;
                 }
+
                 view.Add(p);
                 view.NotificationShow("加入组织", "加入成功");
             }
@@ -232,16 +236,49 @@ public partial class HomeView : UserControl
             if (dialog.Content is not UpdateUser updateUser) return;
             var userModel = updateUser.Done();
             if (userModel == null) return;
-            userModel.RegistrationTime = DateTime.Today.ToString("d");
             using var user = new User(view.Jwt);
             if (await user.Update(userModel))
             {
                 model.User = userModel;
+                view.NotificationShow("更改用户信息", "更改成功");
             }
             else
             {
+                view.NotificationShow("更改用户信息", "更改失败", NotificationType.Error);
             }
         };
         await td.ShowAsync();
+    }
+
+    private void OpenProjectClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control control) return;
+        if (control.DataContext is not ProjectModel project) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (DataContext is not HomeViewModel model) return;
+        var projModel = new ProjectViewModel();
+        projModel.Projects.Add(model.Projects);
+        var projView = new ProjectView() { DataContext = projModel };
+        projView.ProjectViewFromId(project.Id);
+        view.Navigate(projView);
+    }
+
+    private async void QuitProjectClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control control) return;
+        if (control.DataContext is not ProjectModel project) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        using var proj = new Project(view.Jwt);
+
+        if (await proj.QuitProject(project.Id))
+        {
+            view.NotificationShow("退出项目", "退出成功");
+        }
+        else
+        {
+            view.NotificationShow("退出项目", "退出失败", NotificationType.Error);
+        }
     }
 }

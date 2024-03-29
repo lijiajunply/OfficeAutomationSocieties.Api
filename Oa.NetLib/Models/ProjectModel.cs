@@ -6,7 +6,7 @@ public class ProjectModel
 
     public string Name { get; set; } = "";
 
-    public string Id { get; set; } = "";
+    public string Id { get; init; } = "";
 
     public List<FileModel> Files { get; init; } = [];
 

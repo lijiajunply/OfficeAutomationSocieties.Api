@@ -92,6 +92,12 @@
                                         Tapped="ProjectTapped">
                                     <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"
                                                VerticalAlignment="Center" />
+                                    <Border.ContextFlyout>
+                                        <ui:FAMenuFlyout Placement="Bottom">
+                                            <ui:MenuFlyoutItem Text="打开" IconSource="Open" Click="OpenProjectClick" />
+                                            <ui:MenuFlyoutItem Text="退出项目" IconSource="Remove" Click="QuitProjectClick"/>
+                                        </ui:FAMenuFlyout>
+                                    </Border.ContextFlyout>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

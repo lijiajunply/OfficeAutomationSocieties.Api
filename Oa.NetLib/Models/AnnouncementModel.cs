@@ -9,6 +9,7 @@ public class AnnouncementModel
     public string Context { get; init; } = "";
 
     public OrganizeModel Owner { get; init; } = new();
+    public string Title { get; init; } = "";
 
     public string Time { get; init; } = "";
 

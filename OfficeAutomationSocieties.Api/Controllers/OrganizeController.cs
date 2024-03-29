@@ -108,6 +108,21 @@ public class OrganizeController(
         return jwtHelper.GetMemberToken(jwt);
     }
 
+
+    [HttpPost]
+    public async Task<ActionResult> UpdateOrganize([FromBody] OrganizeModel model)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+        var organize = await _context.Organizes.FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+        if (organize == null) return NotFound();
+
+        organize.Update(model);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
     #endregion
 
     #region 组织项目管理

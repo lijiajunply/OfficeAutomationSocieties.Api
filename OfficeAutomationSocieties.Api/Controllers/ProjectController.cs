@@ -133,8 +133,42 @@ public class ProjectController(
         if (user == null) return NotFound();
         var project = await _context.Projects.Include(projectModel => projectModel.Members)
             .FirstOrDefaultAsync(x => x.Id == id);
-        if (project == null) return NoContent();
-        if (project.Members.All(x => x.UserId != member.UserId)) return Ok();
+        if (project == null) return NotFound();
+
+        _context.Remove(project);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult> QuitProject(string id)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        if (user == null) return NotFound();
+        var project = await _context.Projects.Include(projectModel => projectModel.Members)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        if (project == null) return NotFound();
+
+        var m = project.Members.FirstOrDefault(x => x.UserId == member.UserId);
+        if (m == null) return Ok();
+
+        project.Members.Remove(m);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> UpdateProject([FromBody] ProjectModel model)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var project = await _context.Projects.Include(projectModel => projectModel.Members)
+            .FirstOrDefaultAsync(x => x.Id == model.Id);
+        if (project == null) return NotFound();
+
+        project.Update(model);
         await _context.SaveChangesAsync();
         return Ok();
     }
