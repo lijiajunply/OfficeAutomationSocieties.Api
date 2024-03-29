@@ -4,12 +4,17 @@
              xmlns:local="using:OA.WindowApp"
              xmlns:styling="clr-namespace:FluentAvalonia.Styling;assembly=FluentAvalonia"
              xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:converters="clr-namespace:OA.WindowApp.Converters"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
+    
+    <Application.Resources>
+        <converters:TaskConverter x:Key="TaskConverter"/>
+    </Application.Resources>
 
     <Application.Styles>
         <styling:FluentAvaloniaTheme />

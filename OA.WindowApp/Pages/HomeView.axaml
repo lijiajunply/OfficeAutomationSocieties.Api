@@ -23,7 +23,7 @@
                     <Button HorizontalAlignment="Left" Classes="TransparentButton">
                         <Button.Flyout>
                             <ui:FAMenuFlyout Placement="Right">
-                                <ui:MenuFlyoutItem Text="更改用户信息" IconSource="People" Click="UpdateUserClick"/>
+                                <ui:MenuFlyoutItem Text="更改用户信息" IconSource="People" Click="UpdateUserClick" />
                                 <ui:MenuFlyoutItem Text="登出" IconSource="Redo" />
                             </ui:FAMenuFlyout>
                         </Button.Flyout>
@@ -43,16 +43,20 @@
                     <ListBox ItemsSource="{Binding TaskNotes}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="models:GanttModel">
-                                <Grid ColumnDefinitions="*,*,*">
+                                <Grid ColumnDefinitions="*,2*,2*,2*,*" ToolTip.Tip="{Binding  ToDo}">
                                     <Grid.Styles>
                                         <Style Selector="TextBlock">
                                             <Setter Property="VerticalAlignment" Value="Center" />
                                             <Setter Property="HorizontalAlignment" Value="Center" />
                                         </Style>
                                     </Grid.Styles>
-                                    <TextBlock Text="{Binding StartTime}" Grid.Column="0" />
-                                    <TextBlock Text="{Binding ToDo}" Grid.Column="1" />
-                                    <TextBlock Text="{Binding EndTime}" Grid.Column="2" />
+                                    <Border Grid.Column="0" Width="16" Height="16" Background="LimeGreen"
+                                            CornerRadius="8" />
+                                    <TextBlock Text="{Binding StartTime}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding ToDo}" Grid.Column="2" />
+                                    <TextBlock Text="{Binding EndTime}" Grid.Column="3" />
+                                    <ui:SymbolIcon Grid.Column="4"
+                                                   Symbol="{Binding IsDone,Converter={StaticResource TaskConverter}}" />
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -60,7 +64,7 @@
                             <Style Selector="ListBoxItem">
                                 <Setter Property="ContextFlyout">
                                     <ui:FAMenuFlyout Placement="Bottom">
-                                        <ui:MenuFlyoutItem Text="完成" IconSource="Accept"/>
+                                        <ui:MenuFlyoutItem Text="完成" IconSource="Accept" />
                                         <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick" />
                                         <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick" />
                                     </ui:FAMenuFlyout>
@@ -95,7 +99,7 @@
                                     <Border.ContextFlyout>
                                         <ui:FAMenuFlyout Placement="Bottom">
                                             <ui:MenuFlyoutItem Text="打开" IconSource="Open" Click="OpenProjectClick" />
-                                            <ui:MenuFlyoutItem Text="退出项目" IconSource="Remove" Click="QuitProjectClick"/>
+                                            <ui:MenuFlyoutItem Text="退出项目" IconSource="Remove" Click="QuitProjectClick" />
                                         </ui:FAMenuFlyout>
                                     </Border.ContextFlyout>
                                 </Border>

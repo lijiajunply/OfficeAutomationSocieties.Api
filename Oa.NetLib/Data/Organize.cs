@@ -89,6 +89,20 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
+    public async Task<UserModel[]> GetOrganizeMember(string id)
+    {
+        try
+        {
+            var response = await SharedClient.GetAsync($"/api/Organize/GetOrganizeMember/{id}");
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<UserModel[]>(result) ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+    
     public async Task<AnnouncementModel[]> LookAnnouncements()
     {
         try

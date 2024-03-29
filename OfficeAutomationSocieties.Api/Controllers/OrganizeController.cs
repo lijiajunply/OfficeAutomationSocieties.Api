@@ -123,6 +123,21 @@ public class OrganizeController(
         return Ok();
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UserModel[]>> GetOrganizeMember(string id)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+
+        var org = await _context.Organizes.Include(x => x.MemberIdentity).ThenInclude(x => x.User)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        return org?.MemberIdentity.Select(x => new UserModel() { Name = x.User.Name, UserId = x.UserId }).ToArray() ??
+               [];
+    }
+
     #endregion
 
     #region 组织项目管理
@@ -326,7 +341,7 @@ public class OrganizeController(
         if (member == null) return NotFound();
         var org = await _context.Organizes.Include(organizeModel => organizeModel.Resources)
             .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
-
+        
         resourceModel.Id = resourceModel.ToString().HashEncryption();
         org?.Resources.Add(resourceModel);
 

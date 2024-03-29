@@ -7,6 +7,7 @@ public class GanttModel
 
     public string UserId { get; set; } = "";
     public string ProjectId { get; set; } = "";
+    public bool IsDone { get; set; }
     public string StartTime { get; set; } = "";
 
     public string EndTime { get; set; } = "";

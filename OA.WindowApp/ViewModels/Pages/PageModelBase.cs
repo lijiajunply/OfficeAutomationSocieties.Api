@@ -1,6 +1,3 @@
 ﻿namespace OA.WindowApp.ViewModels.Pages;
 
-public class PageModelBase : ViewModelBase
-{
-    
-}
+public class PageModelBase : ViewModelBase;

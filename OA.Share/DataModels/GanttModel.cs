@@ -17,6 +17,7 @@ public class GanttModel
     [Column(TypeName = "varchar(64)")] public string ProjectId { get; init; } = "";
     [JsonIgnore] public ProjectModel Project { get; } = new();
 
+    public bool IsDone { get; set; }
     [Column(TypeName = "varchar(64)")] public string StartTime { get; set; } = "";
 
     [Column(TypeName = "varchar(64)")] public string EndTime { get; set; } = "";
@@ -30,5 +31,6 @@ public class GanttModel
         if (!string.IsNullOrEmpty(model.StartTime)) StartTime = model.StartTime;
         if (!string.IsNullOrEmpty(model.EndTime)) EndTime = model.EndTime;
         if (!string.IsNullOrEmpty(model.ToDo)) ToDo = model.ToDo;
+        IsDone = model.IsDone;
     }
 }

@@ -23,8 +23,11 @@ public partial class LookAnnouncements : UserControl
         if (sender is not Control control) return;
         if (control.DataContext is not AnnouncementModel model) return;
         using var org = new Organize(_jwt);
-        await org.RemoveAnnouncement(model);
-        var list = Items.ItemsSource as AnnouncementModel[];
-        list?.Remove([model]);
+        var result = await org.RemoveAnnouncement(model);
+        if (result)
+        {
+            var list = Items.ItemsSource as AnnouncementModel[];
+            list?.Remove([model]);   
+        }
     }
 }
