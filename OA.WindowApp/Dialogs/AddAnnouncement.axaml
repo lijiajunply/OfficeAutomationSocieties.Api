@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OA.WindowApp.Dialogs.AddResource">
+             x:Class="OA.WindowApp.Dialogs.AddAnnouncement">
     <StackPanel Width="300" Spacing="10">
         <StackPanel.Styles>
             <Style Selector="TextBlock">
@@ -12,12 +12,12 @@
         </StackPanel.Styles>
         <TextBlock Name="TextBlock" Classes="h2" HorizontalAlignment="Left" />
         <Grid ColumnDefinitions="*,2*">
-            <TextBlock Grid.Column="0" Text="名称" />
-            <TextBox Grid.Column="1" Name="NameBox" Watermark="名称" />
+            <TextBlock Grid.Column="0" Text="标题" />
+            <TextBox Grid.Column="1" Name="TitleBox" Watermark="标题" />
         </Grid>
         <Grid ColumnDefinitions="*,2*">
-            <TextBlock Grid.Column="0" Text="简介" />
-            <TextBox Grid.Column="1" Name="IntroduceBox" MinHeight="60" Watermark="简介" />
+            <TextBlock Grid.Column="0" Text="内容" />
+            <TextBox Grid.Column="1" Name="ContextBox" MinHeight="60" Watermark="内容" TextWrapping="WrapWithOverflow" />
         </Grid>
     </StackPanel>
 </UserControl>

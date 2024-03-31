@@ -6,9 +6,13 @@ namespace OA.WindowApp.Dialogs;
 
 public partial class AddResource : UserControl
 {
-    public AddResource()
+    public AddResource(ResourceModel? model = null)
     {
         InitializeComponent();
+        TextBlock.Text = model == null ? "创建" : "更改";
+        if (model == null) return;
+        NameBox.Text = model.Name;
+        IntroduceBox.Text = model.Introduce;
     }
 
     public ResourceModel Done() => new()

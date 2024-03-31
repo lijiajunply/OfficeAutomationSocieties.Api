@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using DynamicData;
 using FluentAvalonia.UI.Controls;
 using Oa.NetLib.Data;
 using Oa.NetLib.Models;
@@ -91,13 +90,7 @@ public partial class HomeView : UserControl
         if (sender is not Control control) return;
         if (control.DataContext is not ProjectModel project) return;
         var view = ViewOpera.GetView<MainWindow>(this);
-        if (view == null) return;
-        if (DataContext is not HomeViewModel model) return;
-        var projModel = new ProjectViewModel();
-        projModel.Projects.Add(model.Projects);
-        var projView = new ProjectView() { DataContext = projModel };
-        projView.ProjectViewFromId(project.Id);
-        view.Navigate(projView);
+        view?.Switch(project);
     }
 
     private async void TaskChangeClick(object? sender, RoutedEventArgs e)
@@ -198,18 +191,12 @@ public partial class HomeView : UserControl
         await td.ShowAsync();
     }
 
-    private void OrgTapped(object? sender, TappedEventArgs e)
+    private void OrganizeTapped(object? sender, TappedEventArgs e)
     {
         if (sender is not Control control) return;
         if (control.DataContext is not OrganizeModel organize) return;
         var view = ViewOpera.GetView<MainWindow>(this);
-        if (view == null) return;
-        if (DataContext is not HomeViewModel model) return;
-        var organizeViewModel = new OrganizeViewModel();
-        organizeViewModel.Organizes.Add(model.Organizes);
-        var organizeView = new OrganizeView() { DataContext = organizeViewModel };
-        organizeView.OrganizeViewFromId(organize.Id);
-        view.Navigate(organizeView);
+        view?.Switch(organize);
     }
 
     private async void UpdateUserClick(object? sender, RoutedEventArgs e)
@@ -255,13 +242,7 @@ public partial class HomeView : UserControl
         if (sender is not Control control) return;
         if (control.DataContext is not ProjectModel project) return;
         var view = ViewOpera.GetView<MainWindow>(this);
-        if (view == null) return;
-        if (DataContext is not HomeViewModel model) return;
-        var projModel = new ProjectViewModel();
-        projModel.Projects.Add(model.Projects);
-        var projView = new ProjectView() { DataContext = projModel };
-        projView.ProjectViewFromId(project.Id);
-        view.Navigate(projView);
+        view?.Switch(project);
     }
 
     private async void QuitProjectClick(object? sender, RoutedEventArgs e)
@@ -280,5 +261,19 @@ public partial class HomeView : UserControl
         {
             view.NotificationShow("退出项目", "退出失败", NotificationType.Error);
         }
+    }
+
+    private async void TaskDoneClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control control) return;
+        if (control.DataContext is not GanttModel gantt) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        gantt.IsDone = !gantt.IsDone;
+        using var proj = new Project(view.Jwt);
+        if (await proj.UpdateGantt(gantt))
+            view.NotificationShow("完成任务", "更改成功");
+        else
+            view.NotificationShow("完成任务", "更改失败", NotificationType.Error);
     }
 }

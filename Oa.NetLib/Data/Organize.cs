@@ -157,20 +157,6 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<ResourceModel> GetResource(string id)
-    {
-        try
-        {
-            var response = await SharedClient.GetAsync($"/api/Organize/GetResource/{id}");
-            var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ResourceModel>(result) ?? new ResourceModel();
-        }
-        catch
-        {
-            return new ResourceModel();
-        }
-    }
-
     public async Task<bool> UpdateResource(ResourceModel model)
     {
         try

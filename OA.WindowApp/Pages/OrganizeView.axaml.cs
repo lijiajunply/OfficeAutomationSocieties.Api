@@ -2,6 +2,7 @@
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using Oa.NetLib.Data;
@@ -32,13 +33,6 @@ public partial class OrganizeView : UserControl
         }
 
         model.Organize = model.Organizes[0];
-    }
-
-    public void OrganizeViewFromId(string id)
-    {
-        if (DataContext is not OrganizeViewModel model) return;
-        var p = model.Organizes.FirstOrDefault(x => x.Id == id);
-        if (p != null) model.Organize = p;
     }
 
     private async void AddProjectClick(object? sender, RoutedEventArgs e)
@@ -112,7 +106,7 @@ public partial class OrganizeView : UserControl
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
-        using var org = new Organize(view.Jwt);
+        using var org = new Organize(Jwt);
         var td = new TaskDialog
         {
             Title = "查看公告",
@@ -155,6 +149,95 @@ public partial class OrganizeView : UserControl
             if (string.IsNullOrEmpty(resource.Id)) return;
             var list = ResourceItems.ItemsSource as List<ResourceModel>;
             list?.Add(resource);
+        };
+        await td.ShowAsync();
+    }
+
+    private async void AddAnnouncementClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        var td = new TaskDialog
+        {
+            Title = "添加资源",
+            Content = new AddAnnouncement(),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                TaskDialogButton.OKButton,
+                TaskDialogButton.CloseButton
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        td.Closing += async (dialog, args) =>
+        {
+            if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
+            if (dialog.Content is not AddAnnouncement announcement) return;
+            var done = announcement.Done();
+            if (string.IsNullOrEmpty(done.Title)) return;
+            using var org = new Organize(Jwt);
+            var resource = await org.AddAnnouncement(done);
+            if (resource)
+                view.NotificationShow("添加公告", "添加成功");
+            else
+                view.NotificationShow("添加公告", "添加失败", NotificationType.Error);
+        };
+        await td.ShowAsync();
+    }
+
+    private async void RemoveResourceClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (sender is not Control control) return;
+        if (control.DataContext is not ResourceModel model) return;
+        using var org = new Organize(Jwt);
+        if (!await org.DeleteResource(model.Id)) return;
+        view.NotificationShow("删除资源", "删除成功");
+        var list = ResourceItems.ItemsSource as List<ResourceModel>;
+        list?.Remove(model);
+    }
+
+    private async void UpdateResourceClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (sender is not Control control) return;
+        if (control.DataContext is not ResourceModel model) return;
+        var td = new TaskDialog
+        {
+            Title = "添加资源",
+            Content = new AddResource(model),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                TaskDialogButton.OKButton,
+                TaskDialogButton.CloseButton
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        td.Closing += async (dialog, args) =>
+        {
+            if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
+            if (dialog.Content is not AddResource announcement) return;
+            var done = announcement.Done();
+            if (string.IsNullOrEmpty(done.Name)) return;
+            using var org = new Organize(Jwt);
+            done.Id = model.Id;
+            done.CreateTime = model.CreateTime;
+            var resource = await org.UpdateResource(done);
+            if (resource)
+            {
+                view.NotificationShow("更改资源", "更改成功");
+                model.Name = done.Name;
+                model.Introduce = done.Introduce;
+            }
+            else
+            {
+                view.NotificationShow("更改资源", "更改失败", NotificationType.Error);
+            }
         };
         await td.ShowAsync();
     }

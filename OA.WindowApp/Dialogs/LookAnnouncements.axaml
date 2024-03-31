@@ -13,26 +13,22 @@
                 <ui:SymbolIcon Symbol="Add" />
             </Button>
         </Panel>
-        <ListBox Name="Items">
-            <ListBox.ItemTemplate>
+        <ItemsControl Name="Items">
+            <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="models:AnnouncementModel">
                     <Expander IsExpanded="False">
+                        <Expander.ContextFlyout>
+                            <ui:FAMenuFlyout Placement="Bottom">
+                                <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveClick" />
+                            </ui:FAMenuFlyout>
+                        </Expander.ContextFlyout>
                         <Expander.Header>
                             <TextBlock Text="{Binding Title}" Classes="h2" />
                         </Expander.Header>
                         <TextBlock Text="{Binding Context}" Classes="h3" />
                     </Expander>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.Styles>
-                <Style Selector="ListBoxItem">
-                    <Setter Property="ContextFlyout">
-                        <ui:FAMenuFlyout Placement="Bottom">
-                            <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveClick" />
-                        </ui:FAMenuFlyout>
-                    </Setter>
-                </Style>
-            </ListBox.Styles>
-        </ListBox>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </StackPanel>
 </UserControl>

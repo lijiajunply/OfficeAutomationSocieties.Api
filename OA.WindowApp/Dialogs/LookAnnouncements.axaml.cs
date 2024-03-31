@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using DynamicData;
 using Oa.NetLib.Data;
 using Oa.NetLib.Models;
 
@@ -24,10 +24,10 @@ public partial class LookAnnouncements : UserControl
         if (control.DataContext is not AnnouncementModel model) return;
         using var org = new Organize(_jwt);
         var result = await org.RemoveAnnouncement(model);
-        if (result)
-        {
-            var list = Items.ItemsSource as AnnouncementModel[];
-            list?.Remove([model]);   
-        }
+        if (!result) return;
+        var array = Items.ItemsSource as IEnumerable<AnnouncementModel>;
+        var list = array?.ToList();
+        list?.Remove(model);
+        Items.ItemsSource = list;
     }
 }

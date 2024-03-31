@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Primitives;
@@ -158,5 +159,21 @@ public partial class MainWindow : AppWindow
         home?.Organizes.Add(p);
         var project = Stack["Organize"] as OrganizeViewModel;
         project?.Organizes.Add(p);
+    }
+
+    public void Switch(OrganizeModel model)
+    {
+        if (Stack["Organize"] is not OrganizeViewModel organize) return;
+        if (organize.Organizes.Any(x => x.Id == model.Id))
+            organize.Organize = model;
+        Navigate("Organize");
+    }
+
+    public void Switch(ProjectModel model)
+    {
+        if (Stack["Project"] is not ProjectViewModel Project) return;
+        if (Project.Projects.Any(x => x.Id == model.Id))
+            Project.Project = model;
+        Navigate("Project");
     }
 }

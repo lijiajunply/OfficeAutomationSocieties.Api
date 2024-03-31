@@ -217,7 +217,7 @@ public class OrganizeController(
 
         model.Id = model.ToString().HashEncryption();
 
-        _context.Announcements.Add(model);
+        org.Announcements.Add(model);
         await _context.SaveChangesAsync();
         return Ok();
     }

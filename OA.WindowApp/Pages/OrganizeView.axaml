@@ -42,7 +42,7 @@
                                         <Button Classes="TransparentButton" Click="LookAnnouncementsClick">
                                             <controls:SymbolIcon Symbol="AlertOn" FontSize="24" />
                                         </Button>
-                                        <Button Classes="TransparentButton">
+                                        <Button Classes="TransparentButton" Click="AddAnnouncementClick">
                                             <controls:SymbolIcon Symbol="StarAdd" FontSize="24" />
                                         </Button>
                                     </StackPanel>
@@ -104,6 +104,16 @@
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="ContextFlyout">
+                                <controls:FAMenuFlyout>
+                                    <controls:MenuFlyoutItem Text="更改" IconSource="Open" Click="UpdateResourceClick" />
+                                    <controls:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveResourceClick" />
+                                </controls:FAMenuFlyout>
+                            </Setter>
+                        </Style>
+                    </ListBox.Styles>
                 </ListBox>
             </StackPanel>
         </ScrollViewer>

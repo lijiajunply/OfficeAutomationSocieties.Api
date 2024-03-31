@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace OA.Share.DataModels;
 
@@ -20,6 +21,7 @@ public class AnnouncementModel
     [Column(TypeName = "varchar(25)")]
     public string Title { get; init; } = "";
     
+    [JsonIgnore]
     public OrganizeModel Owner { get; init; } = new();
 
     [Column(TypeName = "varchar(256)")] public string Time { get; init; } = "";

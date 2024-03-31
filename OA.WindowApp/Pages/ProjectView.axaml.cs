@@ -31,13 +31,6 @@ public partial class ProjectView : UserControl
         model.Project = model.Projects[0];
     }
 
-    public void ProjectViewFromId(string id)
-    {
-        if (DataContext is not ProjectViewModel model) return;
-        var p = model.Projects.FirstOrDefault(x => x.Id == id);
-        if (p != null) model.Project = p;
-    }
-
     private async void AddTaskClick(object? sender, RoutedEventArgs e)
     {
         var view = ViewOpera.GetView<MainWindow>(this);
@@ -169,5 +162,19 @@ public partial class ProjectView : UserControl
                 view.NotificationShow("更改项目", "更改失败", NotificationType.Error);
         };
         await td.ShowAsync();
+    }
+
+    private async void TaskDoneClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control control) return;
+        if (control.DataContext is not GanttModel gantt) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        gantt.IsDone = !gantt.IsDone;
+        using var proj = new Project(view.Jwt);
+        if (await proj.UpdateGantt(gantt))
+            view.NotificationShow("完成任务", "更改成功");
+        else
+            view.NotificationShow("完成任务", "更改失败", NotificationType.Error);
     }
 }
