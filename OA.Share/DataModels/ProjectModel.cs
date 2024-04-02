@@ -6,7 +6,7 @@ namespace OA.Share.DataModels;
 
 public class ProjectModel
 {
-    public List<ProjectIdentity> Members { get; } = [];
+    public List<ProjectIdentity> Members { get;} = [];
 
     [Column(TypeName = "varchar(32)")] public string Name { get; set; } = "";
 
@@ -25,17 +25,24 @@ public class ProjectModel
         if (!string.IsNullOrEmpty(model.Name)) Name = model.Name;
         if (!string.IsNullOrEmpty(model.Introduce)) Introduce = model.Introduce;
     }
-    
+
     public override string ToString() => $"ProjectModel is {{Name={Name.Base64Encryption()}}} Other is Private;";
 }
 
 public class ProjectIdentity
 {
-    [JsonIgnore] [Key] public int Key { get; set; }
+    [JsonIgnore] [Key] public int Key { get; init; }
 
-    [Column(TypeName = "varchar(64)")] public string UserId { get; set; } = "";
+    /// <summary>
+    /// Minister
+    /// Member
+    /// </summary>
+    [Column(TypeName = "varchar(10)")]
+    public string Identity { get; init; } = "Member";
 
-    [Column(TypeName = "varchar(64)")] public string ProjectId { get; set; } = "";
+    [Column(TypeName = "varchar(64)")] public string UserId { get; init; } = "";
+
+    [Column(TypeName = "varchar(64)")] public string ProjectId { get; init; } = "";
     [JsonIgnore] public UserModel User { get; init; } = new();
 
     [JsonIgnore] public ProjectModel Project { get; } = new();

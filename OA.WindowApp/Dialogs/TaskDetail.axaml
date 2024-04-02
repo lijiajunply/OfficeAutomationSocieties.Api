@@ -1,0 +1,49 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Oa.NetLib.Models;assembly=Oa.NetLib"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OA.WindowApp.Dialogs.TaskDetail"
+             x:DataType="models:GanttModel">
+    <StackPanel VerticalAlignment="Center" Width="300" HorizontalAlignment="Center" Spacing="10">
+        <StackPanel.Styles>
+            <Style Selector="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+        </StackPanel.Styles>
+        <Grid ColumnDefinitions="*,*">
+            <TextBlock Grid.Column="0" Text="所属项目" />
+            <TextBlock Grid.Column="1" Name="ProjectName" />
+        </Grid>
+        <Separator />
+
+        <StackPanel>
+            <Grid ColumnDefinitions="*,*">
+                <TextBlock Grid.Column="0" Text="任务名称" />
+                <TextBlock Grid.Column="1" Text="当前状态" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*">
+                <TextBlock Grid.Column="0" Text="{Binding ToDo}" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center">
+                    <Border Width="16" Height="16"
+                            Background="{Binding .,Converter={StaticResource TaskTimeConverter}}"
+                            CornerRadius="8" />
+                    <TextBlock Name="Block" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        <StackPanel>
+            <Grid ColumnDefinitions="*,*">
+                <TextBlock Grid.Column="0" Text="开始时间" />
+                <TextBlock Grid.Column="1" Text="截止时间" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*">
+                <TextBlock Grid.Column="0" Text="{Binding StartTime}" />
+                <TextBlock Grid.Column="1" Text="{Binding EndTime}" />
+            </Grid>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

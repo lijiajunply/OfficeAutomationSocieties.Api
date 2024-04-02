@@ -14,8 +14,7 @@ namespace OfficeAutomationSocieties.Api.Controllers;
 [ApiController]
 public class OrganizeController(
     IDbContextFactory<OaContext> factory,
-    IHttpContextAccessor httpContextAccessor,
-    JwtHelper jwtHelper)
+    IHttpContextAccessor httpContextAccessor)
     : ControllerBase
 {
     #region 组织系统
@@ -25,7 +24,7 @@ public class OrganizeController(
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member == null || string.IsNullOrEmpty(member.NowOrgId)) return NotFound();
+        if (member == null) return NotFound();
 
         var user = await _context.Users.Include(x => x.Organizes)
             .ThenInclude(x => x.Organize)
@@ -82,40 +81,13 @@ public class OrganizeController(
         return org;
     }
 
-    /// <summary>
-    /// 登录到组织
-    /// </summary>
-    /// <param name="id">组织代号</param>
-    /// <returns></returns>
-    [HttpGet("{id}")]
-    public async Task<ActionResult<string>> LoginOrganize(string id)
-    {
-        await using var _context = await factory.CreateDbContextAsync();
-        var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member == null) return NotFound();
-        var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
-        if (user == null) return NotFound();
-
-        var org = await _context.Organizes.Include(x => x.MemberIdentity).FirstOrDefaultAsync(x => x.Id == id);
-        if (org == null) return NotFound();
-
-        var identity = org.MemberIdentity.FirstOrDefault(x => x.UserId == member.UserId);
-        if (string.IsNullOrEmpty(identity?.Identity)) return NotFound();
-
-        var jwt = UserJwtModel.DataToJwt(user);
-        jwt.Identity = identity.Identity;
-        jwt.NowOrgId = id;
-        return jwtHelper.GetMemberToken(jwt);
-    }
-
-
     [HttpPost]
     public async Task<ActionResult> UpdateOrganize([FromBody] OrganizeModel model)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
-        var organize = await _context.Organizes.FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+        var organize = await _context.Organizes.FirstOrDefaultAsync(x => x.Id == model.Id);
         if (organize == null) return NotFound();
 
         organize.Update(model);
@@ -142,8 +114,8 @@ public class OrganizeController(
 
     #region 组织项目管理
 
-    [HttpPost]
-    public async Task<ActionResult<ProjectModel>> CreateOrgProject([FromBody] ProjectModel model)
+    [HttpPost("{id}")]
+    public async Task<ActionResult<ProjectModel>> CreateOrgProject(string id, [FromBody] ProjectModel model)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
@@ -151,11 +123,11 @@ public class OrganizeController(
         var user = await _context.Users.FirstOrDefaultAsync(x => member.UserId == x.UserId);
         if (user == null) return NotFound();
         var org = await _context.Organizes.Include(x => x.MemberIdentity)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
 
         model.Id = model.ToString().HashEncryption();
-        model.Members.Add(new ProjectIdentity() { User = user });
+        model.Members.Add(new ProjectIdentity() { User = user, Identity = "Minister" });
 
         org.Projects.Add(model);
         await _context.SaveChangesAsync();
@@ -171,14 +143,14 @@ public class OrganizeController(
     /// 查看最新公告
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
-    public async Task<ActionResult<AnnouncementModel>> LookAnnouncement()
+    [HttpGet("{id}")]
+    public async Task<ActionResult<AnnouncementModel>> LookAnnouncement(string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
         var org = await _context.Organizes.Include(organizeModel => organizeModel.Announcements)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
         return org.Announcements.LastOrDefault() ?? new AnnouncementModel();
     }
@@ -187,14 +159,14 @@ public class OrganizeController(
     /// 查看所有公告
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
-    public async Task<ActionResult<List<AnnouncementModel>>> LookAnnouncements()
+    [HttpGet("{id}")]
+    public async Task<ActionResult<List<AnnouncementModel>>> LookAnnouncements(string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
         var org = await _context.Organizes.Include(x => x.Announcements)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
         return org.Announcements;
     }
@@ -203,18 +175,22 @@ public class OrganizeController(
     /// 添加公告
     /// </summary>
     /// <param name="model"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize(Roles = "President")]
-    [HttpPost]
-    public async Task<ActionResult> AddAnnouncement([FromBody] AnnouncementModel model)
+    [HttpPost("{id}")]
+    public async Task<ActionResult> AddAnnouncement([FromBody] AnnouncementModel model, string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
         var org = await _context.Organizes.Include(organizeModel => organizeModel.Announcements)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
 
+        var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
+            x.UserId == member.UserId && x.OrganizeId == id);
+
+        if (i?.Identity != "President") return NotFound();
         model.Id = model.ToString().HashEncryption();
 
         org.Announcements.Add(model);
@@ -226,14 +202,19 @@ public class OrganizeController(
     /// 删除公告
     /// </summary>
     /// <param name="model"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize(Roles = "President")]
-    [HttpPost]
-    public async Task<ActionResult> RemoveAnnouncement([FromBody] AnnouncementModel model)
+    [HttpPost("{id}")]
+    public async Task<ActionResult> RemoveAnnouncement([FromBody] AnnouncementModel model, string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
+
+        var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
+            x.UserId == member.UserId && x.OrganizeId == id);
+
+        if (i?.Identity != "President") return NotFound();
 
         _context.Announcements.Remove(model);
         await _context.SaveChangesAsync();
@@ -248,8 +229,8 @@ public class OrganizeController(
     /// 获取资源
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ResourceModel>>> GetResources()
+    [HttpGet("{id}")]
+    public async Task<ActionResult<IEnumerable<ResourceModel>>> GetResources(string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
         if (_context.Resources == null!)
@@ -258,65 +239,33 @@ public class OrganizeController(
         if (member == null) return NotFound();
 
         var org = await _context.Organizes.Include(organizeModel => organizeModel.Resources)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         return org?.Resources.ToArray() ?? [];
     }
 
     /// <summary>
-    /// 获取资源单例
+    /// 更新资源状态
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="resourceModel"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ResourceModel>> GetResource(string id)
+    [HttpPost("{id}")]
+    public async Task<ActionResult> UpdateResource(string id, ResourceModel resourceModel)
     {
         await using var _context = await factory.CreateDbContextAsync();
-        if (_context.Resources == null!)
-        {
-            return NotFound();
-        }
 
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
 
-        var org = await _context.Organizes.Include(organizeModel => organizeModel.Resources)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
-        var resourceModel = org?.Resources.FirstOrDefault(x => x.Id == id);
-
-        if (resourceModel == null)
-        {
-            return NotFound();
-        }
-
-        return resourceModel;
-    }
-
-    /// <summary>
-    /// 更新资源状态
-    /// </summary>
-    /// <param name="resourceModel"></param>
-    /// <returns></returns>
-    [HttpPost]
-    public async Task<ActionResult> UpdateResource(ResourceModel resourceModel)
-    {
-        await using var _context = await factory.CreateDbContextAsync();
-
         _context.Entry(resourceModel).State = EntityState.Modified;
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.Resources.Any(e => e.Id == resourceModel.Id))
-            {
-                return NotFound();
-            }
+        var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
+            x.UserId == member.UserId && x.OrganizeId == id);
 
-            throw;
-        }
+        if (i?.Identity != "President") return NotFound();
+
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }
@@ -326,36 +275,28 @@ public class OrganizeController(
     /// 添加资源
     /// </summary>
     /// <param name="resourceModel"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize(Roles = "President")]
-    [HttpPost]
-    public async Task<ActionResult<ResourceModel>> AddResource(ResourceModel resourceModel)
+    [HttpPost("{id}")]
+    public async Task<ActionResult<ResourceModel>> AddResource(ResourceModel resourceModel, string id)
     {
         await using var _context = await factory.CreateDbContextAsync();
-        if (_context.Resources == null!)
-        {
-            return Problem("Entity set 'OaContext.Resources'  is null.");
-        }
 
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
         var org = await _context.Organizes.Include(organizeModel => organizeModel.Resources)
-            .FirstOrDefaultAsync(x => x.Id == member.NowOrgId);
-        
+            .FirstOrDefaultAsync(x => x.Id == id);
+        if (org == null) return NotFound();
+
+        var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
+            x.UserId == member.UserId && x.OrganizeId == id);
+
+        if (i?.Identity != "President") return NotFound();
+
         resourceModel.Id = resourceModel.ToString().HashEncryption();
-        org?.Resources.Add(resourceModel);
+        org.Resources.Add(resourceModel);
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateException)
-        {
-            if (_context.Resources.Any(e => e.Id == resourceModel.Id))
-                return Conflict();
-
-            throw;
-        }
+        await _context.SaveChangesAsync();
 
         return resourceModel;
     }
@@ -364,22 +305,24 @@ public class OrganizeController(
     /// 删除资源
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="org"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
-    [Authorize(Roles = "President")]
-    public async Task<ActionResult> DeleteResource(string id)
+    [HttpGet("{id}&{org}")]
+    public async Task<ActionResult> DeleteResource(string id, string org)
     {
         await using var _context = await factory.CreateDbContextAsync();
-        if (_context.Resources == null!)
-        {
-            return NotFound();
-        }
+
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+
+        var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
+            x.UserId == member.UserId && x.OrganizeId == org);
+
+        if (i?.Identity != "President") return NotFound();
 
         var resourceModel = await _context.Resources.FindAsync(id);
         if (resourceModel == null)
-        {
             return NotFound();
-        }
 
         _context.Resources.Remove(resourceModel);
         await _context.SaveChangesAsync();

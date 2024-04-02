@@ -33,7 +33,7 @@ public partial class HomeView : UserControl
         if (!DateTime.TryParse(model.User.RegistrationTime, out var date)) return;
         var day = (DateTime.Today - date).Days;
         DateBlock.Text = $"这是您努力的第{day + 1}天";
-        if (model.TaskNotes.Any(x => x.IsOk))
+        if (model.TaskNotes.Any(x => x.IsExpired))
             view.NotificationShow("温馨提示", "您有任务未完成", NotificationType.Error);
     }
 
@@ -280,5 +280,27 @@ public partial class HomeView : UserControl
             view.NotificationShow("完成任务", "更改成功");
         else
             view.NotificationShow("完成任务", "更改失败", NotificationType.Error);
+    }
+
+    private async void TaskDetailClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not HomeViewModel model) return;
+        if (sender is not Control control) return;
+        if (control.DataContext is not GanttModel gantt) return;
+        var result = model.Projects.FirstOrDefault(x => x.Id == gantt.ProjectId);
+        if (result == null) return;
+        var td = new TaskDialog()
+        {
+            Title = "任务详情",
+            Content = new TaskDetail(result.Name) { DataContext = gantt },
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                new TaskDialogButton("确定", "")
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        await td.ShowAsync();
     }
 }

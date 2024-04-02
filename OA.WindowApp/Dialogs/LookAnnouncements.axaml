@@ -9,7 +9,7 @@
     <StackPanel>
         <Panel>
             <TextBlock Text="公告" Classes="h2"/>
-            <Button Classes="TransparentButton" HorizontalAlignment="Right">
+            <Button Classes="TransparentButton" HorizontalAlignment="Right" Click="AddAnnouncementClick">
                 <ui:SymbolIcon Symbol="Add" />
             </Button>
         </Panel>

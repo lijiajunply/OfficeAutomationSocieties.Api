@@ -19,4 +19,5 @@ public class ProjectIdentity
 {
     public string UserId { get; set; } = "";
     public string ProjectId { get; set; } = "";
+    public string Identity { get; set; } = "Member";
 }

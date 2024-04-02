@@ -14,8 +14,9 @@ public sealed class OaContext : DbContext
     public DbSet<ResourceModel> Resources { get; init; }
     public DbSet<AnnouncementModel> Announcements { get; init; }
     public DbSet<OrganizeModel> Organizes { get; init; }
-
+    public DbSet<ProjectIdentity> ProjectIdentities { get; init; }
     public DbSet<GanttModel> GanttList { get; init; }
+    public DbSet<OrganizeIdentity> OrganizeIdentities { get; init; }
 
     public OaContext(DbContextOptions<OaContext> options)
         : base(options)
@@ -27,6 +28,8 @@ public sealed class OaContext : DbContext
         Announcements = Set<AnnouncementModel>();
         Organizes = Set<OrganizeModel>();
         GanttList = Set<GanttModel>();
+        ProjectIdentities = Set<ProjectIdentity>();
+        OrganizeIdentities = Set<OrganizeIdentity>();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

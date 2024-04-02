@@ -42,9 +42,6 @@
                                         <Button Classes="TransparentButton" Click="LookAnnouncementsClick">
                                             <controls:SymbolIcon Symbol="AlertOn" FontSize="24" />
                                         </Button>
-                                        <Button Classes="TransparentButton" Click="AddAnnouncementClick">
-                                            <controls:SymbolIcon Symbol="StarAdd" FontSize="24" />
-                                        </Button>
                                     </StackPanel>
                                 </Panel>
                                 <TextBlock Margin="10" Text="{Binding Introduce}" Classes="h3Bold" MaxLines="3"
@@ -79,27 +76,28 @@
                 <Panel>
                     <TextBlock Text="资源" Classes="h2" />
                     <Button Classes="TransparentButton" Click="AddResourceClick" HorizontalAlignment="Right">
-                        <controls:SymbolIcon Symbol="Add" FontSize="24" />
+                        <controls:SymbolIcon Symbol="Add" />
                     </Button>
                 </Panel>
                 <ListBox Name="ResourceItems">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="models:ResourceModel">
-                            <Grid ColumnDefinitions="*,*,*" ToolTip.Tip="{Binding  Introduce}">
+                            <Grid ColumnDefinitions="Auto,*,*" ToolTip.Tip="{Binding  Introduce}">
                                 <Grid.Styles>
                                     <Style Selector="TextBlock">
                                         <Setter Property="VerticalAlignment" Value="Center" />
                                         <Setter Property="HorizontalAlignment" Value="Center" />
                                     </Style>
                                 </Grid.Styles>
-                                <TextBlock Text="{Binding Name}" Grid.Column="0" />
-                                <ContentControl Grid.Column="1" Content="{Binding .}">
+                                <Border Grid.Column="0" Width="16" Height="16"
+                                        Background="{Binding .,Converter={StaticResource ResourceConverter}}"
+                                        CornerRadius="8" />
+                                <TextBlock Text="{Binding Name}" Grid.Column="1" />
+                                <ContentControl Grid.Column="2" Content="{Binding .}">
                                     <ContentControl.ContentTemplate>
                                         <converters:ResourceTemplate />
                                     </ContentControl.ContentTemplate>
                                 </ContentControl>
-                                <controls:SymbolIcon Grid.Column="2"
-                                                     Symbol="{Binding .,Converter={StaticResource ResourceConverter}}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -108,7 +106,7 @@
                             <Setter Property="ContextFlyout">
                                 <controls:FAMenuFlyout>
                                     <controls:MenuFlyoutItem Text="更改" IconSource="Open" Click="UpdateResourceClick" />
-                                    <controls:MenuFlyoutItem Text="使用/归还" Click="UseClick"/>
+                                    <controls:MenuFlyoutItem Text="使用/归还" Click="UseClick" />
                                     <controls:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveResourceClick" />
                                 </controls:FAMenuFlyout>
                             </Setter>

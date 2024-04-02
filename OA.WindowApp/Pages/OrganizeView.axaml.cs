@@ -16,12 +16,14 @@ namespace OA.WindowApp.Pages;
 
 public partial class OrganizeView : UserControl
 {
-    private string Jwt { get; set; } = "";
+    private string _id = "";
 
     public OrganizeView()
     {
         InitializeComponent();
     }
+
+    #region Init
 
     protected override void OnInitialized()
     {
@@ -34,6 +36,23 @@ public partial class OrganizeView : UserControl
 
         model.Organize = model.Organizes[0];
     }
+
+    private async void OrgSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (DataContext is not OrganizeViewModel model) return;
+        _id = model.Organize.Id;
+        using var org = new Organize(view.Jwt);
+        ResourceItems.ItemsSource = (await org.GetResources(_id)).ToList();
+        var a = await org.LookAnnouncement(_id);
+        if (string.IsNullOrEmpty(a.Id)) return;
+        view.NotificationShow("公告", a.Context);
+    }
+
+    #endregion
+
+    #region Org
 
     private async void AddProjectClick(object? sender, RoutedEventArgs e)
     {
@@ -59,39 +78,28 @@ public partial class OrganizeView : UserControl
             var project = organizeAddProject.Done();
             if (string.IsNullOrEmpty(project.Name)) return;
             if (DataContext is not OrganizeViewModel model) return;
-            using var org = new Organize(Jwt);
+            using var org = new Organize(view.Jwt);
 
-            var proj = await org.CreateOrgProject(project);
+            var proj = await org.CreateOrgProject(project, _id);
             if (string.IsNullOrEmpty(proj.Id)) return;
             model.Organize.Projects.Add(proj);
         };
         await td.ShowAsync();
     }
 
-    private async void OrgSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        var view = ViewOpera.GetView<MainWindow>(this);
-        if (view == null) return;
-        if (DataContext is not OrganizeViewModel model) return;
-        using var org = new Organize(string.IsNullOrEmpty(Jwt) ? view.Jwt : Jwt);
-        Jwt = await org.LoginOrganize(model.Organize.Id);
-        org.Jwt = Jwt;
-        ResourceItems.ItemsSource = (await org.GetResources()).ToList();
-        var a = await org.LookAnnouncement();
-        if (string.IsNullOrEmpty(a.Id)) return;
-        view.NotificationShow("公告", a.Context);
-    }
+    #endregion
+
+    #region Button
 
     private async void ShowUserClick(object? sender, RoutedEventArgs e)
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
-        if (DataContext is not OrganizeViewModel model) return;
         using var organize = new Organize(view.Jwt);
         var td = new TaskDialog
         {
             Title = "查看成员",
-            Content = new ShowUsers(await organize.GetOrganizeMember(model.Organize.Id)),
+            Content = new ShowUsers(await organize.GetOrganizeMember(_id)),
             FooterVisibility = TaskDialogFooterVisibility.Never,
             Buttons =
             {
@@ -106,11 +114,11 @@ public partial class OrganizeView : UserControl
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
-        using var org = new Organize(Jwt);
+        using var org = new Organize(view.Jwt);
         var td = new TaskDialog
         {
             Title = "查看公告",
-            Content = new LookAnnouncements(await org.LookAnnouncements(), Jwt),
+            Content = new LookAnnouncements(await org.LookAnnouncements(_id), view.Jwt, _id),
             FooterVisibility = TaskDialogFooterVisibility.Never,
             Buttons =
             {
@@ -120,6 +128,10 @@ public partial class OrganizeView : UserControl
         };
         await td.ShowAsync();
     }
+
+    #endregion
+
+    #region Resource
 
     private async void AddResourceClick(object? sender, RoutedEventArgs e)
     {
@@ -144,44 +156,11 @@ public partial class OrganizeView : UserControl
             if (dialog.Content is not AddResource addResource) return;
             var done = addResource.Done();
             if (string.IsNullOrEmpty(done.Name)) return;
-            using var org = new Organize(Jwt);
-            var resource = await org.AddResource(done);
+            using var org = new Organize(view.Jwt);
+            var resource = await org.AddResource(done, _id);
             if (string.IsNullOrEmpty(resource.Id)) return;
             var list = ResourceItems.ItemsSource as List<ResourceModel>;
             list?.Add(resource);
-        };
-        await td.ShowAsync();
-    }
-
-    private async void AddAnnouncementClick(object? sender, RoutedEventArgs e)
-    {
-        var view = ViewOpera.GetView<MainWindow>(this);
-        if (view == null) return;
-        var td = new TaskDialog
-        {
-            Title = "添加资源",
-            Content = new AddAnnouncement(),
-            FooterVisibility = TaskDialogFooterVisibility.Never,
-            Buttons =
-            {
-                TaskDialogButton.OKButton,
-                TaskDialogButton.CloseButton
-            },
-            XamlRoot = (Visual)VisualRoot!
-        };
-
-        td.Closing += async (dialog, args) =>
-        {
-            if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
-            if (dialog.Content is not AddAnnouncement announcement) return;
-            var done = announcement.Done();
-            if (string.IsNullOrEmpty(done.Title)) return;
-            using var org = new Organize(Jwt);
-            var resource = await org.AddAnnouncement(done);
-            if (resource)
-                view.NotificationShow("添加公告", "添加成功");
-            else
-                view.NotificationShow("添加公告", "添加失败", NotificationType.Error);
         };
         await td.ShowAsync();
     }
@@ -192,8 +171,8 @@ public partial class OrganizeView : UserControl
         if (view == null) return;
         if (sender is not Control control) return;
         if (control.DataContext is not ResourceModel model) return;
-        using var org = new Organize(Jwt);
-        if (!await org.DeleteResource(model.Id)) return;
+        using var org = new Organize(view.Jwt);
+        if (!await org.DeleteResource(model.Id, _id)) return;
         view.NotificationShow("删除资源", "删除成功");
         var list = ResourceItems.ItemsSource as List<ResourceModel>;
         list?.Remove(model);
@@ -224,10 +203,10 @@ public partial class OrganizeView : UserControl
             if (dialog.Content is not AddResource announcement) return;
             var done = announcement.Done();
             if (string.IsNullOrEmpty(done.Name)) return;
-            using var org = new Organize(Jwt);
+            using var org = new Organize(view.Jwt);
             done.Id = model.Id;
             done.CreateTime = model.CreateTime;
-            var resource = await org.UpdateResource(done);
+            var resource = await org.UpdateResource(done, _id);
             if (resource)
             {
                 view.NotificationShow("更改资源", "更改成功");
@@ -268,10 +247,10 @@ public partial class OrganizeView : UserControl
             {
                 if (dialog.Content is not UseResource useResource) return;
                 var done = useResource.Done();
-                using var org = new Organize(Jwt);
+                using var org = new Organize(view.Jwt);
                 model.StartTime = done.StartTime;
                 model.EndTime = done.EndTime;
-                var resource = await org.UpdateResource(model);
+                var resource = await org.UpdateResource(model, _id);
                 if (resource)
                 {
                     view.NotificationShow("更改资源", "更改成功");
@@ -289,8 +268,8 @@ public partial class OrganizeView : UserControl
             if ((string)args.Result == "归还")
             {
                 model.StartTime = model.EndTime = "";
-                using var org = new Organize(Jwt);
-                var resource =  await org.UpdateResource(model);
+                using var org = new Organize(view.Jwt);
+                var resource = await org.UpdateResource(model, _id);
                 if (resource)
                 {
                     view.NotificationShow("更改资源", "更改成功");
@@ -303,4 +282,6 @@ public partial class OrganizeView : UserControl
         };
         await td.ShowAsync();
     }
+
+    #endregion
 }

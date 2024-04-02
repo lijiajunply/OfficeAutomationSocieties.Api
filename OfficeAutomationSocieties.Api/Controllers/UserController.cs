@@ -35,6 +35,7 @@ public class UserController(
         if (member == null) return NotFound();
 
         var user = await _context.Users.Include(x => x.Projects)
+            .AsSplitQuery()
             .Include(x => x.Organizes)
             .AsSplitQuery()
             .Include(x => x.TaskNotes)
@@ -118,20 +119,13 @@ public class UserController(
     {
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
 
         var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
         if (user == null) return NotFound();
         user.Update(memberModel);
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch
-        {
-            return BadRequest();
-        }
-
+        await _context.SaveChangesAsync();
         return Ok();
     }
 

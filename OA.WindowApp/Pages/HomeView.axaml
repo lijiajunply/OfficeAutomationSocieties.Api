@@ -43,21 +43,19 @@
                     <ListBox ItemsSource="{Binding TaskNotes}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="models:GanttModel">
-                                <Grid ColumnDefinitions="*,2*,2*,2*,*" ToolTip.Tip="{Binding  ToDo}">
+                                <Grid ColumnDefinitions="2*,2*,2*,Auto" ToolTip.Tip="{Binding  ToDo}">
                                     <Grid.Styles>
                                         <Style Selector="TextBlock">
                                             <Setter Property="VerticalAlignment" Value="Center" />
                                             <Setter Property="HorizontalAlignment" Value="Center" />
                                         </Style>
                                     </Grid.Styles>
-                                    <Border Grid.Column="0" Width="16" Height="16"
+                                    <TextBlock Text="{Binding ToDo}" Grid.Column="0" />
+                                    <TextBlock Text="{Binding StartTime}" Grid.Column="1" />
+                                    <TextBlock Text="{Binding EndTime}" Grid.Column="2" />
+                                    <Border Grid.Column="3" Width="16" Height="16"
                                             Background="{Binding .,Converter={StaticResource TaskTimeConverter}}"
                                             CornerRadius="8" />
-                                    <TextBlock Text="{Binding StartTime}" Grid.Column="1" />
-                                    <TextBlock Text="{Binding ToDo}" Grid.Column="2" />
-                                    <TextBlock Text="{Binding EndTime}" Grid.Column="3" />
-                                    <ui:SymbolIcon Grid.Column="4"
-                                                   Symbol="{Binding IsDone,Converter={StaticResource TaskConverter}}" />
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -67,6 +65,7 @@
                                     <ui:FAMenuFlyout Placement="Bottom">
                                         <ui:MenuFlyoutItem Text="完成" IconSource="Accept" Click="TaskDoneClick" />
                                         <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick" />
+                                        <ui:MenuFlyoutItem Text="详情" IconSource="Navigation" Click="TaskDetailClick" />
                                         <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick" />
                                     </ui:FAMenuFlyout>
                                 </Setter>
@@ -96,7 +95,7 @@
                                 <Border Classes="CardHover" Padding="10" Height="120" Width="120"
                                         Tapped="ProjectTapped">
                                     <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                               VerticalAlignment="Center"/>
                                     <Border.ContextFlyout>
                                         <ui:FAMenuFlyout Placement="Bottom">
                                             <ui:MenuFlyoutItem Text="打开" IconSource="Open" Click="OpenProjectClick" />

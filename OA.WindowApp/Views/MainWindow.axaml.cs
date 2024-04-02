@@ -130,6 +130,8 @@ public partial class MainWindow : AppWindow
         Setting.Save();
         user.Jwt = Jwt;
         User = await user.GetUserData();
+        var home = Stack["Home"] as HomeViewModel;
+        home!.User = User;
         Navigate("Home");
     }
 
@@ -142,6 +144,8 @@ public partial class MainWindow : AppWindow
         Setting.Save();
         userApp.Jwt = Jwt;
         User = await userApp.GetUserData();
+        var home = Stack["Home"] as HomeViewModel;
+        home!.User = User;
         Navigate("Home");
     }
 

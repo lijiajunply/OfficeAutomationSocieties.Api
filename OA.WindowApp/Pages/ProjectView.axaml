@@ -49,7 +49,7 @@
                             <ListBox ItemsSource="{Binding GanttList}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="models:GanttModel">
-                                        <Grid ColumnDefinitions="*,2*,2*,2*,*" ToolTip.Tip="{Binding  ToDo}">
+                                        <Grid ColumnDefinitions="*,2*,2*,2*" ToolTip.Tip="{Binding  ToDo}">
                                             <Grid.Styles>
                                                 <Style Selector="TextBlock">
                                                     <Setter Property="VerticalAlignment" Value="Center" />
@@ -59,11 +59,9 @@
                                             <Border Grid.Column="0" Width="16" Height="16"
                                                     Background="{Binding .,Converter={StaticResource TaskTimeConverter}}"
                                                     CornerRadius="8" />
-                                            <TextBlock Text="{Binding StartTime}" Grid.Column="1" />
-                                            <TextBlock Text="{Binding ToDo}" Grid.Column="2" />
+                                            <TextBlock Text="{Binding ToDo}" Grid.Column="1" />
+                                            <TextBlock Text="{Binding StartTime}" Grid.Column="2" />
                                             <TextBlock Text="{Binding EndTime}" Grid.Column="3" />
-                                            <controls:SymbolIcon Grid.Column="4"
-                                                                 Symbol="{Binding IsDone,Converter={StaticResource TaskConverter}}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

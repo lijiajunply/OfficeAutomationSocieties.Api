@@ -22,6 +22,4 @@ public class OrganizeIdentity
     public string Identity { get; init; } = "Member";
 
     public string UserId { get; init; } = "";
-
-    public OrganizeModel Owner { get; } = new();
 }

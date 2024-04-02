@@ -48,24 +48,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<string> LoginOrganize(string id)
+    public async Task<ProjectModel> CreateOrgProject(ProjectModel model, string id)
     {
         try
         {
-            var response = await SharedClient.GetAsync($"/api/Organize/LoginOrganize/{id}");
-            return await response.Content.ReadAsStringAsync();
-        }
-        catch
-        {
-            return "";
-        }
-    }
-
-    public async Task<ProjectModel> CreateOrgProject(ProjectModel model)
-    {
-        try
-        {
-            var response = await SharedClient.PostAsJsonAsync("/api/Organize/CreateOrgProject", model);
+            var response = await SharedClient.PostAsJsonAsync($"/api/Organize/CreateOrgProject/{id}", model);
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ProjectModel>(result) ?? new ProjectModel();
         }
@@ -75,11 +62,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<AnnouncementModel> LookAnnouncement()
+    public async Task<AnnouncementModel> LookAnnouncement(string id)
     {
         try
         {
-            var response = await SharedClient.GetAsync("/api/Organize/LookAnnouncement");
+            var response = await SharedClient.GetAsync($"/api/Organize/LookAnnouncement/{id}");
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<AnnouncementModel>(result) ?? new AnnouncementModel();
         }
@@ -102,12 +89,12 @@ public class Organize(string jwt = "") : DataBasic(jwt)
             return [];
         }
     }
-    
-    public async Task<AnnouncementModel[]> LookAnnouncements()
+
+    public async Task<AnnouncementModel[]> LookAnnouncements(string id)
     {
         try
         {
-            var response = await SharedClient.GetAsync("/api/Organize/LookAnnouncements");
+            var response = await SharedClient.GetAsync($"/api/Organize/LookAnnouncements/{id}");
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<AnnouncementModel[]>(result) ?? [];
         }
@@ -117,11 +104,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<bool> AddAnnouncement(AnnouncementModel model)
+    public async Task<bool> AddAnnouncement(AnnouncementModel model,string id)
     {
         try
         {
-            var response = await SharedClient.PostAsJsonAsync("/api/Organize/AddAnnouncement", model);
+            var response = await SharedClient.PostAsJsonAsync($"/api/Organize/AddAnnouncement/{id}", model);
             return response.IsSuccessStatusCode;
         }
         catch
@@ -130,11 +117,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<bool> RemoveAnnouncement(AnnouncementModel model)
+    public async Task<bool> RemoveAnnouncement(AnnouncementModel model,string id)
     {
         try
         {
-            var response = await SharedClient.PostAsJsonAsync("/api/Organize/RemoveAnnouncement", model);
+            var response = await SharedClient.PostAsJsonAsync($"/api/Organize/RemoveAnnouncement/{id}", model);
             return response.IsSuccessStatusCode;
         }
         catch
@@ -143,11 +130,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<ResourceModel[]> GetResources()
+    public async Task<ResourceModel[]> GetResources(string id)
     {
         try
         {
-            var response = await SharedClient.GetAsync("/api/Organize/GetResources");
+            var response = await SharedClient.GetAsync($"/api/Organize/GetResources/{id}");
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ResourceModel[]>(result) ?? [];
         }
@@ -157,11 +144,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<bool> UpdateResource(ResourceModel model)
+    public async Task<bool> UpdateResource(ResourceModel model,string id)
     {
         try
         {
-            var response = await SharedClient.PostAsJsonAsync("/api/Organize/UpdateResource", model);
+            var response = await SharedClient.PostAsJsonAsync($"/api/Organize/UpdateResource/{id}", model);
             return response.IsSuccessStatusCode;
         }
         catch
@@ -170,11 +157,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<ResourceModel> AddResource(ResourceModel model)
+    public async Task<ResourceModel> AddResource(ResourceModel model,string id)
     {
         try
         {
-            var response = await SharedClient.PostAsJsonAsync("/api/Organize/AddResource", model);
+            var response = await SharedClient.PostAsJsonAsync($"/api/Organize/AddResource/{id}", model);
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ResourceModel>(result) ?? new ResourceModel();
         }
@@ -184,11 +171,11 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<bool> DeleteResource(string id)
+    public async Task<bool> DeleteResource(string id,string org)
     {
         try
         {
-            var response = await SharedClient.GetAsync($"/api/Organize/DeleteResource/{id}");
+            var response = await SharedClient.GetAsync($"/api/Organize/DeleteResource/{id}&{org}");
             return response.IsSuccessStatusCode;
         }
         catch

@@ -27,10 +27,7 @@ public class ResourceConverter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is ResourceModel model)
-        {
-            return string.IsNullOrEmpty(model.StartTime) ? Symbol.Accept : Symbol.Clear;
-        }
-
+            return new SolidColorBrush(!string.IsNullOrEmpty(model.StartTime) ? Colors.OrangeRed : Colors.LimeGreen);
         return value;
     }
 
@@ -45,7 +42,7 @@ public class TaskTimeConverter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not GanttModel model) return value;
-        return new SolidColorBrush(model.IsOk ? Colors.Red : Colors.LimeGreen);
+        return new SolidColorBrush(model.IsExpired ? Colors.OrangeRed : Colors.LimeGreen);
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

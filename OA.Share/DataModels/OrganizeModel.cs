@@ -39,10 +39,10 @@ public class OrganizeIdentity
     [Column(TypeName = "varchar(10)")]
     public string Identity { get; init; } = "Member";
 
-    [Key] [JsonIgnore] public int Key { get; set; }
+    [Key] [JsonIgnore] public int Key { get; init; }
     [Column(TypeName = "varchar(64)")] public string UserId { get; init; } = "";
 
     [JsonIgnore] public UserModel User { get; init; } = new();
     [JsonIgnore] public OrganizeModel Organize { get; init; } = new();
-    [Column(TypeName = "varchar(64)")] public string OrganizeId { get; set; } = "";
+    [Column(TypeName = "varchar(64)")] public string OrganizeId { get; init; } = "";
 }
