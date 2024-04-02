@@ -16,6 +16,7 @@
         <entry key="OA.WindowApp/Dialogs/ShowUsers.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/UpdateProjcet.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/UpdateUser.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
+        <entry key="OA.WindowApp/Dialogs/UseResource.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HelpView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/HomeView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Pages/LoginView.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />

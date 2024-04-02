@@ -1,0 +1,22 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OA.WindowApp.Dialogs.UseResource">
+    <StackPanel Spacing="5" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel.Styles>
+            <Style Selector="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </StackPanel.Styles>
+        <Grid ColumnDefinitions="*,2*" Width="300">
+            <TextBlock Grid.Column="0" Text="开始时间" />
+            <CalendarDatePicker Width="200" Grid.Column="1" Name="StartPicker"/>
+        </Grid>
+        <Grid ColumnDefinitions="*,2*">
+            <TextBlock Grid.Column="0" Text="结束时间" />
+            <CalendarDatePicker Width="200" Grid.Column="1" Name="EndPicker"/>
+        </Grid>
+    </StackPanel>
+</UserControl>

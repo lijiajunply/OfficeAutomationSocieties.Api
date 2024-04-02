@@ -85,22 +85,21 @@
                 <ListBox Name="ResourceItems">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="models:ResourceModel">
-                            <Grid ColumnDefinitions="*,2*,2*,*" ToolTip.Tip="{Binding  Introduce}">
+                            <Grid ColumnDefinitions="*,*,*" ToolTip.Tip="{Binding  Introduce}">
                                 <Grid.Styles>
                                     <Style Selector="TextBlock">
                                         <Setter Property="VerticalAlignment" Value="Center" />
                                         <Setter Property="HorizontalAlignment" Value="Center" />
                                     </Style>
                                 </Grid.Styles>
-                                <Border Grid.Column="0" Width="16" Height="16" Background="LimeGreen"
-                                        CornerRadius="8" />
-                                <TextBlock Text="{Binding Name}" Grid.Column="1" />
-                                <ContentControl Grid.Column="2" Content="{Binding .}">
+                                <TextBlock Text="{Binding Name}" Grid.Column="0" />
+                                <ContentControl Grid.Column="1" Content="{Binding .}">
                                     <ContentControl.ContentTemplate>
-                                        <converters:ResourceTemplate/>
+                                        <converters:ResourceTemplate />
                                     </ContentControl.ContentTemplate>
                                 </ContentControl>
-                                <controls:SymbolIcon Grid.Column="3" Symbol="Accept"/>
+                                <controls:SymbolIcon Grid.Column="2"
+                                                     Symbol="{Binding .,Converter={StaticResource ResourceConverter}}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -109,6 +108,7 @@
                             <Setter Property="ContextFlyout">
                                 <controls:FAMenuFlyout>
                                     <controls:MenuFlyoutItem Text="更改" IconSource="Open" Click="UpdateResourceClick" />
+                                    <controls:MenuFlyoutItem Text="使用/归还" Click="UseClick"/>
                                     <controls:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveResourceClick" />
                                 </controls:FAMenuFlyout>
                             </Setter>

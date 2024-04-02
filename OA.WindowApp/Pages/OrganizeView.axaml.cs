@@ -207,7 +207,7 @@ public partial class OrganizeView : UserControl
         if (control.DataContext is not ResourceModel model) return;
         var td = new TaskDialog
         {
-            Title = "添加资源",
+            Title = "更改资源",
             Content = new AddResource(model),
             FooterVisibility = TaskDialogFooterVisibility.Never,
             Buttons =
@@ -237,6 +237,68 @@ public partial class OrganizeView : UserControl
             else
             {
                 view.NotificationShow("更改资源", "更改失败", NotificationType.Error);
+            }
+        };
+        await td.ShowAsync();
+    }
+
+    private async void UseClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        if (sender is not Control control) return;
+        if (control.DataContext is not ResourceModel model) return;
+        var td = new TaskDialog
+        {
+            Title = "使用资源",
+            Content = new UseResource(model),
+            FooterVisibility = TaskDialogFooterVisibility.Never,
+            Buttons =
+            {
+                new TaskDialogButton("借出", "借出"),
+                new TaskDialogButton("归还", "归还"),
+                new TaskDialogButton("取消", "")
+            },
+            XamlRoot = (Visual)VisualRoot!
+        };
+
+        td.Closing += async (dialog, args) =>
+        {
+            if ((string)args.Result == "借出")
+            {
+                if (dialog.Content is not UseResource useResource) return;
+                var done = useResource.Done();
+                using var org = new Organize(Jwt);
+                model.StartTime = done.StartTime;
+                model.EndTime = done.EndTime;
+                var resource = await org.UpdateResource(model);
+                if (resource)
+                {
+                    view.NotificationShow("更改资源", "更改成功");
+                    model.Name = done.Name;
+                    model.Introduce = done.Introduce;
+                }
+                else
+                {
+                    view.NotificationShow("更改资源", "更改失败", NotificationType.Error);
+                }
+
+                return;
+            }
+
+            if ((string)args.Result == "归还")
+            {
+                model.StartTime = model.EndTime = "";
+                using var org = new Organize(Jwt);
+                var resource =  await org.UpdateResource(model);
+                if (resource)
+                {
+                    view.NotificationShow("更改资源", "更改成功");
+                }
+                else
+                {
+                    view.NotificationShow("更改资源", "更改失败", NotificationType.Error);
+                }
             }
         };
         await td.ShowAsync();

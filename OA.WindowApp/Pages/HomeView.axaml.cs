@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
@@ -24,12 +25,16 @@ public partial class HomeView : UserControl
     protected override void OnInitialized()
     {
         if (DataContext is not HomeViewModel model) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
         TaskItemBlock.Text = model.TaskNotes.Count == 0 ? "当前没有任务，可以去放松一下了" : "当前任务";
         ProjectItemBlock.Text = model.Projects.Count == 0 ? "当前没有项目，点击添加或创建" : "您的项目";
         OrgItemBlock.Text = model.Organizes.Count == 0 ? "当前没有组织，点击添加或创建" : "您的组织";
         if (!DateTime.TryParse(model.User.RegistrationTime, out var date)) return;
         var day = (DateTime.Today - date).Days;
         DateBlock.Text = $"这是您努力的第{day + 1}天";
+        if (model.TaskNotes.Any(x => x.IsOk))
+            view.NotificationShow("温馨提示", "您有任务未完成", NotificationType.Error);
     }
 
     private async void JoinOrCreateProjectClick(object? sender, RoutedEventArgs e)

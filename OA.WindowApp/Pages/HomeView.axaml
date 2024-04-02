@@ -50,7 +50,8 @@
                                             <Setter Property="HorizontalAlignment" Value="Center" />
                                         </Style>
                                     </Grid.Styles>
-                                    <Border Grid.Column="0" Width="16" Height="16" Background="LimeGreen"
+                                    <Border Grid.Column="0" Width="16" Height="16"
+                                            Background="{Binding .,Converter={StaticResource TaskTimeConverter}}"
                                             CornerRadius="8" />
                                     <TextBlock Text="{Binding StartTime}" Grid.Column="1" />
                                     <TextBlock Text="{Binding ToDo}" Grid.Column="2" />
@@ -64,7 +65,7 @@
                             <Style Selector="ListBoxItem">
                                 <Setter Property="ContextFlyout">
                                     <ui:FAMenuFlyout Placement="Bottom">
-                                        <ui:MenuFlyoutItem Text="完成" IconSource="Accept" Click="TaskDoneClick"/>
+                                        <ui:MenuFlyoutItem Text="完成" IconSource="Accept" Click="TaskDoneClick" />
                                         <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick" />
                                         <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick" />
                                     </ui:FAMenuFlyout>
@@ -125,7 +126,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="models:OrganizeModel">
-                                <Border Classes="CardHover" Padding="10" Height="120" Width="120" Tapped="OrganizeTapped">
+                                <Border Classes="CardHover" Padding="10" Height="120" Width="120"
+                                        Tapped="OrganizeTapped">
                                     <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"
                                                VerticalAlignment="Center" />
                                 </Border>
