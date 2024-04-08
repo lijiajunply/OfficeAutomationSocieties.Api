@@ -64,7 +64,7 @@ public partial class MainWindow : AppWindow
         Navigate(Stack[page]);
     }
 
-    public void Navigate(object context)
+    private void Navigate(object context)
     {
         FrameView.NavigateFromObject(context);
     }
@@ -83,10 +83,10 @@ public partial class MainWindow : AppWindow
     private async void Init()
     {
         bool b;
+        using var  userApp = new User();
         if (Setting.IsNull()) b = false;
         else
         {
-            using var userApp = new User();
             var jwt = await userApp.Login(Setting);
             b = !string.IsNullOrEmpty(jwt);
             Jwt = jwt;
@@ -94,8 +94,7 @@ public partial class MainWindow : AppWindow
 
         if (b)
         {
-            using var user = new User(Jwt);
-            User = await user.GetUserData();
+            User = await userApp.GetUserData();
             using var proj = new Project(Jwt);
             using var org = new Organize(Jwt);
             var projects = await proj.GetUserProjects();

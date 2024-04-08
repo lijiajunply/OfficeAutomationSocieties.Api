@@ -18,7 +18,6 @@ public abstract class DataBasic : IDisposable
 
     protected HttpClient SharedClient { get; }
     private string _jwt = "";
-    // public static string SwaggerUrl => "https://api.luckyfishes.com/swagger/index.html";
 
     public string Jwt
     {

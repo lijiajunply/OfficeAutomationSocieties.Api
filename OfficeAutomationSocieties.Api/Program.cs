@@ -1,10 +1,13 @@
 using System.Reflection;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.WebEncoders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OA.Share.DataModels;
@@ -32,6 +35,11 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.Configure<HubOptions>(option => option.MaximumReceiveMessageSize = null);
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+
+builder.Services.AddCors();
+
+builder.Services.Configure<WebEncoderOptions>(options =>
+    options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 #endregion
 
 #region 数据库依赖注入
@@ -108,6 +116,9 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+app.UseCors();
+
 app.MapControllers();
 app.Run();
 
