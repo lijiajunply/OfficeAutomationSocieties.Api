@@ -90,6 +90,7 @@ public class ProjectController(
         if (project == null) return NoContent();
         if (project.Members.Any(x => x.UserId == member.UserId)) return Ok();
 
+        Console.WriteLine(_context.ProjectIdentities.Count());
         _context.ProjectIdentities.Add(new ProjectIdentity()
             { User = user, Project = project, Key = _context.ProjectIdentities.Count() });
         await _context.SaveChangesAsync();
@@ -111,6 +112,7 @@ public class ProjectController(
         if (user == null) return NotFound();
         project.Id = project.ToString().HashEncryption();
 
+        Console.WriteLine(_context.ProjectIdentities.Count());
         _context.Projects.Add(project);
         _context.ProjectIdentities.Add(new ProjectIdentity()
             { User = user, Identity = "Minister", Project = project, Key = _context.ProjectIdentities.Count() });
