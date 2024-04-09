@@ -45,5 +45,5 @@ public class ProjectIdentity
     [Column(TypeName = "varchar(64)")] public string ProjectId { get; init; } = "";
     [JsonIgnore] public UserModel User { get; init; } = new();
 
-    [JsonIgnore] public ProjectModel Project { get; } = new();
+    [JsonIgnore] public ProjectModel Project { get; init; } = new();
 }
