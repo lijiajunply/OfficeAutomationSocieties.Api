@@ -57,7 +57,7 @@ if (builder.Environment.IsDevelopment())
 else if (builder.Environment.IsProduction())
 {
     builder.Services.AddDbContextFactory<OaContext>(opt =>
-        opt.UseMySQL(configuration.GetConnectionString("MySQL")!));
+        opt.UseNpgsql(configuration.GetConnectionString("PostgreSQL")!));
 }
 
 #endregion
