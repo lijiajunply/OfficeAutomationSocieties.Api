@@ -14,9 +14,9 @@ namespace OA.Share.Migrations
                 name: "Organizes",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(256)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(256)", nullable: false),
-                    Introduce = table.Column<string>(type: "varchar(256)", nullable: false)
+                    Id = table.Column<string>(type: "varchar(64)", nullable: false),
+                    Name = table.Column<string>(type: "varchar(32)", nullable: false),
+                    Introduce = table.Column<string>(type: "varchar(512)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,10 +27,11 @@ namespace OA.Share.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(256)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(256)", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(64)", nullable: false),
+                    RegistrationTime = table.Column<string>(type: "varchar(32)", nullable: false),
+                    Name = table.Column<string>(type: "varchar(32)", nullable: false),
                     PhoneNum = table.Column<string>(type: "varchar(13)", nullable: false),
-                    Password = table.Column<string>(type: "varchar(256)", nullable: false)
+                    Password = table.Column<string>(type: "varchar(16)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,9 +42,10 @@ namespace OA.Share.Migrations
                 name: "Announcements",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(256)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(64)", nullable: false),
                     Context = table.Column<string>(type: "varchar(500)", nullable: false),
-                    OwnerId = table.Column<string>(type: "varchar(256)", nullable: false),
+                    Title = table.Column<string>(type: "varchar(25)", nullable: false),
+                    OwnerId = table.Column<string>(type: "varchar(64)", nullable: false),
                     Time = table.Column<string>(type: "varchar(256)", nullable: false)
                 },
                 constraints: table =>
@@ -61,9 +63,10 @@ namespace OA.Share.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(256)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(256)", nullable: false),
-                    OrganizeModelId = table.Column<string>(type: "varchar(256)", nullable: true)
+                    Id = table.Column<string>(type: "varchar(64)", nullable: false),
+                    Name = table.Column<string>(type: "varchar(32)", nullable: false),
+                    Introduce = table.Column<string>(type: "varchar(512)", nullable: false),
+                    OrganizeModelId = table.Column<string>(type: "varchar(64)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,11 +82,13 @@ namespace OA.Share.Migrations
                 name: "Resources",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(256)", nullable: false),
-                    OwnerId = table.Column<string>(type: "varchar(256)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(256)", nullable: false),
-                    StartTime = table.Column<string>(type: "varchar(256)", nullable: false),
-                    EndTime = table.Column<string>(type: "varchar(256)", nullable: false)
+                    Id = table.Column<string>(type: "varchar(64)", nullable: false),
+                    OwnerId = table.Column<string>(type: "varchar(64)", nullable: false),
+                    Name = table.Column<string>(type: "varchar(32)", nullable: false),
+                    Introduce = table.Column<string>(type: "varchar(50)", nullable: false),
+                    CreateTime = table.Column<string>(type: "varchar(64)", nullable: false),
+                    StartTime = table.Column<string>(type: "varchar(64)", nullable: true),
+                    EndTime = table.Column<string>(type: "varchar(64)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -97,24 +102,26 @@ namespace OA.Share.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IdentityModel",
+                name: "OrganizeIdentities",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(256)", nullable: false),
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Identity = table.Column<string>(type: "varchar(10)", nullable: false),
-                    OrganizeId = table.Column<string>(type: "varchar(256)", nullable: false)
+                    UserId = table.Column<string>(type: "varchar(64)", nullable: false),
+                    OrganizeId = table.Column<string>(type: "varchar(64)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IdentityModel", x => x.UserId);
+                    table.PrimaryKey("PK_OrganizeIdentities", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_IdentityModel_Organizes_OrganizeId",
+                        name: "FK_OrganizeIdentities_Organizes_OrganizeId",
                         column: x => x.OrganizeId,
                         principalTable: "Organizes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_IdentityModel_Users_UserId",
+                        name: "FK_OrganizeIdentities_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -125,11 +132,11 @@ namespace OA.Share.Migrations
                 name: "Files",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(256)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(64)", nullable: false),
                     Path = table.Column<string>(type: "varchar(256)", nullable: false),
                     Url = table.Column<string>(type: "varchar(256)", nullable: false),
                     IsFolder = table.Column<bool>(type: "INTEGER", nullable: false),
-                    OwnerId = table.Column<string>(type: "varchar(256)", nullable: true)
+                    OwnerId = table.Column<string>(type: "varchar(64)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -142,27 +149,28 @@ namespace OA.Share.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GanttModel",
+                name: "GanttList",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(256)", nullable: false),
-                    UserId = table.Column<string>(type: "varchar(256)", nullable: false),
-                    ProjectId = table.Column<string>(type: "varchar(256)", nullable: false),
-                    StartTime = table.Column<string>(type: "varchar(256)", nullable: false),
-                    EndTime = table.Column<string>(type: "varchar(256)", nullable: false),
-                    ToDo = table.Column<string>(type: "varchar(256)", nullable: false)
+                    Id = table.Column<string>(type: "varchar(64)", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(64)", nullable: false),
+                    ProjectId = table.Column<string>(type: "varchar(64)", nullable: false),
+                    IsDone = table.Column<bool>(type: "boolean", nullable: false),
+                    StartTime = table.Column<string>(type: "varchar(64)", nullable: false),
+                    EndTime = table.Column<string>(type: "varchar(64)", nullable: false),
+                    ToDo = table.Column<string>(type: "varchar(64)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GanttModel", x => x.Id);
+                    table.PrimaryKey("PK_GanttList", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GanttModel_Projects_ProjectId",
+                        name: "FK_GanttList_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GanttModel_Users_UserId",
+                        name: "FK_GanttList_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -170,24 +178,27 @@ namespace OA.Share.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectModelUserModel",
+                name: "ProjectIdentities",
                 columns: table => new
                 {
-                    MembersUserId = table.Column<string>(type: "varchar(256)", nullable: false),
-                    ProjectsId = table.Column<string>(type: "varchar(256)", nullable: false)
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Identity = table.Column<string>(type: "varchar(10)", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(64)", nullable: false),
+                    ProjectId = table.Column<string>(type: "varchar(64)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectModelUserModel", x => new { x.MembersUserId, x.ProjectsId });
+                    table.PrimaryKey("PK_ProjectIdentities", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_ProjectModelUserModel_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
+                        name: "FK_ProjectIdentities_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectModelUserModel_Users_MembersUserId",
-                        column: x => x.MembersUserId,
+                        name: "FK_ProjectIdentities_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -204,24 +215,34 @@ namespace OA.Share.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GanttModel_ProjectId",
-                table: "GanttModel",
+                name: "IX_GanttList_ProjectId",
+                table: "GanttList",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GanttModel_UserId",
-                table: "GanttModel",
+                name: "IX_GanttList_UserId",
+                table: "GanttList",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IdentityModel_OrganizeId",
-                table: "IdentityModel",
+                name: "IX_OrganizeIdentities_OrganizeId",
+                table: "OrganizeIdentities",
                 column: "OrganizeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectModelUserModel_ProjectsId",
-                table: "ProjectModelUserModel",
-                column: "ProjectsId");
+                name: "IX_OrganizeIdentities_UserId",
+                table: "OrganizeIdentities",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectIdentities_ProjectId",
+                table: "ProjectIdentities",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectIdentities_UserId",
+                table: "ProjectIdentities",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_OrganizeModelId",
@@ -244,13 +265,13 @@ namespace OA.Share.Migrations
                 name: "Files");
 
             migrationBuilder.DropTable(
-                name: "GanttModel");
+                name: "GanttList");
 
             migrationBuilder.DropTable(
-                name: "IdentityModel");
+                name: "OrganizeIdentities");
 
             migrationBuilder.DropTable(
-                name: "ProjectModelUserModel");
+                name: "ProjectIdentities");
 
             migrationBuilder.DropTable(
                 name: "Resources");

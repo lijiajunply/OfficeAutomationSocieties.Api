@@ -10,8 +10,8 @@ using OA.Share.DataModels;
 namespace OA.Share.Migrations
 {
     [DbContext(typeof(OaContext))]
-    [Migration("20240319024458_ProjIdIsNull")]
-    partial class ProjIdIsNull
+    [Migration("20240409071631_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,10 @@ namespace OA.Share.Migrations
                     b.Property<string>("Time")
                         .IsRequired()
                         .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("varchar(25)");
 
                     b.HasKey("Id");
 
@@ -78,6 +82,9 @@ namespace OA.Share.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(64)");
 
+                    b.Property<bool>("IsDone")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("ProjectId")
                         .IsRequired()
                         .HasColumnType("varchar(64)");
@@ -100,13 +107,14 @@ namespace OA.Share.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("GanttModel");
+                    b.ToTable("GanttList");
                 });
 
-            modelBuilder.Entity("OA.Share.DataModels.IdentityModel", b =>
+            modelBuilder.Entity("OA.Share.DataModels.OrganizeIdentity", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(64)");
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Identity")
                         .IsRequired()
@@ -116,11 +124,17 @@ namespace OA.Share.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(64)");
 
-                    b.HasKey("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Key");
 
                     b.HasIndex("OrganizeId");
 
-                    b.ToTable("IdentityModel");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrganizeIdentities");
                 });
 
             modelBuilder.Entity("OA.Share.DataModels.OrganizeModel", b =>
@@ -130,7 +144,7 @@ namespace OA.Share.Migrations
 
                     b.Property<string>("Introduce")
                         .IsRequired()
-                        .HasColumnType("varchar(64)");
+                        .HasColumnType("varchar(512)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -143,23 +157,39 @@ namespace OA.Share.Migrations
 
             modelBuilder.Entity("OA.Share.DataModels.ProjectIdentity", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(64)");
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Identity")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("ProjectId")
+                        .IsRequired()
                         .HasColumnType("varchar(64)");
 
-                    b.HasKey("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Key");
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectIdentity");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectIdentities");
                 });
 
             modelBuilder.Entity("OA.Share.DataModels.ProjectModel", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(64)");
+
+                    b.Property<string>("Introduce")
+                        .IsRequired()
+                        .HasColumnType("varchar(512)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -180,9 +210,16 @@ namespace OA.Share.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(64)");
 
-                    b.Property<string>("EndTime")
+                    b.Property<string>("CreateTime")
                         .IsRequired()
                         .HasColumnType("varchar(64)");
+
+                    b.Property<string>("EndTime")
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("Introduce")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -193,7 +230,6 @@ namespace OA.Share.Migrations
                         .HasColumnType("varchar(64)");
 
                     b.Property<string>("StartTime")
-                        .IsRequired()
                         .HasColumnType("varchar(64)");
 
                     b.HasKey("Id");
@@ -219,6 +255,10 @@ namespace OA.Share.Migrations
                     b.Property<string>("PhoneNum")
                         .IsRequired()
                         .HasColumnType("varchar(13)");
+
+                    b.Property<string>("RegistrationTime")
+                        .IsRequired()
+                        .HasColumnType("varchar(32)");
 
                     b.HasKey("UserId");
 
@@ -264,7 +304,7 @@ namespace OA.Share.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OA.Share.DataModels.IdentityModel", b =>
+            modelBuilder.Entity("OA.Share.DataModels.OrganizeIdentity", b =>
                 {
                     b.HasOne("OA.Share.DataModels.OrganizeModel", "Organize")
                         .WithMany("MemberIdentity")
@@ -287,7 +327,9 @@ namespace OA.Share.Migrations
                 {
                     b.HasOne("OA.Share.DataModels.ProjectModel", "Project")
                         .WithMany("Members")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("OA.Share.DataModels.UserModel", "User")
                         .WithMany("Projects")
