@@ -83,13 +83,14 @@ public partial class MainWindow : AppWindow
     private async void Init()
     {
         bool b;
-        using var  userApp = new User();
+        using var userApp = new User();
         if (Setting.IsNull()) b = false;
         else
         {
             var jwt = await userApp.Login(Setting);
             b = !string.IsNullOrEmpty(jwt);
             Jwt = jwt;
+            userApp.Jwt = jwt;
         }
 
         if (b)

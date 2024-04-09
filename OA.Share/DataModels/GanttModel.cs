@@ -17,6 +17,7 @@ public class GanttModel
     [Column(TypeName = "varchar(64)")] public string ProjectId { get; init; } = "";
     [JsonIgnore] public ProjectModel Project { get; } = new();
 
+    [Column(TypeName = "boolean")]
     public bool IsDone { get; set; }
     [Column(TypeName = "varchar(64)")] public string StartTime { get; set; } = "";
 
