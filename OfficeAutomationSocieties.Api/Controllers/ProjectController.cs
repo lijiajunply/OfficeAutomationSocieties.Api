@@ -112,10 +112,10 @@ public class ProjectController(
         if (user == null) return NotFound();
         project.Id = project.ToString().HashEncryption();
 
-        Console.WriteLine(_context.ProjectIdentities.Count());
+        var i= _context.ProjectIdentities.Count();
         _context.Projects.Add(project);
         _context.ProjectIdentities.Add(new ProjectIdentity()
-            { User = user, Identity = "Minister", Project = project, Key = _context.ProjectIdentities.Count() });
+            { User = user, Identity = "Minister", Project = project, Key = i });
         await _context.SaveChangesAsync();
         return project;
     }
