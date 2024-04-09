@@ -17,6 +17,7 @@ public class User(string jwt = "") : DataBasic(jwt)
         try
         {
             var response = await SharedClient.PostAsJsonAsync("/api/User/Login", model);
+            if (!response.IsSuccessStatusCode) return "";
             return await response.Content.ReadAsStringAsync();
         }
         catch
