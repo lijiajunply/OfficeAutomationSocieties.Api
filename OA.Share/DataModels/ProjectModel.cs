@@ -31,7 +31,10 @@ public class ProjectModel
 
 public class ProjectIdentity
 {
-    [JsonIgnore] [Key] public int Key { get; init; }
+    [JsonIgnore]
+    [Key]
+    [Column(TypeName = "varchar(150)")]
+    public string Key { get; init; } = "";
 
     /// <summary>
     /// Minister

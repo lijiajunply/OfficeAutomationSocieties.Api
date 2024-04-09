@@ -91,8 +91,8 @@ public class ProjectController(
         if (project.Members.Any(x => x.UserId == member.UserId)) return Ok();
 
         project.Members.Add(new ProjectIdentity()
-            { User = user });
-        
+            { User = user, Key = $"U-{user.UserId}|P-{project.Id}" });
+
         await _context.SaveChangesAsync();
         return project;
     }
@@ -113,9 +113,9 @@ public class ProjectController(
         project.Id = project.ToString().HashEncryption();
 
         project.Members.Add(new ProjectIdentity()
-            { User = user, Identity = "Minister" });
+            { User = user, Identity = "Minister", Key = $"U-{user.UserId}|P-{project.Id}" });
         _context.Projects.Add(project);
-        
+
         await _context.SaveChangesAsync();
         return project;
     }

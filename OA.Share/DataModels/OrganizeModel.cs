@@ -24,7 +24,7 @@ public class OrganizeModel
         if (!string.IsNullOrEmpty(model.Name)) Name = model.Name;
         if (!string.IsNullOrEmpty(model.Introduce)) Introduce = model.Introduce;
     }
-    
+
     public override string ToString()
         => $"Organize : Name is {Name.Base64Encryption()} , Intro is {Introduce.Base64Encryption()} ";
 }
@@ -39,7 +39,11 @@ public class OrganizeIdentity
     [Column(TypeName = "varchar(10)")]
     public string Identity { get; init; } = "Member";
 
-    [Key] [JsonIgnore] public int Key { get; init; }
+    [Key]
+    [JsonIgnore]
+    [Column(TypeName = "varchar(150)")]
+    public string Key { get; init; } = "";
+
     [Column(TypeName = "varchar(64)")] public string UserId { get; init; } = "";
 
     [JsonIgnore] public UserModel User { get; init; } = new();

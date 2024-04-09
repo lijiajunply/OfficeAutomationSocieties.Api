@@ -50,7 +50,7 @@ public class OrganizeController(
         model.Id = model.ToString().HashEncryption();
 
         model.MemberIdentity.Add(new OrganizeIdentity()
-            { Identity = "President", User = user });
+            { Identity = "President", User = user, Key = $"U-{user.UserId}|O-{model.Id}" });
 
         await _context.Organizes.AddAsync(model);
         await _context.SaveChangesAsync();
@@ -75,7 +75,7 @@ public class OrganizeController(
         if (org == null) return NotFound();
 
         var identity = new OrganizeIdentity()
-            { User = user, Organize = org };
+            { User = user, Organize = org, Key = $"U-{user.UserId}|O-{org.Id}" };
         org.MemberIdentity.Add(identity);
         user.Organizes.Add(identity);
 
@@ -190,7 +190,7 @@ public class OrganizeController(
         if (org == null) return NotFound();
 
         var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
-            x.UserId == member.UserId && x.OrganizeId == id);
+            x.Key == $"U-{member.UserId}|O-{org.Id}");
 
         if (i?.Identity != "President") return NotFound();
         model.Id = model.ToString().HashEncryption();
@@ -214,7 +214,7 @@ public class OrganizeController(
         if (member == null) return NotFound();
 
         var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
-            x.UserId == member.UserId && x.OrganizeId == id);
+            x.Key == $"U-{member.UserId}|O-{id}");
 
         if (i?.Identity != "President") return NotFound();
 
@@ -263,7 +263,7 @@ public class OrganizeController(
         _context.Entry(resourceModel).State = EntityState.Modified;
 
         var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
-            x.UserId == member.UserId && x.OrganizeId == id);
+            x.Key == $"U-{member.UserId}|O-{id}");
 
         if (i?.Identity != "President") return NotFound();
 
@@ -291,7 +291,7 @@ public class OrganizeController(
         if (org == null) return NotFound();
 
         var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
-            x.UserId == member.UserId && x.OrganizeId == id);
+            x.Key == $"U-{member.UserId}|O-{id}");
 
         if (i?.Identity != "President") return NotFound();
 
@@ -318,7 +318,7 @@ public class OrganizeController(
         if (member == null) return NotFound();
 
         var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
-            x.UserId == member.UserId && x.OrganizeId == org);
+            x.Key == $"U-{member.UserId}|O-{id}");
 
         if (i?.Identity != "President") return NotFound();
 
