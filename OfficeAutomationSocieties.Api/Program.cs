@@ -18,7 +18,11 @@ var configuration = builder.Configuration; // 读取配置文件
 
 #region 基本配置
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -40,6 +44,7 @@ builder.Services.AddCors();
 
 builder.Services.Configure<WebEncoderOptions>(options =>
     options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
+
 #endregion
 
 #region 数据库依赖注入

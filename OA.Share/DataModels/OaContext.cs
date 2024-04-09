@@ -53,6 +53,9 @@ public sealed class OaContext : DbContext
             .WithOne(x => x.User).IsRequired().HasForeignKey(x => x.UserId);
         modelBuilder.Entity<OrganizeModel>().HasMany(x => x.MemberIdentity)
             .WithOne(x => x.Organize).IsRequired();
+
+        modelBuilder.Entity<ProjectIdentity>().HasIndex(x => x.Key).IsUnique();
+        modelBuilder.Entity<OrganizeIdentity>().HasIndex(x => x.Key).IsUnique();
     }
 }
 #pragma warning restore CS1591
