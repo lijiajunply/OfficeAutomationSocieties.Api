@@ -90,7 +90,7 @@ public class ProjectController(
         if (project == null) return NoContent();
         if (project.Members.Any(x => x.UserId == member.UserId)) return Ok();
 
-        project.Members.Add(new ProjectIdentity() { User = user });
+        project.Members.Add(new ProjectIdentity() { User = user, Key = _context.ProjectIdentities.Count() });
         await _context.SaveChangesAsync();
         return project;
     }
@@ -110,7 +110,8 @@ public class ProjectController(
         if (user == null) return NotFound();
         project.Id = project.ToString().HashEncryption();
 
-        project.Members.Add(new ProjectIdentity() { User = user,Identity = "Minister"});
+        project.Members.Add(new ProjectIdentity()
+            { User = user, Identity = "Minister", Key = _context.ProjectIdentities.Count() });
 
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
@@ -129,14 +130,14 @@ public class ProjectController(
         await using var _context = await factory.CreateDbContextAsync();
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
-        
+
         var project = await _context.Projects.Include(projectModel => projectModel.Members)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (project == null) return NotFound();
-        
+
         var identity = project.Members.FirstOrDefault(x => x.UserId == member.UserId);
         if (identity?.Identity != "Minister") return NotFound();
-        
+
         project.Members.Clear();
         _context.Remove(project);
         await _context.SaveChangesAsync();
@@ -173,10 +174,10 @@ public class ProjectController(
 
         var member = httpContextAccessor.HttpContext?.User.GetUser();
         if (member == null) return NotFound();
-        
+
         var identity = project.Members.FirstOrDefault(x => x.UserId == member.UserId);
         if (identity?.Identity != "Minister") return NotFound();
-        
+
         project.Update(model);
         await _context.SaveChangesAsync();
         return Ok();

@@ -49,7 +49,8 @@ public class OrganizeController(
         if (user == null) return NotFound();
         model.Id = model.ToString().HashEncryption();
 
-        model.MemberIdentity.Add(new OrganizeIdentity() { Identity = "President", User = user });
+        model.MemberIdentity.Add(new OrganizeIdentity()
+            { Identity = "President", User = user, Key = _context.OrganizeIdentities.Count() });
 
         await _context.Organizes.AddAsync(model);
         await _context.SaveChangesAsync();
@@ -73,7 +74,8 @@ public class OrganizeController(
         var org = await _context.Organizes.FirstOrDefaultAsync(x => x.Id == id);
         if (org == null) return NotFound();
 
-        var identity = new OrganizeIdentity() { User = user, Organize = org };
+        var identity = new OrganizeIdentity()
+            { User = user, Organize = org, Key = _context.OrganizeIdentities.Count() };
         org.MemberIdentity.Add(identity);
         user.Organizes.Add(identity);
 
