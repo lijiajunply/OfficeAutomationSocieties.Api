@@ -1,6 +1,0 @@
-@OfficeAutomationSocieties.Api_HostAddress = http://localhost:5048
-
-GET {{OfficeAutomationSocieties.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
