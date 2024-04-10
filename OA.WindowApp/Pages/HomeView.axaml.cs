@@ -132,24 +132,6 @@ public partial class HomeView : UserControl
         await td.ShowAsync();
     }
 
-    private async void RemoveGanttClick(object? sender, RoutedEventArgs e)
-    {
-        var view = ViewOpera.GetView<MainWindow>(this);
-        if (view == null) return;
-        if (sender is not Control control) return;
-        if (control.DataContext is not GanttModel gantt) return;
-        using var proj = new Project(view.Jwt);
-        if (await proj.RemoveGantt(gantt.Id))
-            view.NotificationShow("删除任务", "删除成功");
-        else
-        {
-            view.NotificationShow("删除任务", "删除失败", NotificationType.Error);
-            return;
-        }
-        if(DataContext is not HomeViewModel model)return;
-        model.TaskNotes.Remove(gantt);
-    }
-
     private async void JoinOrCreateOrganizeClick(object? sender, RoutedEventArgs e)
     {
         var view = ViewOpera.GetView<MainWindow>(this);
@@ -265,6 +247,7 @@ public partial class HomeView : UserControl
 
         if (await proj.QuitProject(project.Id))
         {
+            view.Remove(project);
             view.NotificationShow("退出项目", "退出成功");
         }
         else

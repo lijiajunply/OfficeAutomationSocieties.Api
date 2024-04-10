@@ -54,10 +54,20 @@ public partial class ProjectView : UserControl
             if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
             if (dialog.Content is not AddOrChangeGantt project) return;
             var result = project.Done();
-            if (string.IsNullOrEmpty(result.ToDo)) return;
+            if (string.IsNullOrEmpty(result.ToDo))
+            {
+                view.NotificationShow("添加任务", "添加失败", NotificationType.Error);
+                return;
+            }
             using var proj = new Project(view.Jwt);
             result = await proj.AddGantt(model.Project.Id, result);
-            model.Project.GanttList.Add(result);
+            var clone = model.Project.Clone();
+            clone.GanttList.Add(result);
+            var index = model.Projects.IndexOf(model.Project);
+            model.Projects[index] = clone;
+            model.Project = clone;
+            view.Switch(result);
+            view.NotificationShow("添加任务", "添加成功");
         };
         await td.ShowAsync();
     }
@@ -101,12 +111,21 @@ public partial class ProjectView : UserControl
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
+        if (DataContext is not ProjectViewModel model) return;
         if (sender is not Control control) return;
+        var clone = model.Project.Clone();
         if (control.DataContext is not GanttModel gantt) return;
         if (gantt.UserId != view.User.UserId) return;
         using var proj = new Project(view.Jwt);
         if (await proj.RemoveGantt(gantt.Id))
+        {
+            clone.GanttList.Remove(gantt);
+            var index = model.Projects.IndexOf(model.Project);
+            model.Projects[index] = clone;
+            model.Project = clone;
+            view.Remove(gantt);
             view.NotificationShow("删除任务", "删除成功");
+        }
         else
             view.NotificationShow("删除任务", "删除失败", NotificationType.Error);
     }

@@ -9,6 +9,8 @@ public class OrganizeModel
 
     public string Introduce { get; init; } = "";
     public List<ProjectModel> Projects { get; } = [];
+    
+    public OrganizeModel Clone() => (OrganizeModel)MemberwiseClone();
 }
 
 [Serializable]

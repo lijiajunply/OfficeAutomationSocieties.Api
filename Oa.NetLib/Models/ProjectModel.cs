@@ -12,6 +12,8 @@ public class ProjectModel
 
     public List<GanttModel> GanttList { get; } = [];
     public string Introduce { get; init; } = "";
+
+    public ProjectModel Clone() => (ProjectModel)MemberwiseClone();
 }
 
 [Serializable]

@@ -59,6 +59,7 @@ public partial class OrganizeView : UserControl
     {
         var view = ViewOpera.GetView<MainWindow>(this);
         if (view == null) return;
+        
         var td = new TaskDialog
         {
             Title = "添加项目",
@@ -77,13 +78,21 @@ public partial class OrganizeView : UserControl
             if ((TaskDialogStandardResult)args.Result != TaskDialogStandardResult.OK) return;
             if (dialog.Content is not OrganizeAddProject organizeAddProject) return;
             var project = organizeAddProject.Done();
-            if (string.IsNullOrEmpty(project.Name)) return;
+            if (string.IsNullOrEmpty(project.Name))
+            {
+                view.NotificationShow("添加项目", "添加失败", NotificationType.Error);
+                return;
+            }
             if (DataContext is not OrganizeViewModel model) return;
             using var org = new Organize(view.Jwt);
 
+            var clone = model.Organize.Clone();
             var proj = await org.CreateOrgProject(project, _id);
             if (string.IsNullOrEmpty(proj.Id)) return;
-            model.Organize.Projects.Add(proj);
+            clone.Projects.Add(proj);
+            var index = model.Organizes.IndexOf(model.Organize);
+            model.Organizes[index] = clone;
+            view.NotificationShow("添加项目", "添加成功");
         };
         await td.ShowAsync();
     }

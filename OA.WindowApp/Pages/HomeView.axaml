@@ -66,7 +66,6 @@
                                         <ui:MenuFlyoutItem Text="完成" IconSource="Accept" Click="TaskDoneClick" />
                                         <ui:MenuFlyoutItem Text="更改" IconSource="Open" Click="TaskChangeClick" />
                                         <ui:MenuFlyoutItem Text="详情" IconSource="Navigation" Click="TaskDetailClick" />
-                                        <ui:MenuFlyoutItem Text="删除" IconSource="Remove" Click="RemoveGanttClick" />
                                     </ui:FAMenuFlyout>
                                 </Setter>
                             </Style>

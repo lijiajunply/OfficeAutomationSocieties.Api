@@ -39,11 +39,11 @@
                         <controls:FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xECA5;" />
                     </controls:NavigationViewItem.IconSource>
                 </controls:NavigationViewItem>
-                <controls:NavigationViewItem Content="搜索">
+                <!--<controls:NavigationViewItem Content="搜索">
                     <controls:NavigationViewItem.IconSource>
                         <controls:FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE721;" />
                     </controls:NavigationViewItem.IconSource>
-                </controls:NavigationViewItem>
+                </controls:NavigationViewItem>-->
             </controls:NavigationView.MenuItems>
             <controls:NavigationView.FooterMenuItems>
                 <!-- <controls:NavigationViewItem Content="市场"> -->

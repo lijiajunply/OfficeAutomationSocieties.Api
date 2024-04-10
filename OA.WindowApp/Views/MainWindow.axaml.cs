@@ -191,8 +191,8 @@ public partial class MainWindow : AppWindow
     {
         var home = Stack["Home"] as HomeViewModel;
         home?.Organizes.Add(p);
-        var project = Stack["Organize"] as OrganizeViewModel;
-        project?.Organizes.Add(p);
+        var organizeViewModel = Stack["Organize"] as OrganizeViewModel;
+        organizeViewModel?.Organizes.Add(p);
     }
 
     public void Switch(OrganizeModel model)
@@ -209,5 +209,25 @@ public partial class MainWindow : AppWindow
         if (Project.Projects.Any(x => x.Id == model.Id))
             Project.Project = model;
         Navigate("Project");
+    }
+    
+    public void Switch(GanttModel model)
+    {
+        var home = Stack["Home"] as HomeViewModel;
+        home?.TaskNotes.Add(model);
+    }
+    
+    public void Remove(GanttModel model)
+    {
+        var home = Stack["Home"] as HomeViewModel;
+        home?.TaskNotes.Remove(model);
+    }
+    
+    public void Remove(ProjectModel model)
+    {
+        var home = Stack["Home"] as HomeViewModel;
+        home?.Projects.Remove(model);
+        if (Stack["Project"] is not ProjectViewModel project) return;
+        project.Projects.Remove(model);
     }
 }
