@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="OA.WindowApp/App.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
+        <entry key="OA.WindowApp/Converters/EmptyControl.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/AddAnnouncement.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/AddGantt.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />
         <entry key="OA.WindowApp/Dialogs/AddOrChangeGantt.axaml" value="OA.WindowApp/OA.WindowApp.csproj" />

@@ -71,7 +71,7 @@ public partial class HomeView : UserControl
                 }
 
                 view.Add(p);
-                view.NotificationShow("创建项目", "创建失败", NotificationType.Error);
+                view.NotificationShow("创建项目", "创建成功");
             }
             else
             {
@@ -142,7 +142,12 @@ public partial class HomeView : UserControl
         if (await proj.RemoveGantt(gantt.Id))
             view.NotificationShow("删除任务", "删除成功");
         else
+        {
             view.NotificationShow("删除任务", "删除失败", NotificationType.Error);
+            return;
+        }
+        if(DataContext is not HomeViewModel model)return;
+        model.TaskNotes.Remove(gantt);
     }
 
     private async void JoinOrCreateOrganizeClick(object? sender, RoutedEventArgs e)
@@ -267,6 +272,24 @@ public partial class HomeView : UserControl
             view.NotificationShow("退出项目", "退出失败", NotificationType.Error);
         }
     }
+    
+    private async void QuitOrganizeClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control control) return;
+        if (control.DataContext is not OrganizeModel organizeModel) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        if (view == null) return;
+        using var organize = new Organize(view.Jwt);
+
+        if (await organize.QuitOrganize(organizeModel.Id))
+        {
+            view.NotificationShow("退出项目", "退出成功");
+        }
+        else
+        {
+            view.NotificationShow("退出项目", "退出失败", NotificationType.Error);
+        }
+    }
 
     private async void TaskDoneClick(object? sender, RoutedEventArgs e)
     {
@@ -302,5 +325,19 @@ public partial class HomeView : UserControl
         };
 
         await td.ShowAsync();
+    }
+
+    private void LogoutClick(object? sender, RoutedEventArgs e)
+    {
+        var view = ViewOpera.GetView<MainWindow>(this);
+        view?.Logout();
+    }
+
+    private void OpenOrganizeClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control control) return;
+        if (control.DataContext is not OrganizeModel organize) return;
+        var view = ViewOpera.GetView<MainWindow>(this);
+        view?.Switch(organize);
     }
 }

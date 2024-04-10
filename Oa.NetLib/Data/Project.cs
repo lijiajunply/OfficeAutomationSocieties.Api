@@ -62,19 +62,6 @@ public class Project(string jwt = "") : DataBasic(jwt)
         }
     }
 
-    public async Task<bool> RemoveProject(string id)
-    {
-        try
-        {
-            var response = await SharedClient.GetAsync($"/api/Project/RemoveProject/{id}");
-            return response.IsSuccessStatusCode;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
     public async Task<bool> QuitProject(string id)
     {
         try

@@ -7,6 +7,7 @@ using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using Oa.NetLib.Data;
 using Oa.NetLib.Models;
+using OA.WindowApp.Converters;
 using OA.WindowApp.Dialogs;
 using OA.WindowApp.Models;
 using OA.WindowApp.ViewModels.Pages;
@@ -30,7 +31,7 @@ public partial class OrganizeView : UserControl
         if (DataContext is not OrganizeViewModel model) return;
         if (model.Organizes.Count == 0)
         {
-            Viewer.IsVisible = false;
+            Content = new EmptyControl("当前无组织");
             return;
         }
 

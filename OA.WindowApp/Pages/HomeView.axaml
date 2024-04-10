@@ -24,7 +24,7 @@
                         <Button.Flyout>
                             <ui:FAMenuFlyout Placement="Right">
                                 <ui:MenuFlyoutItem Text="更改用户信息" IconSource="People" Click="UpdateUserClick" />
-                                <ui:MenuFlyoutItem Text="登出" IconSource="Redo" />
+                                <ui:MenuFlyoutItem Text="登出" IconSource="Redo" Click="LogoutClick"/>
                             </ui:FAMenuFlyout>
                         </Button.Flyout>
                         <StackPanel Orientation="Horizontal" Spacing="8">
@@ -129,6 +129,12 @@
                                         Tapped="OrganizeTapped">
                                     <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"
                                                VerticalAlignment="Center" />
+                                    <Border.ContextFlyout>
+                                        <ui:FAMenuFlyout Placement="Bottom">
+                                            <ui:MenuFlyoutItem Text="打开" IconSource="Open" Click="OpenOrganizeClick" />
+                                            <ui:MenuFlyoutItem Text="退出组织" IconSource="Remove" Click="QuitOrganizeClick" />
+                                        </ui:FAMenuFlyout>
+                                    </Border.ContextFlyout>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

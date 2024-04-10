@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using Oa.NetLib.Data;
 using Oa.NetLib.Models;
+using OA.WindowApp.Converters;
 using OA.WindowApp.Dialogs;
 using OA.WindowApp.Models;
 using OA.WindowApp.ViewModels.Pages;
@@ -24,7 +25,7 @@ public partial class ProjectView : UserControl
         if (DataContext is not ProjectViewModel model) return;
         if (model.Projects.Count == 0)
         {
-            Viewer.IsVisible = false;
+            Content = new EmptyControl("当前无项目");
             return;
         }
         model.Project = model.Projects[0];

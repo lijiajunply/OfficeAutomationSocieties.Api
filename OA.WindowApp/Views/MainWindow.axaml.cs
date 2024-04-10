@@ -38,7 +38,7 @@ public partial class MainWindow : AppWindow
         Setting = SettingStatic.Read();
         InitializeComponent();
 
-        SplashScreen = new MainAppSplashScreen("OA", Init);
+        SplashScreen = new MainAppSplashScreen("OA", InitApp);
         TitleBar.ExtendsContentIntoTitleBar = true;
         TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 
@@ -55,10 +55,16 @@ public partial class MainWindow : AppWindow
     {
         if (e.InvokedItemContainer.Tag is not string s) return;
         if (string.IsNullOrEmpty(s)) return;
+        if (Setting.IsNull() && s is not ("Setting" or "Help"))
+        {
+            if(FrameView.Content is LoginView)return;
+            Navigate(new LoginView());
+            return;
+        }
         Navigate(s);
     }
 
-    private void Navigate(string page)
+    public void Navigate(string page)
     {
         if (string.IsNullOrEmpty(page)) return;
         Navigate(Stack[page]);
@@ -80,7 +86,7 @@ public partial class MainWindow : AppWindow
         _manager?.Show(new Notification(title, message, type));
     }
 
-    private async void Init()
+    private async void InitApp()
     {
         bool b;
         using var userApp = new User();
@@ -95,30 +101,35 @@ public partial class MainWindow : AppWindow
 
         if (b)
         {
-            User = await userApp.GetUserData();
-            using var proj = new Project(Jwt);
-            using var org = new Organize(Jwt);
-            var projects = await proj.GetUserProjects();
-            var organizes = await org.GetUserOrganizes();
-
-            var home = Stack["Home"] as HomeViewModel;
-            home!.Projects.Add(projects);
-            home.Organizes.Add(organizes);
-            home.TaskNotes.Add(User.TaskNotes);
-            home.User = User;
-
-            var project = Stack["Project"] as ProjectViewModel;
-            project!.Projects.Add(projects);
-
-            var organize = Stack["Organize"] as OrganizeViewModel;
-            organize!.Organizes.Add(organizes);
-
-            Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(home));
+            await Init(userApp);
         }
         else
         {
             Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(new LoginView()));
         }
+    }
+
+    private async Task Init(User userApp)
+    {
+        User = await userApp.GetUserData();
+        using var proj = new Project(Jwt);
+        using var org = new Organize(Jwt);
+        var projects = await proj.GetUserProjects();
+        var organizes = await org.GetUserOrganizes();
+
+        var home = Stack["Home"] as HomeViewModel;
+        home!.Projects.Add(projects);
+        home.Organizes.Add(organizes);
+        home.TaskNotes.Add(User.TaskNotes);
+        home.User = User;
+
+        var project = Stack["Project"] as ProjectViewModel;
+        project!.Projects.Add(projects);
+
+        var organize = Stack["Organize"] as OrganizeViewModel;
+        organize!.Organizes.Add(organizes);
+
+        Dispatcher.UIThread.Post(() => FrameView.NavigateFromObject(home));
     }
 
     public async Task Login(LoginModel model)
@@ -129,9 +140,7 @@ public partial class MainWindow : AppWindow
         Setting = model;
         Setting.Save();
         user.Jwt = Jwt;
-        User = await user.GetUserData();
-        var home = Stack["Home"] as HomeViewModel;
-        home!.User = User;
+        await Init(user);
         Navigate("Home");
     }
 
@@ -147,6 +156,27 @@ public partial class MainWindow : AppWindow
         var home = Stack["Home"] as HomeViewModel;
         home!.User = User;
         Navigate("Home");
+    }
+
+    public void Logout()
+    {
+        Setting = new LoginModel();
+        Setting.Save();
+        Navigate(new LoginView());
+        var home = Stack["Home"] as HomeViewModel;
+        home!.User = new UserModel();
+        home.TaskNotes.Clear();
+        home.Projects.Clear();
+        home.Organizes.Clear();
+        
+        var proj = Stack["Project"] as ProjectViewModel;
+        proj!.Projects.Clear();
+        proj.Project = new ProjectModel();
+        
+        var org = Stack["Organize"] as OrganizeViewModel;
+        org!.Organizes.Clear();
+        org.Organize = new OrganizeModel();
+        NotificationShow("提示", "登出成功", NotificationType.Success);
     }
 
     public void Add(ProjectModel p)

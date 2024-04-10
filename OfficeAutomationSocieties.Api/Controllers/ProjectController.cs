@@ -120,32 +120,6 @@ public class ProjectController(
         return project;
     }
 
-
-    /// <summary>
-    /// 删除
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpGet("{id}")]
-    public async Task<ActionResult> RemoveProject(string id)
-    {
-        await using var _context = await factory.CreateDbContextAsync();
-        var member = httpContextAccessor.HttpContext?.User.GetUser();
-        if (member == null) return NotFound();
-
-        var project = await _context.Projects.Include(projectModel => projectModel.Members)
-            .FirstOrDefaultAsync(x => x.Id == id);
-        if (project == null) return NotFound();
-
-        var identity = project.Members.FirstOrDefault(x => x.UserId == member.UserId);
-        if (identity?.Identity != "Minister") return NotFound();
-
-        project.Members.Clear();
-        _context.Remove(project);
-        await _context.SaveChangesAsync();
-        return Ok();
-    }
-
     [HttpGet("{id}")]
     public async Task<ActionResult> QuitProject(string id)
     {
@@ -161,6 +135,11 @@ public class ProjectController(
         var m = project.Members.FirstOrDefault(x => x.UserId == member.UserId);
         if (m == null) return Ok();
 
+        if (m.Identity == "Minister")
+            _context.Projects.Remove(project);
+        else
+            project.Members.Remove(m);
+        
         project.Members.Remove(m);
         await _context.SaveChangesAsync();
         return Ok();

@@ -112,6 +112,31 @@ public class OrganizeController(
                [];
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult> QuitOrganize(string id)
+    {
+        await using var _context = await factory.CreateDbContextAsync();
+        var member = httpContextAccessor.HttpContext?.User.GetUser();
+        if (member == null) return NotFound();
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == member.UserId);
+        if (user == null) return NotFound();
+        
+        var organizeModel = await _context.Organizes.Include(model => model.MemberIdentity)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        if (organizeModel == null) return NotFound();
+
+        var m = organizeModel.MemberIdentity.FirstOrDefault(x => x.UserId == member.UserId);
+        if (m == null) return Ok();
+
+        if (m.Identity == "President")
+            _context.Organizes.Remove(organizeModel);
+        else
+            organizeModel.MemberIdentity.Remove(m);
+        
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+    
     #endregion
 
     #region 组织项目管理

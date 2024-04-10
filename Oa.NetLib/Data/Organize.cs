@@ -62,6 +62,19 @@ public class Organize(string jwt = "") : DataBasic(jwt)
         }
     }
 
+    public async Task<bool> QuitOrganize(string id)
+    {
+        try
+        {
+            var response = await SharedClient.GetAsync($"/api/Organize/QuitOrganize/{id}");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    
     public async Task<AnnouncementModel> LookAnnouncement(string id)
     {
         try
