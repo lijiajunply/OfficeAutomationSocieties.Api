@@ -343,7 +343,7 @@ public class OrganizeController(
         if (member == null) return NotFound();
 
         var i = await _context.OrganizeIdentities.FirstOrDefaultAsync(x =>
-            x.Key == $"U-{member.UserId}|O-{id}");
+            x.Key == $"U-{member.UserId}|O-{org}");
 
         if (i?.Identity != "President") return NotFound();
 

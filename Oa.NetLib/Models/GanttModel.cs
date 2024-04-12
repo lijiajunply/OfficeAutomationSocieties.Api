@@ -10,7 +10,14 @@ public class GanttModel
     public string UserId { get; set; } = "";
     public string ProjectId { get; set; } = "";
     [JsonIgnore]
-    public bool IsExpired => DateTime.Parse(EndTime) < DateTime.Today && !IsDone;
+    public bool IsExpired
+    {
+        get
+        {
+            if(!DateTime.TryParse(EndTime,out var date))return false;
+            return date < DateTime.Today && !IsDone;
+        }
+    }
 
     public bool IsDone { get; set; }
     public string StartTime { get; set; } = "";

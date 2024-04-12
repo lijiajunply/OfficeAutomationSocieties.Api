@@ -13,4 +13,6 @@ public class OrganizeViewModel : PageModelBase
         get => _organize;
         set => SetField(ref _organize, value);
     }
+
+    public ObservableCollection<ResourceModel> Resources { get; set; } = [];
 }

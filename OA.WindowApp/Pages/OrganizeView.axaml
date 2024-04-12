@@ -79,7 +79,7 @@
                         <controls:SymbolIcon Symbol="Add" />
                     </Button>
                 </Panel>
-                <ListBox Name="ResourceItems">
+                <ListBox ItemsSource="{Binding Resources}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="models:ResourceModel">
                             <Grid ColumnDefinitions="Auto,*,*" ToolTip.Tip="{Binding  Introduce}">

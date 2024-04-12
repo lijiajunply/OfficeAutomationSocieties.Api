@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Interactivity;
+using DynamicData;
 using FluentAvalonia.UI.Controls;
 using Oa.NetLib.Data;
 using Oa.NetLib.Models;
@@ -45,7 +44,8 @@ public partial class OrganizeView : UserControl
         if (DataContext is not OrganizeViewModel model) return;
         _id = model.Organize.Id;
         using var org = new Organize(view.Jwt);
-        ResourceItems.ItemsSource = (await org.GetResources(_id)).ToList();
+        model.Resources.Clear();
+        model.Resources.Add(await org.GetResources(_id));
         var a = await org.LookAnnouncement(_id);
         if (string.IsNullOrEmpty(a.Id)) return;
         view.NotificationShow("公告", a.Context);
@@ -169,8 +169,8 @@ public partial class OrganizeView : UserControl
             using var org = new Organize(view.Jwt);
             var resource = await org.AddResource(done, _id);
             if (string.IsNullOrEmpty(resource.Id)) return;
-            var list = ResourceItems.ItemsSource as List<ResourceModel>;
-            list?.Add(resource);
+            if (DataContext is not OrganizeViewModel model) return;
+            model.Resources.Add(resource);
         };
         await td.ShowAsync();
     }
@@ -184,8 +184,8 @@ public partial class OrganizeView : UserControl
         using var org = new Organize(view.Jwt);
         if (!await org.DeleteResource(model.Id, _id)) return;
         view.NotificationShow("删除资源", "删除成功");
-        var list = ResourceItems.ItemsSource as List<ResourceModel>;
-        list?.Remove(model);
+        if (DataContext is not OrganizeViewModel viewModel) return;
+        viewModel.Resources.Remove(model);
     }
 
     private async void UpdateResourceClick(object? sender, RoutedEventArgs e)
