@@ -30,8 +30,8 @@
             </StackPanel.Styles>
             <Border Height="500">
                 <StackPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="OfficeAutomationSocieties" Theme="{DynamicResource TitleLargeTextBlockStyle}" />
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="OAS桌面端" />
+                    <Image Source="/Assets/OAjiangLogo.png" Height="200" Width="200"/>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="OA酱 桌面端" />
                     <TextBlock ToolTip.Tip="版本号" ToolTip.Placement="RightEdgeAlignedTop" HorizontalAlignment="Center" VerticalAlignment="Center" Text="1.0.0" />
                     <controls:HyperlinkButton HorizontalAlignment="Center" VerticalAlignment="Center"
                                               NavigateUri="https://gitee.com/luckyfishisdashen/OfficeAutomationSocieties.Api">

@@ -7,7 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="OA.WindowApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/OAjiangLogo.png"
         Title="{Binding AppName}">
 
     <Grid Margin="5" RowDefinitions="Auto,*">
@@ -17,7 +17,7 @@
                     Click="BackClick" IsVisible="{Binding #FrameView.CanGoBack}">
                 <controls:SymbolIcon FontSize="15" Symbol="Back" />
             </Button>
-            <controls:ImageIcon VerticalAlignment="Center" Source="avares://OA.WindowApp/Assets/avalonia-logo.ico"
+            <controls:ImageIcon VerticalAlignment="Center" Source="avares://OA.WindowApp/Assets/OAjiangLogo.png"
                                 Width="18" Margin="5,0" Height="18" />
             <TextBlock Text="{Binding AppName}"
                        FontSize="12"
