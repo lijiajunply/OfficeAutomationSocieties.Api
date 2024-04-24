@@ -90,8 +90,11 @@ builder.Services.AddScoped<TokenActionFilter>();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+if (builder.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 #region 添加数据库
 
