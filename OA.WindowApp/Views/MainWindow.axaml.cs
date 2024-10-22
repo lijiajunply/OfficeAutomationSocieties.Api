@@ -230,4 +230,12 @@ public partial class MainWindow : AppWindow
         if (Stack["Project"] is not ProjectViewModel project) return;
         project.Projects.Remove(model);
     }
+    
+    public void Remove(OrganizeModel model)
+    {
+        var home = Stack["Home"] as HomeViewModel;
+        home?.Organizes.Remove(model);
+        if (Stack["Organize"] is not OrganizeViewModel organize) return;
+        organize.Organizes.Remove(model);
+    }
 }

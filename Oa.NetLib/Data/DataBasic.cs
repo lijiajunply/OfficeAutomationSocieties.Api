@@ -7,7 +7,7 @@ public abstract class DataBasic : IDisposable
     protected DataBasic(string jwt = "")
     {
         // ReSharper disable once RedundantAssignment
-        var url = new Uri("https://api.luckyfishes.com");
+        var url = new Uri("https://oas.xauat.site");
 /*#if DEBUG
         url = new Uri("https://localhost:7060/");
 #endif*/

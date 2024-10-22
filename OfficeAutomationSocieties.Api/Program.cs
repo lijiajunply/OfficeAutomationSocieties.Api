@@ -49,16 +49,8 @@ builder.Services.Configure<WebEncoderOptions>(options =>
 
 #region 数据库依赖注入
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContextFactory<OaContext>(opt =>
-        opt.UseSqlite(configuration.GetConnectionString("SQLite")));
-}
-else if (builder.Environment.IsProduction())
-{
-    builder.Services.AddDbContextFactory<OaContext>(opt =>
-        opt.UseNpgsql(configuration.GetConnectionString("PostgreSQL")!));
-}
+builder.Services.AddDbContextFactory<OaContext>(opt =>
+    opt.UseSqlite(configuration.GetConnectionString("SQLite")));
 
 #endregion
 
@@ -90,11 +82,8 @@ builder.Services.AddScoped<TokenActionFilter>();
 
 var app = builder.Build();
 
-if (builder.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 #region 添加数据库
 

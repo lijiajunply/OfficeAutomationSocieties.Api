@@ -267,6 +267,7 @@ public partial class HomeView : UserControl
         if (await organize.QuitOrganize(organizeModel.Id))
         {
             view.NotificationShow("退出项目", "退出成功");
+            view.Remove(organizeModel);
         }
         else
         {
